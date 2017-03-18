@@ -34,15 +34,28 @@ public class Boleta {
 	@JsonProperty(value="localidad")
 	private String localidad;
 	
+	/**
+	 * Usuario
+	 */
+	@JsonProperty(value="usuario")
+	private Usuario usario;
 	
-	
-	public Boleta(@JsonProperty(value="id")int id,	@JsonProperty(value="silla")String silla, @JsonProperty(value="precio")Integer precio,@JsonProperty(value="cupos") Integer cupos, @JsonProperty(value="localidad")String localidad) {
+	/**
+	 * Cosntructor
+	 * @param id
+	 * @param silla
+	 * @param precio
+	 * @param cupos
+	 * @param localidad
+	 */
+	public Boleta(@JsonProperty(value="id")int id,	@JsonProperty(value="silla")String silla, @JsonProperty(value="precio")Integer precio,@JsonProperty(value="cupos") Integer cupos, @JsonProperty(value="localidad")String localidad,  @JsonProperty(value="usuario") Usuario usuario) {
 		super();
 		this.id = id;
 		this.silla = silla;
 		this.precio = precio;
 		this.cupos = cupos;
 		this.localidad = localidad;
+		this.usario = usuario;
 	}
 
 	public int getId() {

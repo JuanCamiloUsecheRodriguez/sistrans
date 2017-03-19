@@ -13,6 +13,7 @@ import dao.DAOTablaClientes;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import vos.Boleta;
+import vos.ListaBoletas;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
 import vos.Preferencia;
@@ -267,9 +268,72 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-
 	}
 	
+	
+	public ListaBoletas darBoletasPorId(int idBoleta) throws Exception {
+		ArrayList<Boleta> boletas;
+		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoBoletas.setConn(conn);
+			boletas = daoBoletas.darBoletasPorId(idBoleta);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoBoletas.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaBoletas(boletas);
+	}
+	
+	public ListaBoletas darBoletas() throws Exception {
+		ArrayList<Boleta> boletas;
+		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoBoletas.setConn(conn);
+			boletas = daoBoletas.darBoletas();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoBoletas.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaBoletas(boletas);
+	}
 	
 	
 }

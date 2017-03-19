@@ -99,7 +99,7 @@ public class DAOTablaBoletas {
 	 * @throws SQLException - Cualquier error que la base de datos arroje.
 	 * @throws Exception - Cualquier error que no corresponda a la base de datos
 	 */
-	public ArrayList<Boleta> buscarBoletasPorId(Integer pId) throws SQLException, Exception {
+	public ArrayList<Boleta> darBoletasPorId(Integer pId) throws SQLException, Exception {
 		ArrayList<Boleta> Boletas = new ArrayList<Boleta>();
 
 		String sql = "SELECT * FROM BOLETA WHERE ID ='" + pId + "'";

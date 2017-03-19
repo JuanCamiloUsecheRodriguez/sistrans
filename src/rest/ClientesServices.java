@@ -40,7 +40,7 @@ public class ClientesServices {
 	}
 	
 	@POST
-	@Path("/preferencias/{pref}")
+	@Path("/preferencias")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addPreferencia(Preferencia pref) {

@@ -111,11 +111,16 @@ public class DAOTablaFunciones {
 		prepStmt.executeQuery();
 	}
 	
-	public ArrayList<Funcion> darFuncionesDeCompañiaDeTeatro(String nombreCompañia) throws SQLException
+	public ArrayList<Funcion> darFuncionesDeCompaniaDeTeatro(String nombreCompania) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
-		String sql = "SELECT * FROM (SELECT * FROM FUNCION FULL OUTER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 FULL OUTER (SELECT * FROM PATROCINA FULL OUTER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID)T2 ON T1.ID = T2.IDESPECTACULO WHERE T2.NOMBRE = " + nombreCompañia;
+		String sql = "SELECT * FROM "
+				+ "(SELECT * FROM FUNCION FULL OUTER JOIN "
+				+ "ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 "
+				+ "FULL OUTER (SELECT * FROM PATROCINA "
+				+ "FULL OUTER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID)T2 "
+				+ "ON T1.ID = T2.IDESPECTACULO WHERE T2.NOMBRE = " + nombreCompania;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

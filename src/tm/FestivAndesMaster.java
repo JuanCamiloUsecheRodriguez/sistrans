@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import dao.DAOTablaBoletas;
 import dao.DAOTablaClientes;
+import dao.DAOTablaFunciones;
 import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
@@ -402,5 +403,37 @@ public class FestivAndesMaster {
 		return sitio;
 	}
 	
+	
+	public void registrarRealizacionFuncion(int idFuncion) throws Exception {
+		DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoTablaFunciones.setConn(conn);
+			daoTablaFunciones.registrarRelizacionFuncion(idFuncion);;
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+
+	}
 	
 }

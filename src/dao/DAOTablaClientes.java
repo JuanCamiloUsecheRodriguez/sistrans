@@ -54,35 +54,4 @@ public class DAOTablaClientes {
 		this.conn = con;
 	}
 
-
-	/**
-	 * Método que, usando la conexión a la base de datos, saca todos los Clientes de la base de datos
-	 * <b>SQL Statement:</b> SELECT * FROM Clientes;
-	 * @return Arraylist con los Clientes de la base de datos.
-	 * @throws SQLException - Cualquier error que la base de datos arroje.
-	 * @throws Exception - Cualquier error que no corresponda a la base de datos
-	 */
-	public ArrayList<Cliente> darClientes() throws SQLException, Exception {
-		ArrayList<Cliente> Clientes = new ArrayList<Cliente>();
-
-		String sql = "SELECT * FROM ISIS2304MO11620.ALQUILERES";
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		ResultSet rs = prepStmt.executeQuery();
-
-		while (rs.next()) {
-			int id = Integer.parseInt(rs.getString("ID_CLIENTE"));
-			int edad = Integer.parseInt(rs.getString("EDAD"));
-			
-			int idUsuario = Integer.parseInt(rs.getString("ID_USUARIO"));
-			DAOTablaUsuarios daoTablaUsuarios = new DAOTablaUsuarios();
-			Usuario usuario = daoTablaUsuarios.darUsuariosPorId(idUsuario);
-			
-			Clientes.add(new Cliente(id, preferencias , usuario.getNumDocumento(), usuario.getNombre(), usuario.getEmail(), usuario.getRol(), usuario.getUsuario(), usuario.getPassword()));
-		}
-		return Clientes;
-	}
-
-
 }

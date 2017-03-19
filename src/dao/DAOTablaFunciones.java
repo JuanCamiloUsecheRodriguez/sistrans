@@ -83,7 +83,7 @@ public class DAOTablaFunciones {
 	public Funcion darFuncionPorId(int pId) throws SQLException, Exception {
 		Funcion funcion = null;
 		
-		String sql = "SELECT * FROM FUNCION WHERE ID='"+pId+"'";
+		String sql = "SELECT * FROM FUNCION WHERE ID ='"+pId+"'";
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();

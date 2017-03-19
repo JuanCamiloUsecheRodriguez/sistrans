@@ -75,7 +75,6 @@ public class DAOTablaClientes {
 			
 			int Usuario = Integer.parseInt(rs.getString("ID_USUARIO"));
 			
-			Clientes.add(new Cliente(id, edad));
 		}
 		return Clientes;
 	}

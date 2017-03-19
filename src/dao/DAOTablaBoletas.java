@@ -78,11 +78,15 @@ public class DAOTablaBoletas {
 			int cupos = Integer.parseInt(rs.getString("CUPOS"));
 			String localidad = rs.getString("LOCALIDAD");
 			
-			int numDocumentoUsuario = Integer.parseInt(rs.getString("CLIENTEDOC"));
+			int idFuncion = Integer.parseInt(rs.getString("FUNCION"));
+			DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
+			Funcion funcion = daoTablaFunciones.darFuncionesPorId(idFuncion);
 			
-			Usuario usuario = DAOTablaUsarios.DarUsuarioPorId(numDocumentoUsuario);
+			int numDocumentoUsuario = Integer.parseInt(rs.getString("USUARIODOC"));
+			DAOTablaUsuarios daoTablaUsuarios = new DAOTablaUsuarios();
+			Usuario usuario = daoTablaUsuarios.darUsuariosPorId(numDocumentoUsuario);
 			
-			Boletas.add(new Boleta(id, silla, precio, cupos, localidad, usuario));
+			Boletas.add(new Boleta(id, silla, precio, cupos, localidad, usuario, funcion));
 		}
 		return Boletas;
 	}

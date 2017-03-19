@@ -70,10 +70,12 @@ public class DAOTablaClientes {
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			String name = rs.getString("USER_NAME");
-			int id = Integer.parseInt(rs.getString("ID"));
-			int duration = Integer.parseInt(rs.getString("Cliente_ID"));
-			Clientes.add(new Cliente(id, name, duration));
+			int id = Integer.parseInt(rs.getString("ID_CLIENTE"));
+			int edad = Integer.parseInt(rs.getString("EDAD"));
+			
+			int Usuario = Integer.parseInt(rs.getString("ID_USUARIO"));
+			
+			Clientes.add(new Cliente(id, edad));
 		}
 		return Clientes;
 	}

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vos.Boleta;
+import vos.Funcion;
 import vos.Usuario;
 import vos.Boleta;
 
@@ -112,11 +113,17 @@ public class DAOTablaBoletas {
 			int cupos = Integer.parseInt(rs.getString("CUPOS"));
 			String localidad = rs.getString("LOCALIDAD");
 			
+			int idEspectaculo = Integer.parseInt(rs.getString("ESPECTACULO"));
+			
+			DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
+			Funcion funcion = daoTablaFunciones.darFuncionesPorId(idEspectaculo);
+			
 			int numDocumentoUsuario = Integer.parseInt(rs.getString("CLIENTEDOC"));
 			
-			Usuario usuario = DAOTablaUsarios.DarUsuarioPorId(numDocumentoUsuario);
+			DAOTablaUsuarios daoTablaUsuarios = new DAOTablaUsuarios();
+			Usuario usuario = daoTablaUsuarios.darUsuariosPorId(numDocumentoUsuario);
 			
-			Boletas.add(new Boleta(id, silla, precio, cupos, localidad, usuario));
+			Boletas.add(new Boleta(id, silla, precio, cupos, localidad, usuario, funcion));
 		}
 
 		return Boletas;

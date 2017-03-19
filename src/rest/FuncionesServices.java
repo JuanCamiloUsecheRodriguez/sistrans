@@ -38,13 +38,13 @@ public class FuncionesServices {
 	@Path("/funciones/{idFuncion}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateRealizacionDeFuncion(@PathParam("anterior")int idFuncion) {
+	public Response updateRealizacionDeFuncion(@PathParam("idFuncion")int idFuncion) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		try {
 			tm.registrarRealizacionFuncion(idFuncion);;
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(idFuncion).build();
+		return Response.status(200).entity("{\"Realizada\": \"Y\"}").build();
 	}
 }

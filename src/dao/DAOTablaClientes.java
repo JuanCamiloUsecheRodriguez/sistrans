@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vos.Cliente;
+import vos.Usuario;
+import vos.Video;
 
 public class DAOTablaClientes {
 	
@@ -73,8 +75,11 @@ public class DAOTablaClientes {
 			int id = Integer.parseInt(rs.getString("ID_CLIENTE"));
 			int edad = Integer.parseInt(rs.getString("EDAD"));
 			
-			int Usuario = Integer.parseInt(rs.getString("ID_USUARIO"));
+			int idUsuario = Integer.parseInt(rs.getString("ID_USUARIO"));
+			DAOTablaUsuarios daoTablaUsuarios = new DAOTablaUsuarios();
+			Usuario usuario = daoTablaUsuarios.darUsuariosPorId(idUsuario);
 			
+			Clientes.add(new Cliente(id, preferencias , usuario.getNumDocumento(), usuario.getNombre(), usuario.getEmail(), usuario.getRol(), usuario.getUsuario(), usuario.getPassword()));
 		}
 		return Clientes;
 	}

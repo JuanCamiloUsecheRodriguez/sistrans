@@ -18,7 +18,7 @@ public class Cliente extends Usuario{
 	@JsonProperty(value="preferencias")
 	private List<Categoria> preferencias;
 
-	public Cliente(@JsonProperty(value="edad")int edad,@JsonProperty(value="preferencias") List<Categoria> preferencias, @JsonProperty(value="numDocumento")int numDocumento, @JsonProperty(value="tipoDoc")String tipoDoc, 	@JsonProperty(value="nombre")String nombre,@JsonProperty(value="email") String email,	@JsonProperty(value="rol") String rol, 	@JsonProperty(value="usuario")String usuario,
+	public Cliente(@JsonProperty(value="edad")int edad,@JsonProperty(value="preferencias") List<Categoria> preferencias, @JsonProperty(value="numDocumento")int numDocumento,	@JsonProperty(value="nombre")String nombre,@JsonProperty(value="email") String email,	@JsonProperty(value="rol") String rol, 	@JsonProperty(value="usuario")String usuario,
 			@JsonProperty(value="password")String password) {
 		super(numDocumento, nombre, email, rol, usuario, password);
 		this.edad = edad;

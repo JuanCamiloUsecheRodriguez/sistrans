@@ -18,6 +18,9 @@ public class Espectaculo {
 	@JsonProperty(value="duracion")
 	private int duracion;
 	
+	@JsonProperty(value="idioma")
+	private String idioma;
+	
 	@JsonProperty(value="fechaInicio")
 	private Date fechaInicio;
 	
@@ -41,6 +44,7 @@ public class Espectaculo {
 			@JsonProperty(value="nombre")String nombre, 
 			@JsonProperty(value="formato")String formato, 
 			@JsonProperty(value="duracion")int duracion, 
+			@JsonProperty(value="idioma") String idioma,
 			@JsonProperty(value="fechaInicio")Date fechaInicio, 
 			@JsonProperty(value="fechaFin")Date fechaFin,
 			@JsonProperty(value="clasificacion")String clasificacion, 
@@ -52,6 +56,7 @@ public class Espectaculo {
 		this.nombre = nombre;
 		this.formato = formato;
 		this.duracion = duracion;
+		this.idioma = idioma;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
 		this.clasificacion = clasificacion;
@@ -138,6 +143,14 @@ public class Espectaculo {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getIdioma() {
+		return idioma;
+	}
+
+	public void setIdioma(String idioma) {
+		this.idioma = idioma;
 	}
 	
 	

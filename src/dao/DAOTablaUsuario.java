@@ -1,16 +1,14 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import vos.Sitio;
-import vos.Video;
+import vos.Usuario;
 
-public class DAOTablaSitios {
+public class DAOTablaUsuario {
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
@@ -26,7 +24,7 @@ public class DAOTablaSitios {
 	 * Método constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
-	public DAOTablaSitios() {
+	public DAOTablaFunciones() {
 		recursos = new ArrayList<Object>();
 	}
 
@@ -52,29 +50,23 @@ public class DAOTablaSitios {
 	public void setConn(Connection con){
 		this.conn = con;
 	}
+	
+	public ArrayList<Usuario> darUsuarios() throws SQLException, Exception {
+		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 
-	public ArrayList<Sitio> darSitios() throws SQLException, Exception {
-		ArrayList<Sitio> sitios = new ArrayList<Sitio>();
-
-		String sql = "SELECT * FROM SITIO";
+		String sql = "SELECT * FROM ISIS2304MO11620.ALQUILERES";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			
+			String name = rs.getString("USER_NAME");
 			int id = Integer.parseInt(rs.getString("ID"));
-			String nombre = rs.getString("NOMBRE");
-			String tipo = rs.getString("TIPO");
-			int cupos = Integer.parseInt(rs.getString("CUPOS"));
-			boolean accesibilidad = rs.getString("ACCESIBILIDAD") =="Y"?true:false;
-			Date horaInicio = rs.getDate(6);
-			Date horaFin = rs.getDate(7);
-			String tipoSillas = rs.getString("TIPOSILLETERIA");
-			sitios.add(new Sitio(id, nombre, tipo, cupos, accesibilidad, horaInicio, horaFin, tipoSillas));
+			int duration = Integer.parseInt(rs.getString("VIDEO_ID"));
+			usuarios.add(new Usuario());
 		}
-		return sitios;
-	}
+		return usuarios;
+	}*/
 	
 }

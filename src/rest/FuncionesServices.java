@@ -35,16 +35,16 @@ public class FuncionesServices {
 	}
 	
 	@PUT
-	@Path("/funciones/{anterior}")
+	@Path("/funciones/{idFuncion}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateRealizacionDeFuncion(Preferencia pref,@PathParam("anterior")int anterior ) {
+	public Response updateRealizacionDeFuncion(@PathParam("anterior")int idFuncion) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		try {
-			tm.actualizarPreferencia(anterior, pref);
+			tm.registrarRealizacionFuncion(idFuncion);;
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(pref).build();
+		return Response.status(200).entity(idFuncion).build();
 	}
 }

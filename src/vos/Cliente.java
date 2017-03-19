@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class Cliente {
+public class Cliente extends Usuario{
 
 	/**
 	 * Edad
@@ -18,8 +18,9 @@ public class Cliente {
 	@JsonProperty(value="preferencias")
 	private List<Categoria> preferencias;
 
-	public Cliente(@JsonProperty(value="edad")int edad,@JsonProperty(value="preferencias") List<Categoria> preferencias) {
-		super();
+	public Cliente(@JsonProperty(value="edad")int edad,@JsonProperty(value="preferencias") List<Categoria> preferencias, @JsonProperty(value="numDocumento")int numDocumento, @JsonProperty(value="tipoDoc")String tipoDoc, 	@JsonProperty(value="nombre")String nombre,@JsonProperty(value="email") String email,	@JsonProperty(value="rol") String rol, 	@JsonProperty(value="usuario")String usuario,
+			@JsonProperty(value="password")String password) {
+		super(numDocumento, tipoDoc, nombre, email, rol, usuario, password);
 		this.edad = edad;
 		this.preferencias = preferencias;
 	}

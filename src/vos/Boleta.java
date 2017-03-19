@@ -41,6 +41,12 @@ public class Boleta {
 	private Usuario usario;
 	
 	/**
+	 * Función
+	 */
+	@JsonProperty(value="funcion")
+	private Funcion funcion;
+	
+	/**
 	 * Cosntructor
 	 * @param id
 	 * @param silla
@@ -48,7 +54,7 @@ public class Boleta {
 	 * @param cupos
 	 * @param localidad
 	 */
-	public Boleta(@JsonProperty(value="id")int id,	@JsonProperty(value="silla")String silla, @JsonProperty(value="precio")Integer precio,@JsonProperty(value="cupos") Integer cupos, @JsonProperty(value="localidad")String localidad,  @JsonProperty(value="usuario") Usuario usuario) {
+	public Boleta(@JsonProperty(value="id")int id,	@JsonProperty(value="silla")String silla, @JsonProperty(value="precio")Integer precio,@JsonProperty(value="cupos") Integer cupos, @JsonProperty(value="localidad")String localidad,  @JsonProperty(value="usuario") Usuario usuario, @JsonProperty(value="funcion") Funcion funcion) {
 		super();
 		this.id = id;
 		this.silla = silla;
@@ -56,6 +62,7 @@ public class Boleta {
 		this.cupos = cupos;
 		this.localidad = localidad;
 		this.usario = usuario;
+		this.funcion = funcion;
 	}
 
 	public int getId() {
@@ -96,6 +103,22 @@ public class Boleta {
 
 	public void setLocalidad(String localidad) {
 		this.localidad = localidad;
+	}
+
+	public Usuario getUsario() {
+		return usario;
+	}
+
+	public void setUsario(Usuario usario) {
+		this.usario = usario;
+	}
+
+	public Funcion getFuncion() {
+		return funcion;
+	}
+
+	public void setFuncion(Funcion funcion) {
+		this.funcion = funcion;
 	}
 
 	

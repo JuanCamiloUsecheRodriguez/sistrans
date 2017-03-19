@@ -76,5 +76,10 @@ public class DAOTablaSitios {
 		}
 		return sitios;
 	}
+
+	public Sitio darSitiosPorId(int parseInt) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

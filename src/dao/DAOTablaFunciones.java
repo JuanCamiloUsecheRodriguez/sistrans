@@ -1,12 +1,15 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.Espectaculo;
 import vos.Funcion;
+import vos.Sitio;
 import vos.Video;
 
 public class DAOTablaFunciones {
@@ -21,6 +24,10 @@ public class DAOTablaFunciones {
 	 */
 	private Connection conn;
 
+	private DAOTablaEspectaculos daoEspectaculos;
+	
+	private DAOTablaSitios daoSitios;
+	
 	/**
 	 * Método constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
@@ -52,23 +59,44 @@ public class DAOTablaFunciones {
 		this.conn = con;
 	}
 	
-	/*
+	
 	public ArrayList<Funcion> darFunciones() throws SQLException, Exception {
-		ArrayList<Funcion> videos = new ArrayList<Funcion>();
+		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
-		String sql = "SELECT * FROM ISIS2304MO11620.ALQUILERES";
+		String sql = "SELECT * FROM FUNCION";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			String name = rs.getString("USER_NAME");
-			int id = Integer.parseInt(rs.getString("ID"));
-			int duration = Integer.parseInt(rs.getString("VIDEO_ID"));
-			videos.add(new Video(id, name, duration));
+			int id = Integer.parseInt(rs.getString(1));
+			Date fecha = rs.getDate(2);
+			Sitio sitio = daoSitios.darSitiosPorId(Integer.parseInt(rs.getString(3)));
+			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
+			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
+			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));
 		}
-		return videos;
-	}*/
+		return funciones;
+	}
+	
+	public Funcion darFuncionPorId(int pId) throws SQLException, Exception {
+		Funcion funcion = null;
+		
+		String sql = "SELECT * FROM FUNCION WHERE ID='"+pId+"'";
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+			int id = Integer.parseInt(rs.getString(1));
+			Date fecha = rs.getDate(2);
+			Sitio sitio = daoSitios.darSitiosPorId(Integer.parseInt(rs.getString(3)));
+			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
+			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
+			funcion = new Funcion(id, fecha, sitio, espectaculo, realizada);
+		}
+		return funcion;
+	}
 	
 }

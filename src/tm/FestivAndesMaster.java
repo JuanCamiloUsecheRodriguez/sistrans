@@ -10,13 +10,16 @@ import java.util.Properties;
 
 import dao.DAOTablaBoletas;
 import dao.DAOTablaClientes;
+import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import vos.Boleta;
 import vos.ListaBoletas;
+import vos.ListaSitios;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
 import vos.Preferencia;
+import vos.Sitio;
 import vos.Usuario;
 import vos.Video;
 
@@ -333,6 +336,70 @@ public class FestivAndesMaster {
 			}
 		}
 		return new ListaBoletas(boletas);
+	}
+	
+	public ListaSitios darSitios() throws Exception {
+		ArrayList<Sitio> sitios;
+		DAOTablaSitios daoSitios = new DAOTablaSitios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoSitios.setConn(conn);
+			sitios = daoSitios.darSitios();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoSitios.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaSitios(sitios);
+	}
+	
+	public Sitio darSitiosPorId(int idSitio) throws Exception {
+		Sitio sitio = null;
+		DAOTablaSitios daoSitios = new DAOTablaSitios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoSitios.setConn(conn);
+			sitio = daoSitios.darSitioPorId(idSitio);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoSitios.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return sitio;
 	}
 	
 	

@@ -77,7 +77,7 @@ public class DAOTablaSitios {
 		return sitios;
 	}
 
-	public Sitio darSitiosPorId(int pId) throws SQLException, Exception{
+	public Sitio darSitioPorId(int pId) throws SQLException, Exception{
 		Sitio sitio = null;
 
 		String sql = "SELECT * FROM SITIO WHERE ID = '"+pId+"'";

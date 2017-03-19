@@ -11,12 +11,6 @@ public class Usuario {
 	private int numDocumento;
 	
 	/**
-	 * Tipo de documento
-	 */
-	@JsonProperty(value="tipoDoc")
-	private String tipoDoc;
-	
-	/**
 	 * nombre
 	 */
 	@JsonProperty(value="nombre")
@@ -46,11 +40,10 @@ public class Usuario {
 	@JsonProperty(value="password")
 	private String password;
 
-	public Usuario(	@JsonProperty(value="numDocumento")int numDocumento, @JsonProperty(value="tipoDoc")String tipoDoc, 	@JsonProperty(value="nombre")String nombre,@JsonProperty(value="email") String email,	@JsonProperty(value="rol") String rol, 	@JsonProperty(value="usuario")String usuario,
+	public Usuario(	@JsonProperty(value="numDocumento")int numDocumento,@JsonProperty(value="nombre")String nombre,@JsonProperty(value="email") String email,	@JsonProperty(value="rol") String rol, 	@JsonProperty(value="usuario")String usuario,
 			@JsonProperty(value="password")String password) {
 		super();
 		this.numDocumento = numDocumento;
-		this.tipoDoc = tipoDoc;
 		this.nombre = nombre;
 		this.email = email;
 		this.rol = rol;
@@ -64,14 +57,6 @@ public class Usuario {
 
 	public void setNumDocumento(int numDocumento) {
 		this.numDocumento = numDocumento;
-	}
-
-	public String getTipoDoc() {
-		return tipoDoc;
-	}
-
-	public void setTipoDoc(String tipoDoc) {
-		this.tipoDoc = tipoDoc;
 	}
 
 	public String getNombre() {

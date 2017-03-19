@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import vos.Usuario;
 
-public class DAOTablaUsuario {
+public class DAOTablaUsuarios {
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
@@ -24,7 +24,7 @@ public class DAOTablaUsuario {
 	 * Método constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
-	public DAOTablaFunciones() {
+	public DAOTablaUsuarios() {
 		recursos = new ArrayList<Object>();
 	}
 
@@ -54,19 +54,43 @@ public class DAOTablaUsuario {
 	public ArrayList<Usuario> darUsuarios() throws SQLException, Exception {
 		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 
-		String sql = "SELECT * FROM ISIS2304MO11620.ALQUILERES";
+		String sql = "SELECT * FROM USUARIO";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			String name = rs.getString("USER_NAME");
-			int id = Integer.parseInt(rs.getString("ID"));
-			int duration = Integer.parseInt(rs.getString("VIDEO_ID"));
-			usuarios.add(new Usuario());
+			int numDocumento = Integer.parseInt(rs.getString("NUMDOCUMENTO"));
+			String nombre = rs.getString("NOMBRE");
+			String email = rs.getString("EMAIL");
+			String rol = rs.getString("ROL");
+			String login = rs.getString("USUARIO");
+			String password = rs.getString("PASSWORD");
+			usuarios.add(new Usuario(numDocumento, nombre, email, rol, login, password));
 		}
 		return usuarios;
-	}*/
+	}
+	
+	public Usuario darUsuariosPorId(int pId) throws SQLException, Exception {
+		Usuario usuario = null;
+
+		String sql = "SELECT * FROM USUARIO WHERE NUMDOCUMENTO ='"+pId+"'";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+			int numDocumento = Integer.parseInt(rs.getString("NUMDOCUMENTO"));
+			String nombre = rs.getString("NOMBRE");
+			String email = rs.getString("EMAIL");
+			String rol = rs.getString("ROL");
+			String login = rs.getString("USUARIO");
+			String password = rs.getString("PASSWORD");
+			usuario = new Usuario(numDocumento, nombre, email, rol, login, password);
+		}
+		return usuario;
+	}
 	
 }

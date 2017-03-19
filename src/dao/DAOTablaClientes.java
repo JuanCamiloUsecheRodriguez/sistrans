@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vos.Cliente;
+import vos.Preferencia;
 import vos.Usuario;
 import vos.Video;
 
@@ -60,11 +61,11 @@ public class DAOTablaClientes {
 	 * @param pIdPreferencia
 	 * @throws SQLException 
 	 */
-	public void registrarPreferenciaCliente(int pIdCliente, int pIdCategoria) throws SQLException
+	public void registrarPreferenciaCliente(Preferencia pref) throws SQLException
 	{
 		String sql = "INSERT INTO PREFIEREN VALUES (";
-		sql += pIdCliente + ",'";
-		sql += pIdCategoria + ")";
+		sql += pref.getCliente() + ",'";
+		sql += pref.getCategoria() + ")";
 
 		System.out.println("SQL stmt:" + sql);
 
@@ -73,11 +74,11 @@ public class DAOTablaClientes {
 		prepStmt.executeQuery();
 	}
 	
-	public void actualizarPreferenciaCliente(int pIdCliente, int pIdCategoriaAnterior,int pIdCategoriaNueva) throws SQLException
+	public void actualizarPreferenciaCliente(int pIdCategoriaAnterior,Preferencia pref) throws SQLException
 	{
 		String sql = "UPDATE PREFIEREN SET CATEGORIA=";
-		sql += pIdCategoriaNueva + "WHERE ID_CLIENTE="
-				+ pIdCliente +"AND CATEGORIA = "+pIdCategoriaAnterior;
+		sql += pref.getCategoria() + "WHERE ID_CLIENTE="
+				+ pref.getCliente() +"AND CATEGORIA = "+pIdCategoriaAnterior;
 		System.out.println("SQL stmt:" + sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -85,11 +86,11 @@ public class DAOTablaClientes {
 		prepStmt.executeQuery();
 	}
 	
-	public void eliminarPreferenciaCliente(int pIdCliente, int pIdCategoria) throws SQLException
+	public void eliminarPreferenciaCliente(Preferencia pref) throws SQLException
 	{
 		String sql = "DELETE FROM PREFIEREN WHERE ID_CLIENTE=";
-		sql += pIdCliente + "AND CATEGORIA="
-				+ pIdCategoria;
+		sql += pref.getCliente() + "AND CATEGORIA="
+				+ pref.getCategoria();
 		System.out.println("SQL stmt:" + sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);

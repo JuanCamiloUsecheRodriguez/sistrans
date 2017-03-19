@@ -8,10 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import dao.DAOTablaClientes;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
+import vos.Preferencia;
 import vos.Usuario;
 import vos.Video;
 
@@ -137,4 +139,100 @@ public class FestivAndesMaster {
 		}
 		return new ListaUsuarios(usuarios);
 	}
+	
+	public void addPreferencia(Preferencia pref) throws Exception {
+		DAOTablaClientes daoClientes = new DAOTablaClientes();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoClientes.setConn(conn);
+			daoClientes.registrarPreferenciaCliente(pref);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoClientes.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+
+	}
+	
+	
+	public void actualizarPreferencia( int idCategoriaAnterior, Preferencia pref) throws Exception {
+		DAOTablaClientes daoClientes = new DAOTablaClientes();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoClientes.setConn(conn);
+			daoClientes.actualizarPreferenciaCliente(idCategoriaAnterior, pref);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoClientes.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public void deletePreferencia(Preferencia pref) throws Exception {
+		DAOTablaClientes daoClientes = new DAOTablaClientes();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoClientes.setConn(conn);
+			daoClientes.eliminarPreferenciaCliente(pref);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoClientes.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
 }

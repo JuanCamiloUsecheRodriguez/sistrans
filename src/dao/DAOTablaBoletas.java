@@ -80,7 +80,7 @@ public class DAOTablaBoletas {
 			
 			int idFuncion = Integer.parseInt(rs.getString("FUNCION"));
 			DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
-			Funcion funcion = daoTablaFunciones.darFuncionesPorId(idFuncion);
+			Funcion funcion = daoTablaFunciones.darFuncionPorId(idFuncion);
 			
 			int numDocumentoUsuario = Integer.parseInt(rs.getString("USUARIODOC"));
 			DAOTablaUsuarios daoTablaUsuarios = new DAOTablaUsuarios();
@@ -120,7 +120,7 @@ public class DAOTablaBoletas {
 			int idEspectaculo = Integer.parseInt(rs.getString("ESPECTACULO"));
 			
 			DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
-			Funcion funcion = daoTablaFunciones.darFuncionesPorId(idEspectaculo);
+			Funcion funcion = daoTablaFunciones.darFuncionPorId(idEspectaculo);
 			
 			int numDocumentoUsuario = Integer.parseInt(rs.getString("CLIENTEDOC"));
 			

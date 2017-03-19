@@ -68,6 +68,7 @@ public class DAOTablaUsuarios {
 			String login = rs.getString("USUARIO");
 			String password = rs.getString("PASSWORD");
 			usuarios.add(new Usuario(numDocumento, nombre, email, rol, login, password));
+			System.out.println(usuarios.get(0).getNombre());
 		}
 		return usuarios;
 	}

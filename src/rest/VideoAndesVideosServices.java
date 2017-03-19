@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import dao.DAOTablaUsuarios;
 import tm.VideoAndesMaster;
 import vos.Video;
 import vos.ListaVideos;
@@ -77,7 +78,10 @@ public class VideoAndesVideosServices {
 	public Response getVideos() {
 		VideoAndesMaster tm = new VideoAndesMaster(getPath());
 		ListaVideos videos;
+		DAOTablaUsuarios dao = new DAOTablaUsuarios();
+		
 		try {
+			dao.darUsuarios();
 			videos = tm.darVideos();
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();

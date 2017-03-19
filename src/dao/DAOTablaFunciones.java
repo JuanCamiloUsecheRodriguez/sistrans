@@ -98,7 +98,7 @@ public class DAOTablaFunciones {
 		}
 		return funcion;
 	}
-	
+
 	public void registrarRelizacionFuncion(int idFuncion) throws SQLException
 	{
 		String sql = "UPDATE FUNCION SET REALIZADA = 'T' ";
@@ -109,5 +109,26 @@ public class DAOTablaFunciones {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
+	}
+	
+	public ArrayList<Funcion> darFuncionesDeCompañiaDeTeatro(String nombreCompañia) throws SQLException
+	{
+		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+
+		String sql = "SELECT * FROM (SELECT * FROM FUNCION FULL OUTER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 FULL OUTER (SELECT * FROM PATROCINA FULL OUTER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID)T2 ON T1.ID = T2.IDESPECTACULO WHERE T2.NOMBRE = " + nombreCompañia;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			int id = Integer.parseInt(rs.getString(1));
+			Date fecha = rs.getDate(2);
+			Sitio sitio = daoSitios.darSitiosPorId(Integer.parseInt(rs.getString(3)));
+			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
+			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
+			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));
+		}
+		return funciones;
 	}
 }

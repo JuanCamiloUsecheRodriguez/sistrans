@@ -16,7 +16,7 @@ import vos.ListaUsuarios;
 import vos.ListaVideos;
 
 @Path("usuarios")
-public class FestivAndesUsuariosServices {
+public class UsuariosServices {
 	
 	@Context
 	private ServletContext context;

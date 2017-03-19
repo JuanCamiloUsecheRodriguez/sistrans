@@ -8,9 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import dao.DAOTablaBoletas;
 import dao.DAOTablaClientes;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
+import vos.Boleta;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
 import vos.Preferencia;
@@ -234,5 +236,40 @@ public class FestivAndesMaster {
 			}
 		}
 	}
+	
+	
+	public void addBoleta(Boleta boleta) throws Exception {
+		DAOTablaBoletas daoTablaBoletas = new DAOTablaBoletas();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoTablaBoletas.setConn(conn);
+			daoTablaBoletas.addBoleta(boleta);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaBoletas.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+
+	}
+	
+	
 	
 }

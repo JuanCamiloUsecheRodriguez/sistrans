@@ -18,7 +18,7 @@ import vos.Preferencia;
 import vos.Video;
 
 @Path("clientes")
-public class FestivAndesClientesServices {
+public class ClientesServices {
 
 	/**
 	 * Atributo que usa la anotación @Context para tener el ServletContext de la conexión actual.

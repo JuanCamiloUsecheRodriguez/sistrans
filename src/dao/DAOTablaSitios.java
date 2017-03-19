@@ -77,9 +77,28 @@ public class DAOTablaSitios {
 		return sitios;
 	}
 
-	public Sitio darSitiosPorId(int parseInt) {
-		// TODO Auto-generated method stub
-		return null;
+	public Sitio darSitiosPorId(int pId) throws SQLException, Exception{
+		Sitio sitio = null;
+
+		String sql = "SELECT * FROM SITIO WHERE ID = '"+pId+"'";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+			
+			int id = Integer.parseInt(rs.getString("ID"));
+			String nombre = rs.getString("NOMBRE");
+			String tipo = rs.getString("TIPO");
+			int cupos = Integer.parseInt(rs.getString("CUPOS"));
+			boolean accesibilidad = rs.getString("ACCESIBILIDAD") =="Y"?true:false;
+			Date horaInicio = rs.getDate(6);
+			Date horaFin = rs.getDate(7);
+			String tipoSillas = rs.getString("TIPOSILLETERIA");
+			sitio =new Sitio(id, nombre, tipo, cupos, accesibilidad, horaInicio, horaFin, tipoSillas);
+		}
+		return sitio;
 	}
 	
 }

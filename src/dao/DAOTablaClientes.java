@@ -53,6 +53,7 @@ public class DAOTablaClientes {
 	public void setConn(Connection con){
 		this.conn = con;
 	}
+	
 	/**
 	 * Metodo que registra una nueva preferencia para un cliente
 	 * @param pIdCliente
@@ -65,6 +66,30 @@ public class DAOTablaClientes {
 		sql += pIdCliente + ",'";
 		sql += pIdCategoria + ")";
 
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public void actualizarPreferenciaCliente(int pIdCliente, int pIdCategoriaAnterior,int pIdCategoriaNueva) throws SQLException
+	{
+		String sql = "UPDATE PREFIEREN SET CATEGORIA=";
+		sql += pIdCategoriaNueva + "WHERE ID_CLIENTE="
+				+ pIdCliente +"AND CATEGORIA = "+pIdCategoriaAnterior;
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public void eliminarPreferenciaCliente(int pIdCliente, int pIdCategoria) throws SQLException
+	{
+		String sql = "DELETE FROM PREFIEREN WHERE ID_CLIENTE=";
+		sql += pIdCliente + "AND CATEGORIA="
+				+ pIdCategoria;
 		System.out.println("SQL stmt:" + sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);

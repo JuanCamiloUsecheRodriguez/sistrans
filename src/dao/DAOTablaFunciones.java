@@ -101,7 +101,7 @@ public class DAOTablaFunciones {
 
 	public void registrarRelizacionFuncion(int idFuncion) throws SQLException
 	{
-		String sql = "UPDATE FUNCION SET REALIZADA = 'T' ";
+		String sql = "UPDATE FUNCION SET REALIZADA = 'Y' ";
 		sql += "WHERE ID =" + idFuncion;
 
 		System.out.println("SQL stmt:" + sql);

@@ -99,4 +99,15 @@ public class DAOTablaFunciones {
 		return funcion;
 	}
 	
+	public void registrarRelizacionFuncion(int idFuncion) throws SQLException
+	{
+		String sql = "UPDATE FUNCION SET REALIZADA = 'T' ";
+		sql += "WHERE ID =" + idFuncion;
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 }

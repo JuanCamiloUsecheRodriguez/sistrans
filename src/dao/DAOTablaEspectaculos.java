@@ -120,7 +120,7 @@ public class DAOTablaEspectaculos {
 	
 			String bInteractivo = rs.getString("INTERACTIVO");
 			boolean interactivo = false;
-			if(bInteractivo.equals("T"))
+			if(bInteractivo.equals("Y"))
 			{
 				interactivo = true;
 			}
@@ -133,5 +133,4 @@ public class DAOTablaEspectaculos {
 
 		return espectaculo;
 	}
-
 }

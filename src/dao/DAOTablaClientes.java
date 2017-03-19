@@ -53,5 +53,23 @@ public class DAOTablaClientes {
 	public void setConn(Connection con){
 		this.conn = con;
 	}
+	/**
+	 * Metodo que registra una nueva preferencia para un cliente
+	 * @param pIdCliente
+	 * @param pIdPreferencia
+	 * @throws SQLException 
+	 */
+	public void registrarPreferenciaCliente(int pIdCliente, int pIdCategoria) throws SQLException
+	{
+		String sql = "INSERT INTO PREFIEREN VALUES (";
+		sql += pIdCliente + ",'";
+		sql += pIdCategoria + ")";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 
 }

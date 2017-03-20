@@ -2,7 +2,7 @@ package vos;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class Boleta {
+public class BoletaDetail {
 
 	/**
 	 * Id del video
@@ -38,13 +38,13 @@ public class Boleta {
 	 * Usuario
 	 */
 	@JsonProperty(value="usuario")
-	private int usuario;
+	private Usuario usuario;
 	
 	/**
 	 * Función
 	 */
 	@JsonProperty(value="funcion")
-	private int funcion;
+	private Funcion funcion;
 	
 	/**
 	 * Cosntructor
@@ -54,7 +54,7 @@ public class Boleta {
 	 * @param cupos
 	 * @param localidad
 	 */
-	public Boleta(@JsonProperty(value="id")int id,	@JsonProperty(value="silla")String silla, @JsonProperty(value="precio")Integer precio,@JsonProperty(value="cupos") Integer cupos, @JsonProperty(value="localidad")String localidad,  @JsonProperty(value="usuario") int usuario, @JsonProperty(value="funcion") int funcion) {
+	public BoletaDetail(@JsonProperty(value="id")int id,	@JsonProperty(value="silla")String silla, @JsonProperty(value="precio")Integer precio,@JsonProperty(value="cupos") Integer cupos, @JsonProperty(value="localidad")String localidad,  @JsonProperty(value="usuario") Usuario usuario, @JsonProperty(value="funcion") Funcion funcion) {
 		super();
 		this.id = id;
 		this.silla = silla;
@@ -105,19 +105,19 @@ public class Boleta {
 		this.localidad = localidad;
 	}
 
-	public int getUsario() {
+	public Usuario getUsario() {
 		return usuario;
 	}
 
-	public void setUsario(int usario) {
+	public void setUsario(Usuario usario) {
 		this.usuario = usario;
 	}
 
-	public int getFuncion() {
+	public Funcion getFuncion() {
 		return funcion;
 	}
 
-	public void setFuncion(int funcion) {
+	public void setFuncion(Funcion funcion) {
 		this.funcion = funcion;
 	}
 

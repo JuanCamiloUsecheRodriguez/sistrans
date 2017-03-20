@@ -22,10 +22,10 @@ public class Sitio {
 	private boolean accesibilidad;
 	
 	@JsonProperty(value="horaInicio")
-	private Date horaInicio;
+	private String horaInicio;
 	
 	@JsonProperty(value="horaFin")
-	private Date horaFin;
+	private String horaFin;
 	
 	@JsonProperty(value="tipoSilleteria")
 	private String tipoSilleteria;
@@ -36,8 +36,8 @@ public class Sitio {
 			@JsonProperty(value="tipo") String tipo,
 			@JsonProperty(value="cupos") int cupos,
 			@JsonProperty(value="accesibilidad") boolean accesibilidad,
-			@JsonProperty(value="horaInicio")Date horaInicio,
-			@JsonProperty(value="horaFin")Date horaFin,
+			@JsonProperty(value="horaInicio")String horaInicio,
+			@JsonProperty(value="horaFin")String horaFin,
 			@JsonProperty(value="tipoSilleteria")String tipoSilleteria) {
 		super();
 		this.id = id;
@@ -90,19 +90,19 @@ public class Sitio {
 		this.accesibilidad = accesibilidad;
 	}
 
-	public Date getHoraInicio() {
+	public String getHoraInicio() {
 		return horaInicio;
 	}
 
-	public void setHoraInicio(Date horaInicio) {
+	public void setHoraInicio(String horaInicio) {
 		this.horaInicio = horaInicio;
 	}
 
-	public Date getHoraFin() {
+	public String getHoraFin() {
 		return horaFin;
 	}
 
-	public void setHoraFin(Date horaFin) {
+	public void setHoraFin(String horaFin) {
 		this.horaFin = horaFin;
 	}
 

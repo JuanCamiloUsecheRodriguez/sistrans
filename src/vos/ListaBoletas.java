@@ -7,17 +7,17 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class ListaBoletas {
 
 	@JsonProperty(value="boletas")
-	private List<Boleta> boletas;
+	private List<BoletaDetail> boletas;
 	
-	public ListaBoletas(@JsonProperty(value="boletas")List<Boleta> boletas){
+	public ListaBoletas(@JsonProperty(value="boletas")List<BoletaDetail> boletas){
 		this.boletas = boletas;
 	}
 
-	public List<Boleta> getBoleta() {
+	public List<BoletaDetail> getBoletas() {
 		return boletas;
 	}
 
-	public void setBoletas(List<Boleta> boletas) {
+	public void setBoletas(List<BoletaDetail> boletas) {
 		this.boletas = boletas;
 	}
 	

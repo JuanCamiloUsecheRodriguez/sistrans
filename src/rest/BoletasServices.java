@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
 import vos.Boleta;
+import vos.BoletaDetail;
 import vos.ListaBoletas;
 import vos.ListaVideos;
 import vos.Preferencia;
@@ -41,7 +42,7 @@ public class BoletasServices {
 	}
 	
 	@POST
-	@Path("/boletas")
+	//@Path("/boletas")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addBoleta(Boleta boleta) {
@@ -55,7 +56,7 @@ public class BoletasServices {
 	}
 	
 	@GET
-	@Path("/boletas/{idBoleta}")
+	@Path("/{idBoleta}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getBoletasPorId(@PathParam("idBoleta") int idBoleta) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
@@ -69,7 +70,6 @@ public class BoletasServices {
 	}
 	
 	@GET
-	@Path("/boletas")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getBoletas() {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());

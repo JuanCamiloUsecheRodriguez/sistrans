@@ -7,9 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vos.Boleta;
+import vos.BoletaDetail;
 import vos.Funcion;
 import vos.Usuario;
-import vos.Boleta;
+import vos.BoletaDetail;
 
 public class DAOTablaBoletas {
 	
@@ -62,8 +63,8 @@ public class DAOTablaBoletas {
 	 * @throws SQLException - Cualquier error que la base de datos arroje.
 	 * @throws Exception - Cualquier error que no corresponda a la base de datos
 	 */
-	public ArrayList<Boleta> darBoletas() throws SQLException, Exception {
-		ArrayList<Boleta> Boletas = new ArrayList<Boleta>();
+	public ArrayList<BoletaDetail> darBoletas() throws SQLException, Exception {
+		ArrayList<BoletaDetail> Boletas = new ArrayList<BoletaDetail>();
 
 		String sql = "SELECT * FROM BOLETA";
 
@@ -77,16 +78,17 @@ public class DAOTablaBoletas {
 			int precio = Integer.parseInt(rs.getString("PRECIO"));
 			int cupos = Integer.parseInt(rs.getString("CUPOS"));
 			String localidad = rs.getString("LOCALIDAD");
-			
 			int idFuncion = Integer.parseInt(rs.getString("FUNCION"));
 			DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
+			daoTablaFunciones.setConn(conn);
 			Funcion funcion = daoTablaFunciones.darFuncionPorId(idFuncion);
-			
+			daoTablaFunciones.cerrarRecursos();
 			int numDocumentoUsuario = Integer.parseInt(rs.getString("USUARIODOC"));
 			DAOTablaUsuarios daoTablaUsuarios = new DAOTablaUsuarios();
+			daoTablaUsuarios.setConn(conn);
 			Usuario usuario = daoTablaUsuarios.darUsuariosPorId(numDocumentoUsuario);
-			
-			Boletas.add(new Boleta(id, silla, precio, cupos, localidad, usuario, funcion));
+			daoTablaFunciones.cerrarRecursos();
+			Boletas.add(new BoletaDetail(id, silla, precio, cupos, localidad, usuario, funcion));
 		}
 		return Boletas;
 	}
@@ -99,8 +101,8 @@ public class DAOTablaBoletas {
 	 * @throws SQLException - Cualquier error que la base de datos arroje.
 	 * @throws Exception - Cualquier error que no corresponda a la base de datos
 	 */
-	public ArrayList<Boleta> darBoletasPorId(Integer pId) throws SQLException, Exception {
-		ArrayList<Boleta> Boletas = new ArrayList<Boleta>();
+	public ArrayList<BoletaDetail> darBoletasPorId(Integer pId) throws SQLException, Exception {
+		ArrayList<BoletaDetail> Boletas = new ArrayList<BoletaDetail>();
 
 		String sql = "SELECT * FROM BOLETA WHERE ID ='" + pId + "'";
 
@@ -116,18 +118,17 @@ public class DAOTablaBoletas {
 			int precio = Integer.parseInt(rs.getString("PRECIO"));
 			int cupos = Integer.parseInt(rs.getString("CUPOS"));
 			String localidad = rs.getString("LOCALIDAD");
-			
-			int idEspectaculo = Integer.parseInt(rs.getString("ESPECTACULO"));
-			
+			int idFuncion = Integer.parseInt(rs.getString("FUNCION"));
 			DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
-			Funcion funcion = daoTablaFunciones.darFuncionPorId(idEspectaculo);
-			
-			int numDocumentoUsuario = Integer.parseInt(rs.getString("CLIENTEDOC"));
-			
+			daoTablaFunciones.setConn(conn);
+			Funcion funcion = daoTablaFunciones.darFuncionPorId(idFuncion);
+			daoTablaFunciones.cerrarRecursos();
+			int numDocumentoUsuario = Integer.parseInt(rs.getString("USUARIODOC"));
 			DAOTablaUsuarios daoTablaUsuarios = new DAOTablaUsuarios();
+			daoTablaUsuarios.setConn(conn);
 			Usuario usuario = daoTablaUsuarios.darUsuariosPorId(numDocumentoUsuario);
-			
-			Boletas.add(new Boleta(id, silla, precio, cupos, localidad, usuario, funcion));
+			daoTablaFunciones.cerrarRecursos();
+			Boletas.add(new BoletaDetail(id, silla, precio, cupos, localidad, usuario, funcion));
 		}
 
 		return Boletas;
@@ -146,11 +147,11 @@ public class DAOTablaBoletas {
 		String sql = "INSERT INTO BOLETA VALUES (";
 		sql += Boleta.getId() + ",'";
 		sql += Boleta.getSilla()+ "',";
-		sql += Boleta.getPrecio()+ "',";
-		sql += Boleta.getCupos()+ "',";
+		sql += Boleta.getPrecio()+ ",";
+		sql += Boleta.getCupos()+ ",'";
 		sql += Boleta.getLocalidad()+ "',";
-		sql += Boleta.getFuncion().getId()+ "',";
-		sql += Boleta.getUsario().getNumDocumento() + ")";
+		sql += Boleta.getFuncion()+ ",";
+		sql += Boleta.getUsario() + ")";
 
 		System.out.println("SQL stmt:" + sql);
 

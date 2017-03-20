@@ -23,10 +23,6 @@ public class DAOTablaFunciones {
 	 * Atributo que genera la conexión a la base de datos
 	 */
 	private Connection conn;
-
-	private DAOTablaEspectaculos daoEspectaculos;
-	
-	private DAOTablaSitios daoSitios;
 	
 	/**
 	 * Método constructor que crea DAOVideo
@@ -72,8 +68,15 @@ public class DAOTablaFunciones {
 		while (rs.next()) {
 			int id = Integer.parseInt(rs.getString(1));
 			Date fecha = rs.getDate(2);
+			DAOTablaSitios daoSitios = new DAOTablaSitios();
+			daoSitios.setConn(conn);
 			Sitio sitio = daoSitios.darSitioPorId(Integer.parseInt(rs.getString(3)));
+			daoSitios.cerrarRecursos();
+			DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
 			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
+			daoEspectaculos.cerrarRecursos();
+			daoEspectaculos.setConn(conn);
+			
 			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
 			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));
 		}
@@ -91,9 +94,17 @@ public class DAOTablaFunciones {
 		if (rs.next()) {
 			int id = Integer.parseInt(rs.getString(1));
 			Date fecha = rs.getDate(2);
+			DAOTablaSitios daoSitios = new DAOTablaSitios();
+			daoSitios.setConn(conn);
 			Sitio sitio = daoSitios.darSitioPorId(Integer.parseInt(rs.getString(3)));
+			daoSitios.cerrarRecursos();
+			DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+			daoEspectaculos.setConn(conn);
 			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
+			daoEspectaculos.cerrarRecursos();
+			
 			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
+			
 			funcion = new Funcion(id, fecha, sitio, espectaculo, realizada);
 		}
 		return funcion;
@@ -129,7 +140,11 @@ public class DAOTablaFunciones {
 		while (rs.next()) {
 			int id = Integer.parseInt(rs.getString(1));
 			Date fecha = rs.getDate(2);
+			DAOTablaSitios daoSitios = new DAOTablaSitios();
+			daoSitios.setConn(conn);
 			Sitio sitio = daoSitios.darSitioPorId(Integer.parseInt(rs.getString(3)));
+			DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+			daoEspectaculos.setConn(conn);
 			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
 			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
 			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));

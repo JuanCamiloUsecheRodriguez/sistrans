@@ -15,6 +15,7 @@ import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import vos.Boleta;
+import vos.BoletaDetail;
 import vos.ListaBoletas;
 import vos.ListaSitios;
 import vos.ListaUsuarios;
@@ -276,7 +277,7 @@ public class FestivAndesMaster {
 	
 	
 	public ListaBoletas darBoletasPorId(int idBoleta) throws Exception {
-		ArrayList<Boleta> boletas;
+		ArrayList<BoletaDetail> boletas;
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
 		try 
 		{
@@ -308,7 +309,7 @@ public class FestivAndesMaster {
 	}
 	
 	public ListaBoletas darBoletas() throws Exception {
-		ArrayList<Boleta> boletas;
+		ArrayList<BoletaDetail> boletas;
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
 		try 
 		{

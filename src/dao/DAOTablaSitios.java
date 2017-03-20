@@ -69,8 +69,8 @@ public class DAOTablaSitios {
 			String tipo = rs.getString("TIPO");
 			int cupos = Integer.parseInt(rs.getString("CUPOS"));
 			boolean accesibilidad = rs.getString("ACCESIBILIDAD") =="Y"?true:false;
-			Date horaInicio = rs.getDate(6);
-			Date horaFin = rs.getDate(7);
+			String horaInicio = rs.getString(6);
+			String horaFin = rs.getString(7);
 			String tipoSillas = rs.getString("TIPOSILLETERIA");
 			sitios.add(new Sitio(id, nombre, tipo, cupos, accesibilidad, horaInicio, horaFin, tipoSillas));
 		}
@@ -93,8 +93,8 @@ public class DAOTablaSitios {
 			String tipo = rs.getString("TIPO");
 			int cupos = Integer.parseInt(rs.getString("CUPOS"));
 			boolean accesibilidad = rs.getString("ACCESIBILIDAD") =="Y"?true:false;
-			Date horaInicio = rs.getDate(6);
-			Date horaFin = rs.getDate(7);
+			String horaInicio = rs.getString(6);
+			String horaFin = rs.getString(7);
 			String tipoSillas = rs.getString("TIPOSILLETERIA");
 			sitio =new Sitio(id, nombre, tipo, cupos, accesibilidad, horaInicio, horaFin, tipoSillas);
 		}

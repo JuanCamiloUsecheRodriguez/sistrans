@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.sql.Date;
 
 import vos.Espectaculo;
+import vos.ReporteEspectaculo;
+import vos.ReporteFuncion;
 
 public class DAOTablaEspectaculos {
 
@@ -132,5 +134,43 @@ public class DAOTablaEspectaculos {
 		}
 
 		return espectaculo;
+	}
+	
+	public ArrayList<ReporteEspectaculo> darReporteEspectaculo(int pIdEspectaculo, String ordenamiento) throws SQLException
+	{
+		 ArrayList<ReporteEspectaculo> reporte = new ArrayList<ReporteEspectaculo>();
+		 String sql = 	"SELECT IDESPECTACULO,FUNCION,COUNT(IDBOLETA),SUM(PRECIO),CUPOS,OCUPADOS,(OCUPADOS/CUPOS)*100,ID_CLIENTE,IDSITIO FROM "+
+				 		"(SELECT* FROM "+
+						"(SELECT * FROM "+
+						"(SELECT IDESPECTACULO,IDFUNCION,SITIO FROM "+
+						 "(SELECT ID AS IDESPECTACULO FROM ESPECTACULO)E1 "+
+						 "INNER JOIN "+
+						 "(SELECT ID AS IDFUNCION,SITIO,ESPECTACULO FROM FUNCION)E2 ON E1.IDESPECTACULO = E2.ESPECTACULO)T1 "+
+						 "INNER JOIN "+
+						 "(SELECT ID AS IDBOLETA,PRECIO,CUPOS AS OCUPADOS,FUNCION,USUARIODOC FROM BOLETA)T2 ON T1.IDFUNCION = T2.FUNCION)M1 "+
+						 "INNER JOIN "+
+						 "(SELECT ID AS IDSITIO,CUPOS FROM SITIO )M2 ON M1.SITIO = M2.IDSITIO)G1 "+
+						 "FULL OUTER JOIN "+
+						 "(SELECT ID_CLIENTE FROM CLIENTE)G2 ON G1.USUARIODOC = G2.ID_CLIENTE "+
+						 " WHERE IDESPECTACULO = "+pIdEspectaculo+ " GROUP BY IDESPECTACULO,FUNCION,ID_CLIENTE,IDSITIO,CUPOS,OCUPADOS ORDER BY " + ordenamiento;
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			int idEspectaculo = Integer.parseInt(rs.getString(1));
+			int idFuncion = Integer.parseInt(rs.getString(2));
+			int boletasVendidas = Integer.parseInt(rs.getString(3));
+			int producido = Integer.parseInt(rs.getString(4));
+			int cupos = Integer.parseInt(rs.getString(5));
+			int ocupados = Integer.parseInt(rs.getString(6));
+			String porcentaje = rs.getString(7);
+			String idCliente = rs.getString(8);
+			boolean esCliente = idCliente==null?true:false;
+			int sitio = Integer.parseInt(rs.getString(9));
+			
+			reporte.add(new ReporteEspectaculo(idEspectaculo, idFuncion, boletasVendidas, producido, cupos, ocupados, porcentaje, esCliente, sitio));
+		}
+		return reporte;
 	}
 }

@@ -253,7 +253,7 @@ public class DAOTablaFunciones {
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM(SELECT ID AS SITIOID,ACCESIBILIDAD FROM SITIO)E1 "+
 				  		"INNER JOIN "+
 				  		"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.SITIOID = E2.SITIO "+
-				  		"WHERE ACCESIBILIDAD = '"+ accesibilidad + "' ORDER BY IDFUNCION" + orden;
+				  		"WHERE ACCESIBILIDAD = '"+ accesibilidad + "' ORDER BY IDFUNCION " + orden;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

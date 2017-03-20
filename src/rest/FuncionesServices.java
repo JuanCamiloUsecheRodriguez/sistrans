@@ -112,4 +112,19 @@ public class FuncionesServices {
 		}
 		return Response.status(200).entity(funciones).build();
 	}
+	
+	@GET
+	@Path("/accesibilidad/{param}/{order}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getFuncionesAccesibilidad(@PathParam("param")String accesibilidad,	@PathParam("order")String order) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaFunciones funciones;
+		
+		try {
+			funciones = tm.darFuncionesAccesibilidad(accesibilidad,order);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(funciones).build();
+	}
 }

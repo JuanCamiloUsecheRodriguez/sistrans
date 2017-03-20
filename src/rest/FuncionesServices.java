@@ -69,7 +69,7 @@ public class FuncionesServices {
 	}
 	
 	@GET
-	@Path("/{compania}/{order}")
+	@Path("/compania/{compania}/{order}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getFuncionesCompania(@PathParam("compania")String compania,	@PathParam("order")String order) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
@@ -84,7 +84,7 @@ public class FuncionesServices {
 	}
 	
 	@GET
-	@Path("/{categoria}/{order}")
+	@Path("/categoria/{categoria}/{order}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getFuncionesCategoria(@PathParam("categoria")String categoria,	@PathParam("order")String order) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
@@ -92,6 +92,21 @@ public class FuncionesServices {
 		
 		try {
 			funciones = tm.darFuncionesCategoria(categoria,order);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(funciones).build();
+	}
+	
+	@GET
+	@Path("/idioma/{idioma}/{order}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getFuncionesIdioma(@PathParam("idioma")String idioma,	@PathParam("order")String order) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaFunciones funciones;
+		
+		try {
+			funciones = tm.darFuncionesIdioma(idioma,order);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

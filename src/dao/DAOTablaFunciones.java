@@ -216,10 +216,12 @@ public class DAOTablaFunciones {
 		return funciones;
 	}
 	
-	public ArrayList<Funcion> darFuncionesPorIdioma(String idioma, String orden) throws NumberFormatException, Exception
+	public ArrayList<Funcion> darFuncionesPorIdioma(String pIdioma, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
+		String idioma = pIdioma.toUpperCase();
+		
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM(SELECT ID AS ESPECTACULOID,IDIOMA FROM ESPECTACULO)E1 "+
 						"INNER JOIN "+
 						"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO "+

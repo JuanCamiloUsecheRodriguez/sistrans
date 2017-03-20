@@ -598,5 +598,37 @@ public class FestivAndesMaster {
 		}
 		return new ListaFunciones(funciones);
 	}
+
+	public ListaSitios darSitiosCompleto(int idSitio, String order) throws Exception {
+		ArrayList<Sitio> sitios;
+		DAOTablaSitios daoSitios = new DAOTablaSitios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoSitios.setConn(conn);
+			sitios = daoSitios.consultarSitio(idSitio,order);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoSitios.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaSitios(sitios);
+	}
 	
 }

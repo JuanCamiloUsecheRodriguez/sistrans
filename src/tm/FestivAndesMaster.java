@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import dao.DAOTablaBoletas;
 import dao.DAOTablaClientes;
+import dao.DAOTablaEspectaculos;
 import dao.DAOTablaFunciones;
 import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
@@ -670,13 +671,12 @@ public class FestivAndesMaster {
 
 	public ListaReporteEspectaculo darReporteEspectaculo(int idEspectaculo, String order) throws Exception {
 		ArrayList<ReporteEspectaculo> reportes;
-		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
-		try 
-		{
+		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		try{
 			//////Transacción
 			this.conn = darConexion();
-			daoFunciones.setConn(conn);
-			reportes = daoFunciones.darReporteEspectaculo(idEspectaculo,order);
+			daoEspectaculos.setConn(conn);
+			reportes = daoEspectaculos.darReporteEspectaculo(idEspectaculo,order);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -688,7 +688,7 @@ public class FestivAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoFunciones.cerrarRecursos();
+				daoEspectaculos.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {

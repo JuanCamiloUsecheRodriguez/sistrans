@@ -152,8 +152,10 @@ public class DAOTablaEspectaculos {
 						 "(SELECT ID AS IDSITIO,CUPOS FROM SITIO )M2 ON M1.SITIO = M2.IDSITIO)G1 "+
 						 "FULL OUTER JOIN "+
 						 "(SELECT ID_CLIENTE FROM CLIENTE)G2 ON G1.USUARIODOC = G2.ID_CLIENTE "+
-						 " WHERE IDESPECTACULO = "+pIdEspectaculo+ " GROUP BY IDESPECTACULO,FUNCION,ID_CLIENTE,IDSITIO,CUPOS,OCUPADOS ORDER BY " + ordenamiento;
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
+						 " WHERE IDESPECTACULO = "+pIdEspectaculo+ " GROUP BY IDESPECTACULO,FUNCION,ID_CLIENTE,IDSITIO,CUPOS,OCUPADOS ORDER BY IDESPECTACULO " + ordenamiento;
+		
+		 System.out.println(sql);
+		 PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 

@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import vos.ListaFunciones;
+import vos.ListaReporteFuncion;
 import vos.ListaUsuarios;
 import vos.Preferencia;
 import vos.ReporteFuncion;
@@ -132,9 +133,9 @@ public class FuncionesServices {
 	@GET
 	@Path("/reporte/{idFuncion}/{order}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getReporteFuncion(@PathParam("idFuncion")String idFuncion,@PathParam("order")String order) {
+	public Response getReporteFuncion(@PathParam("idFuncion")int idFuncion,@PathParam("order")String order) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		ReporteFuncion reporte;
+		ListaReporteFuncion reporte;
 		
 		try {
 			reporte = tm.darReporteFuncion(idFuncion,order);

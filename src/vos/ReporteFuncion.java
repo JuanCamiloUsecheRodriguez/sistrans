@@ -14,7 +14,7 @@ public class ReporteFuncion {
 	private int producido;
 	
 	@JsonProperty(value="localidad")
-	private int localidad;
+	private String localidad;
 	
 	@JsonProperty(value="esCliente")
 	private boolean esCliente;
@@ -23,7 +23,7 @@ public class ReporteFuncion {
 			@JsonProperty(value="id")int id, 
 			@JsonProperty(value="boletasVendidas")int boletasVendidas, 
 			@JsonProperty(value="producido")int producido, 
-			@JsonProperty(value="localidad")int localidad, 
+			@JsonProperty(value="localidad")String localidad, 
 			@JsonProperty(value="esCliente")boolean esCliente) {
 		super();
 		this.id = id;
@@ -57,11 +57,11 @@ public class ReporteFuncion {
 		this.producido = producido;
 	}
 
-	public int getLocalidad() {
+	public String getLocalidad() {
 		return localidad;
 	}
 
-	public void setLocalidad(int localidad) {
+	public void setLocalidad(String localidad) {
 		this.localidad = localidad;
 	}
 

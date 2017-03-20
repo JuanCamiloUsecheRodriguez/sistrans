@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import vos.Espectaculo;
 import vos.Funcion;
+import vos.ListaReporteFuncion;
 import vos.ReporteFuncion;
 import vos.Sitio;
 import vos.Video;
@@ -275,9 +276,9 @@ public class DAOTablaFunciones {
 		return funciones;
 	}
 	
-	public ReporteFuncion darReporteFuncion(int idFuncion, String ordenamiento)
+	public ArrayList<ReporteFuncion> darReporteFuncion(int idFuncion, String ordenamiento) throws Exception
 	{
-		ReporteFuncion funcion = null;
+		ArrayList<ReporteFuncion> reporte = new ArrayList<ReporteFuncion>();
 		
 		String sql =   "SELECT IDFUNCION,COUNT(IDBOLETA),SUM(PRECIO),LOCALIDAD,ID_CLIENTE FROM " +
 						"(SELECT * FROM(SELECT ID AS IDFUNCION FROM FUNCION)E1 "+
@@ -290,7 +291,7 @@ public class DAOTablaFunciones {
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
-		if (rs.next()) {
+		while (rs.next()) {
 			int id = Integer.parseInt(rs.getString(1));
 			int boletasVendidas = Integer.parseInt(rs.getString(2));
 			int producido = Integer.parseInt(rs.getString(3));
@@ -298,8 +299,8 @@ public class DAOTablaFunciones {
 			String idCliente = rs.getString(5);
 			boolean esCliente = idCliente==null?true:false;
 			
-			funcion = new ReporteFuncion(id, boletasVendidas, producido, localidad, esCliente);
+			reporte.add(new ReporteFuncion(id, boletasVendidas, producido, localidad, esCliente));
 		}
-		return funcion;
+		return reporte;
 	}
 }

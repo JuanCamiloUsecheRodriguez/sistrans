@@ -19,6 +19,7 @@ import vos.BoletaDetail;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaFunciones;
+import vos.ListaReporteFuncion;
 import vos.ListaSitios;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
@@ -633,15 +634,15 @@ public class FestivAndesMaster {
 		return sitio;
 	}
 
-	public ReporteFuncion darReporteFuncion(String idFuncion, String order) {
-		ReporteFuncion reporte;
+	public ListaReporteFuncion darReporteFuncion(int idFuncion, String order) throws Exception {
+		ArrayList<ReporteFuncion> reportes;
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
 			daoFunciones.setConn(conn);
-			reporte = daoFunciones.darReporteFuncion(idFuncion,order);
+			reportes = daoFunciones.darReporteFuncion(idFuncion,order);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -662,7 +663,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return reporte;
+		return new ListaReporteFuncion(reportes);
 	}
 	
 }

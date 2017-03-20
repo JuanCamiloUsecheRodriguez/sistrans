@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vos.Sitio;
+import vos.SuperSitio;
 import vos.Video;
 
 public class DAOTablaSitios {
@@ -101,7 +102,7 @@ public class DAOTablaSitios {
 		return sitio;
 	}
 	
-	public SuperSitio consultarUnSitio(int pIdSitio) throws SQLException, Exception{
+	public SuperSitio consultarSitio(int pIdSitio, String ordenamiento) throws SQLException, Exception{
 		SuperSitio sitio = null;
 
 		String sql = "SELECT ID,NOMBRESITIO,TIPO,CUPOS,ACCESIBILIDAD,HORAINICIO,HORAFIN,TIPOSILLETERIA,IDFUNCION,NOMBRE,LOCALIDAD,PRECIO FROM( "+
@@ -110,7 +111,7 @@ public class DAOTablaSitios {
 					"INNER JOIN "+
 					"(SELECT ID AS IDESPECTACULO,NOMBRE FROM ESPECTACULO)T2 ON T1.ESPECTACULO = T2.IDESPECTACULO)T3 "+
 					"INNER JOIN "+
-					"(SELECT ID AS IDBOLETA,FUNCION,PRECIO,LOCALIDAD FROM BOLETA)T4 ON T3.IDFUNCION = T4.FUNCION WHERE ID = " + pIdSitio;
+					"(SELECT ID AS IDBOLETA,FUNCION,PRECIO,LOCALIDAD FROM BOLETA)T4 ON T3.IDFUNCION = T4.FUNCION WHERE ID = " + pIdSitio + "ORDER BY ID "+ ordenamiento;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -119,14 +120,18 @@ public class DAOTablaSitios {
 		if (rs.next()) {
 			
 			int id = Integer.parseInt(rs.getString("ID"));
-			String nombre = rs.getString("NOMBRE");
+			String nombre = rs.getString("NOMBRESITIO");
 			String tipo = rs.getString("TIPO");
 			int cupos = Integer.parseInt(rs.getString("CUPOS"));
 			boolean accesibilidad = rs.getString("ACCESIBILIDAD") =="Y"?true:false;
 			String horaInicio = rs.getString(6);
 			String horaFin = rs.getString(7);
-			String tipoSillas = rs.getString("TIPOSILLETERIA");
-			sitio =new Sitio(id, nombre, tipo, cupos, accesibilidad, horaInicio, horaFin, tipoSillas);
+			String tipoSilleteria = rs.getString("TIPOSILLETERIA");
+			int idFuncion = Integer.parseInt(rs.getString("IDFUNCION"));
+			String nombreEspectaculo = rs.getString("NOMBRE");
+			String localidad = rs.getString("LOCALIDAD");
+			int precio = Integer.parseInt(rs.getString("PRECIO"));
+			sitio =new SuperSitio(id,nombre,tipo,cupos, accesibilidad, horaInicio, horaFin,tipoSilleteria, idFuncion, nombreEspectaculo, localidad, precio);
 		}
 		return sitio;
 	}

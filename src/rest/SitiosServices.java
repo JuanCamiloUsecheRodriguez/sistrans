@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import vos.ListaFunciones;
 import vos.ListaSitios;
+import vos.SuperSitio;
 
 @Path("sitios")
 public class SitiosServices {
@@ -40,13 +41,13 @@ public class SitiosServices {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getSitioCompleto(@PathParam("index")int idSitio,@PathParam("order")String order) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		ListaSitios sitios;
+		SuperSitio supersitio;
 		
 		try {
-			sitios = tm.darSitiosCompleto(idSitio,order);
+			supersitio = tm.darSitiosCompleto(idSitio,order);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(sitios).build();
+		return Response.status(200).entity(supersitio).build();
 	}
 }

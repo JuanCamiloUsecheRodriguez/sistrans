@@ -24,6 +24,7 @@ import vos.ListaUsuarios;
 import vos.ListaVideos;
 import vos.Preferencia;
 import vos.Sitio;
+import vos.SuperSitio;
 import vos.Usuario;
 import vos.Video;
 
@@ -599,15 +600,15 @@ public class FestivAndesMaster {
 		return new ListaFunciones(funciones);
 	}
 
-	public ListaSitios darSitiosCompleto(int idSitio, String order) throws Exception {
-		ArrayList<Sitio> sitios;
+	public SuperSitio darSitiosCompleto(int idSitio, String order) throws Exception {
+		SuperSitio sitio;
 		DAOTablaSitios daoSitios = new DAOTablaSitios();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
 			daoSitios.setConn(conn);
-			sitios = daoSitios.consultarSitio(idSitio,order);
+			sitio = daoSitios.consultarSitio(idSitio,order);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -628,7 +629,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return new ListaSitios(sitios);
+		return sitio;
 	}
 	
 }

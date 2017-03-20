@@ -294,8 +294,9 @@ public class DAOTablaFunciones {
 			int id = Integer.parseInt(rs.getString(1));
 			int boletasVendidas = Integer.parseInt(rs.getString(2));
 			int producido = Integer.parseInt(rs.getString(3));
-			String locacalidad = rs.getString(4);
+			String localidad = rs.getString(4);
 			String idCliente = rs.getString(5);
+			boolean esCliente = idCliente==null?true:false;
 			
 			funcion = new ReporteFuncion(id, boletasVendidas, producido, localidad, esCliente);
 		}

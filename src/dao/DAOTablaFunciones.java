@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import vos.Espectaculo;
 import vos.Funcion;
+import vos.ReporteFuncion;
 import vos.Sitio;
 import vos.Video;
 
@@ -272,5 +273,32 @@ public class DAOTablaFunciones {
 			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));
 		}
 		return funciones;
+	}
+	
+	public ReporteFuncion darReporteFuncion(int idFuncion, String ordenamiento)
+	{
+		ReporteFuncion funcion = null;
+		
+		String sql =   "SELECT IDFUNCION,COUNT(IDBOLETA),SUM(PRECIO),LOCALIDAD,ID_CLIENTE FROM " +
+						"(SELECT * FROM(SELECT ID AS IDFUNCION FROM FUNCION)E1 "+
+						"INNER JOIN "+
+						"(SELECT ID AS IDBOLETA,PRECIO,LOCALIDAD,FUNCION,USUARIODOC FROM BOLETA)E2 ON E1.IDFUNCION = E2.FUNCION)T1 "+
+						"FULL OUTER JOIN " +
+						"(SELECT ID_CLIENTE FROM CLIENTE)T2 ON T1.USUARIODOC = T2.ID_CLIENTE "+
+						"WHERE IDFUNCION = "+idFuncion+ "GROUP BY IDFUNCION,LOCALIDAD,ID_CLIENTE ORDER BY IDFUNCION " + ordenamiento;
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+			int id = Integer.parseInt(rs.getString(1));
+			int boletasVendidas = Integer.parseInt(rs.getString(2));
+			int producido = Integer.parseInt(rs.getString(3));
+			String locacalidad = rs.getString(4);
+			String idCliente = rs.getString(5);
+			
+			funcion = new ReporteFuncion(id, boletasVendidas, producido, localidad, esCliente);
+		}
+		return funcion;
 	}
 }

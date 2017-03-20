@@ -502,5 +502,37 @@ public class FestivAndesMaster {
 		}
 		return new ListaFunciones(funciones);
 	}
+
+	public ListaFunciones darFuncionesCategoria(String categoria, String order) throws Exception {
+		ArrayList<Funcion> funciones;
+		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoFunciones.setConn(conn);
+			funciones = daoFunciones.darFuncionesPorCategoriaDeEspectaculo(categoria, order);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaFunciones(funciones);
+	}
 	
 }

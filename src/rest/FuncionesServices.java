@@ -82,4 +82,19 @@ public class FuncionesServices {
 		}
 		return Response.status(200).entity(funciones).build();
 	}
+	
+	@GET
+	@Path("/{categoria}/{order}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getFuncionesCategoria(@PathParam("categoria")String categoria,	@PathParam("order")String order) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaFunciones funciones;
+		
+		try {
+			funciones = tm.darFuncionesCategoria(categoria,order);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(funciones).build();
+	}
 }

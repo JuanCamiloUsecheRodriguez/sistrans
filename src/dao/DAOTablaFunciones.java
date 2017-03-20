@@ -122,9 +122,12 @@ public class DAOTablaFunciones {
 		prepStmt.executeQuery();
 	}
 	
-	public ArrayList<Funcion> darFuncionesEntreRangoDeFechas(String fechaMenor, String fechaMayor, String orden) throws NumberFormatException, Exception
+	public ArrayList<Funcion> darFuncionesEntreRangoDeFechas(String pFechaMenor, String pFechaMayor, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+		
+		String fechaMenor = pFechaMenor.replace("-", "/");
+		String fechaMayor = pFechaMayor.replace("-", "/");
 		
 		String sql = "SELECT * FROM FUNCION WHERE FECHA BETWEEN to_date('"+ fechaMenor +"','mm/dd/yyyy') AND to_date('"+ fechaMayor+"','mm/dd/yyyy') ORDER BY ID "+ orden;
 		

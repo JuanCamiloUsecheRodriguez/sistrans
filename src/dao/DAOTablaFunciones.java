@@ -122,6 +122,30 @@ public class DAOTablaFunciones {
 		prepStmt.executeQuery();
 	}
 	
+	public ArrayList<Funcion> darFuncionesEntreRandoDeFechas(String fechaMenor, String fechaMayor, String orden) throws NumberFormatException, Exception
+	{
+		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+		
+		String sql = "SELECT * FROM FUNCION WHERE FECHA BETWEEN to_date('"+ fechaMenor +"','mm/dd/yyyy') AND to_date('"+ fechaMayor+"','mm/dd/yyyy') ORDER BY ID "+ orden;
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			int id = Integer.parseInt(rs.getString(1));
+			Date fecha = rs.getDate(2);
+			DAOTablaSitios daoSitios = new DAOTablaSitios();
+			daoSitios.setConn(conn);
+			Sitio sitio = daoSitios.darSitioPorId(Integer.parseInt(rs.getString(3)));
+			DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+			daoEspectaculos.setConn(conn);
+			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
+			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
+			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));
+		}
+		return funciones;
+	}
 	public ArrayList<Funcion> darFuncionesDeCompaniaDeTeatro(String nombreCompania) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
@@ -151,4 +175,7 @@ public class DAOTablaFunciones {
 		}
 		return funciones;
 	}
+	
+	
+	
 }

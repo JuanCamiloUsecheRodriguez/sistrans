@@ -154,15 +154,16 @@ public class DAOTablaFunciones {
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM" +
-                     "(SELECT ID,NOMBRE,IDESPECTACULO FROM COMPANIA"+
-                     "INNER JOIN PATROCINA ON COMPANIA.ID=PATROCINA.IDCOMPANIA)T1"+
-                     "INNER JOIN"+
-                     "(SELECT * FROM(SELECT ID AS ESPECTACULOID FROM ESPECTACULO)E1"+
-                     "INNER JOIN "+
-                     "(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO)T2"+
-                     "ON T1.IDESPECTACULO = T2.ESPECTACULOID"+
-                     "WHERE NOMBRE = '"+ nombreCompania +"' ORDER BY IDFUNCION " + orden;
+                     " (SELECT ID,NOMBRE,IDESPECTACULO FROM COMPANIA"+
+                     " INNER JOIN PATROCINA ON COMPANIA.ID=PATROCINA.IDCOMPANIA)T1"+
+                     " INNER JOIN"+
+                     " (SELECT * FROM(SELECT ID AS ESPECTACULOID FROM ESPECTACULO)E1"+
+                     " INNER JOIN "+
+                     " (SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO)T2"+
+                     " ON T1.IDESPECTACULO = T2.ESPECTACULOID"+
+                     " WHERE NOMBRE = '"+ nombreCompania +"' ORDER BY IDFUNCION " + orden;
 
+		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();

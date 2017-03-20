@@ -146,16 +146,19 @@ public class DAOTablaFunciones {
 		}
 		return funciones;
 	}
-	public ArrayList<Funcion> darFuncionesDeCompaniaDeTeatro(String nombreCompania) throws NumberFormatException, Exception
+	public ArrayList<Funcion> darFuncionesDeCompaniaDeTeatro(String nombreCompania, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
-		String sql = "SELECT * FROM "
-				+ "(SELECT * FROM FUNCION FULL OUTER JOIN "
-				+ "ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 "
-				+ "FULL OUTER (SELECT * FROM PATROCINA "
-				+ "FULL OUTER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID)T2 "
-				+ "ON T1.ID = T2.IDESPECTACULO WHERE T2.NOMBRE = " + nombreCompania;
+		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM" +
+                     "(SELECT ID,NOMBRE,IDESPECTACULO FROM COMPANIA"+
+                     "INNER JOIN PATROCINA ON COMPANIA.ID=PATROCINA.IDCOMPANIA)T1"+
+                     "INNER JOIN"+
+                     "(SELECT * FROM(SELECT ID AS ESPECTACULOID FROM ESPECTACULO)E1"+
+                     "INNER JOIN "+
+                     "(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO)T2"+
+                     "ON T1.IDESPECTACULO = T2.ESPECTACULOID"+
+                     "WHERE NOMBRE = '"+ nombreCompania +"' ORDER BY IDFUNCION " + orden;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

@@ -244,4 +244,31 @@ public class DAOTablaFunciones {
 		return funciones;
 	}
 	
+	public ArrayList<Funcion> darFuncionesPorDisponibilidad(String disponibilidad, String orden) throws NumberFormatException, Exception
+	{
+		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+
+		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM(SELECT ID AS SITIOID,ACCESIBILIDAD FROM SITIO)E1 "+
+				  		"INNER JOIN "+
+				  		"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.SITIOID = E2.SITIO "+
+				  		"WHERE ACCESIBILIDAD = '"+ disponibilidad + "' ORDER BY IDFUNCION" + orden;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			int id = Integer.parseInt(rs.getString(1));
+			Date fecha = rs.getDate(2);
+			DAOTablaSitios daoSitios = new DAOTablaSitios();
+			daoSitios.setConn(conn);
+			Sitio sitio = daoSitios.darSitioPorId(Integer.parseInt(rs.getString(3)));
+			DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+			daoEspectaculos.setConn(conn);
+			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
+			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
+			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));
+		}
+		return funciones;
+	}
 }

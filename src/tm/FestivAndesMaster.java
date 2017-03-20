@@ -23,6 +23,7 @@ import vos.ListaSitios;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
 import vos.Preferencia;
+import vos.ReporteFuncion;
 import vos.Sitio;
 import vos.SuperSitio;
 import vos.Usuario;
@@ -630,6 +631,38 @@ public class FestivAndesMaster {
 			}
 		}
 		return sitio;
+	}
+
+	public ReporteFuncion darReporteFuncion(String idFuncion, String order) {
+		ReporteFuncion reporte;
+		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoFunciones.setConn(conn);
+			reporte = daoFunciones.darReporteFuncion(idFuncion,order);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return reporte;
 	}
 	
 }

@@ -15,6 +15,7 @@ import tm.FestivAndesMaster;
 import vos.ListaFunciones;
 import vos.ListaUsuarios;
 import vos.Preferencia;
+import vos.ReporteFuncion;
 
 @Path("funciones")
 public class FuncionesServices {
@@ -126,5 +127,20 @@ public class FuncionesServices {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(funciones).build();
+	}
+	
+	@GET
+	@Path("/reporte/{idFuncion}/{order}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getReporteFuncion(@PathParam("idFuncion")String idFuncion,@PathParam("order")String order) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ReporteFuncion reporte;
+		
+		try {
+			reporte = tm.darReporteFuncion(idFuncion,order);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(reporte).build();
 	}
 }

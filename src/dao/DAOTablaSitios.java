@@ -101,4 +101,33 @@ public class DAOTablaSitios {
 		return sitio;
 	}
 	
+	public SuperSitio consultarUnSitio(int pIdSitio) throws SQLException, Exception{
+		SuperSitio sitio = null;
+
+		String sql = "SELECT ID,NOMBRESITIO,TIPO,CUPOS,ACCESIBILIDAD,HORAINICIO,HORAFIN,TIPOSILLETERIA,IDFUNCION,NOMBRE,LOCALIDAD,PRECIO FROM( "+
+					"SELECT * FROM "+
+					"(SELECT ID,NOMBRE AS NOMBRESITIO,TIPO,CUPOS,ACCESIBILIDAD,HORAINICIO,HORAFIN,TIPOSILLETERIA,IDFUNCION,SITIO,ESPECTACULO FROM SITIO INNER JOIN (SELECT ID AS IDFUNCION,SITIO,ESPECTACULO FROM FUNCION)E2 ON SITIO.ID = E2.SITIO)T1 "+
+					"INNER JOIN "+
+					"(SELECT ID AS IDESPECTACULO,NOMBRE FROM ESPECTACULO)T2 ON T1.ESPECTACULO = T2.IDESPECTACULO)T3 "+
+					"INNER JOIN "+
+					"(SELECT ID AS IDBOLETA,FUNCION,PRECIO,LOCALIDAD FROM BOLETA)T4 ON T3.IDFUNCION = T4.FUNCION WHERE ID = " + pIdSitio;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+			
+			int id = Integer.parseInt(rs.getString("ID"));
+			String nombre = rs.getString("NOMBRE");
+			String tipo = rs.getString("TIPO");
+			int cupos = Integer.parseInt(rs.getString("CUPOS"));
+			boolean accesibilidad = rs.getString("ACCESIBILIDAD") =="Y"?true:false;
+			String horaInicio = rs.getString(6);
+			String horaFin = rs.getString(7);
+			String tipoSillas = rs.getString("TIPOSILLETERIA");
+			sitio =new Sitio(id, nombre, tipo, cupos, accesibilidad, horaInicio, horaFin, tipoSillas);
+		}
+		return sitio;
+	}
 }

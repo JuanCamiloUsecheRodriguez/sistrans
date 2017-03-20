@@ -244,14 +244,14 @@ public class DAOTablaFunciones {
 		return funciones;
 	}
 	
-	public ArrayList<Funcion> darFuncionesPorDisponibilidad(String disponibilidad, String orden) throws NumberFormatException, Exception
+	public ArrayList<Funcion> darFuncionesPorAccesibilidad(String accesibilidad, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM(SELECT ID AS SITIOID,ACCESIBILIDAD FROM SITIO)E1 "+
 				  		"INNER JOIN "+
 				  		"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.SITIOID = E2.SITIO "+
-				  		"WHERE ACCESIBILIDAD = '"+ disponibilidad + "' ORDER BY IDFUNCION" + orden;
+				  		"WHERE ACCESIBILIDAD = '"+ accesibilidad + "' ORDER BY IDFUNCION" + orden;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

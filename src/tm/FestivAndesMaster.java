@@ -16,7 +16,9 @@ import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import vos.Boleta;
 import vos.BoletaDetail;
+import vos.Funcion;
 import vos.ListaBoletas;
+import vos.ListaFunciones;
 import vos.ListaSitios;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
@@ -435,6 +437,38 @@ public class FestivAndesMaster {
 			}
 		}
 
+	}
+
+	public ListaFunciones darFuncionesRangoFecha(String fechaInicial, String fechaFin, String order) throws Exception {
+		ArrayList<Funcion> funciones;
+		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoFunciones.setConn(conn);
+			funciones = daoFunciones.darFuncionesEntreRangoDeFechas(fechaInicial, fechaFin, order);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaFunciones(funciones);
 	}
 	
 }

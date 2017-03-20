@@ -122,7 +122,7 @@ public class DAOTablaFunciones {
 		prepStmt.executeQuery();
 	}
 	
-	public ArrayList<Funcion> darFuncionesEntreRandoDeFechas(String fechaMenor, String fechaMayor, String orden) throws NumberFormatException, Exception
+	public ArrayList<Funcion> darFuncionesEntreRangoDeFechas(String fechaMenor, String fechaMayor, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 		

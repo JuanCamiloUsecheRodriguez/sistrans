@@ -64,7 +64,7 @@ public class DAOTablaClientes {
 	public void registrarPreferenciaCliente(Preferencia pref) throws SQLException
 	{
 		String sql = "INSERT INTO PREFIEREN VALUES (";
-		sql += pref.getCliente() + ",'";
+		sql += pref.getCliente() + ",";
 		sql += pref.getCategoria() + ")";
 
 		System.out.println("SQL stmt:" + sql);

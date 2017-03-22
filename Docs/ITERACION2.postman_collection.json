@@ -1,0 +1,232 @@
+{
+	"variables": [],
+	"info": {
+		"name": "iTERACION2",
+		"_postman_id": "40122380-a756-edf3-44ac-9f269304b815",
+		"description": "iteracion 2\no.sabogal10\njc.useche10",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get boleta por id",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/boletas/9",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"silla\": \"F13\",\n  \"precio\": 52000,\n  \"cupos\": 60,\n  \"localidad\": \"PLATEA\",\n  \"usuario\": 120353280,\n  \"funcion\":4\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post boleta",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/boletas",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"silla\": \"F23\",\n  \"precio\": 52000,\n  \"cupos\": 60,\n  \"localidad\": \"PLATEA\",\n  \"usuario\": 822765202,\n  \"funcion\":4\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get Boletas",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/boletas",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post preferencia cliente",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/clientes/preferencias",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cliente\":165600519,\n\t\"categoria\":4\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update preferencia cliente",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/clientes/preferencias/4",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cliente\":165600519,\n\t\"categoria\":3\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete preferencias",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/clientes/preferencias",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cliente\":165600519,\n\t\"categoria\":3\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get reporte espectaculo",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/espectaculos/reporte/2/desc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update realizacion funcion",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/funciones/2",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get funciones rango fecha",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/funciones/03-16-2017/03-19-2017/asc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get funciones compania",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/funciones/compania/Oani/asc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get funciones categoria",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/funciones/categoria/Mudo/asc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get funciones idioma",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/funciones/idioma/Espanol/asc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get funciones accesibilidad",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/funciones/accesibilidad/Y/asc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get reporte funciones",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/funciones/reporte/3/desc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get sitio por id",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/sitios/1/asc",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get usuarios",
+			"request": {
+				"url": "http://localhost:8080/VideoAndes/rest/usuarios",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

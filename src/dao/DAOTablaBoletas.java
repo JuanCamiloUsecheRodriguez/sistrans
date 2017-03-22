@@ -144,8 +144,7 @@ public class DAOTablaBoletas {
 	 */
 	public void addBoleta(Boleta Boleta) throws SQLException, Exception {
 
-		String sql = "INSERT INTO BOLETA VALUES (";
-		sql += Boleta.getId() + ",'";
+		String sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,'";
 		sql += Boleta.getSilla()+ "',";
 		sql += Boleta.getPrecio()+ ",";
 		sql += Boleta.getCupos()+ ",'";

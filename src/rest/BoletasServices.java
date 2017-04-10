@@ -15,6 +15,7 @@ import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
 import vos.Boleta;
 import vos.BoletaDetail;
+import vos.CompraBoletas;
 import vos.ListaBoletas;
 import vos.ListaVideos;
 import vos.Preferencia;
@@ -45,14 +46,14 @@ public class BoletasServices {
 	//@Path("/boletas")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addBoleta(Boleta boleta) {
+	public Response addBoleta(CompraBoletas listaBoletas) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		try {
-			tm.addBoleta(boleta);
+			tm.addBoleta(listaBoletas);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(boleta).build();
+		return Response.status(200).entity(listaBoletas).build();
 	}
 	
 	@GET

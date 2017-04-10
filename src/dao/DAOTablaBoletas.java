@@ -133,6 +133,37 @@ public class DAOTablaBoletas {
 
 		return Boletas;
 	}
+	
+	public boolean verificarCompra(String localidad, int funcion) throws Exception{
+		String sql = "SELECT NUMERADA FROM LOCALIDAD WHERE "
+				+ "ID_LOCALIDAD = '" + localidad+"' AND "
+				+ "FK_IDFUNCION = "+ funcion ;
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		
+		if(rs.next())
+		{
+			String r = rs.getString("NUMERADA");
+			if (r.equals("Y")) {
+				return true;				
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			throw new Exception("no existe esa localidad para esa funcion");
+		}
+		
+		
+		
+	}
 
 	/**
 	 * Método que agrega el Boleta que entra como parámetro a la base de datos.
@@ -144,13 +175,12 @@ public class DAOTablaBoletas {
 	 */
 	public void addBoleta(Boleta Boleta) throws SQLException, Exception {
 
-		String sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,'";
-		sql += Boleta.getSilla()+ "',";
-		sql += Boleta.getPrecio()+ ",";
-		sql += Boleta.getCupos()+ ",'";
+		String sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
+		sql += Boleta.getSilla()+ ",";
+		sql += Boleta.getUsario() + ",'";
 		sql += Boleta.getLocalidad()+ "',";
-		sql += Boleta.getFuncion()+ ",";
-		sql += Boleta.getUsario() + ")";
+		sql += Boleta.getFuncion()+ ")";
+		
 
 		System.out.println("SQL stmt:" + sql);
 

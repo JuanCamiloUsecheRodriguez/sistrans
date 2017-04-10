@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import dao.DAOTablaBoletas;
@@ -17,6 +19,7 @@ import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import vos.Boleta;
 import vos.BoletaDetail;
+import vos.CompraBoletas;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaFunciones;
@@ -64,7 +67,7 @@ public class FestivAndesMaster {
 	 * Atributo que guarda el driver que se va a usar para conectarse a la base de datos.
 	 */
 	private String driver;
-	
+
 	/**
 	 * Conexión a la base de datos
 	 */
@@ -155,7 +158,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaUsuarios(usuarios);
 	}
-	
+
 	public void addPreferencia(Preferencia pref) throws Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
 		try 
@@ -187,8 +190,8 @@ public class FestivAndesMaster {
 		}
 
 	}
-	
-	
+
+
 	public void actualizarPreferencia( int idCategoriaAnterior, Preferencia pref) throws Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
 		try 
@@ -219,7 +222,7 @@ public class FestivAndesMaster {
 			}
 		}
 	}
-	
+
 	public void deletePreferencia(Preferencia pref) throws Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
 		try 
@@ -250,23 +253,82 @@ public class FestivAndesMaster {
 			}
 		}
 	}
-	
-	
-	public void addBoleta(Boleta boleta) throws Exception {
-		DAOTablaBoletas daoTablaBoletas = new DAOTablaBoletas();
+
+	public boolean verificarCompra(String localidad, int funcion) throws SQLException, Exception
+	{
+		boolean r = false;
+		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
-			daoTablaBoletas.setConn(conn);
-			daoTablaBoletas.addBoleta(boleta);
-			conn.commit();
+			conn.setAutoCommit(false);
+			daoBoletas.setConn(conn);
+			r = daoBoletas.verificarCompra(localidad, funcion);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoBoletas.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return r;
+	}
+
+	public void addBoleta(CompraBoletas lista) throws Exception {
+		DAOTablaBoletas daoTablaBoletas = new DAOTablaBoletas();
+		this.conn = darConexion();
+		daoTablaBoletas.setConn(conn);
+		conn.setAutoCommit(false);
+		System.out.println("El AUTOCOMMIT ES: "+conn.getAutoCommit());
+		Savepoint s =  conn.setSavepoint("comprarBoletas");
+		List<Boleta> boletas = lista.getBoletas();
+		try 
+		{
+			//////Transacción
+			boolean n =verificarCompra(lista.getBoletas().get(0).getLocalidad(), lista.getBoletas().get(0).getFuncion());
+			if(n)
+			{
+				int numAnterior = lista.getBoletas().get(0).getSilla()-1;
+				for (int i = 0; i < boletas.size() ; i++) {
+					if(numAnterior==(boletas.get(i).getSilla())-1)
+					{
+						daoTablaBoletas.addBoleta(boletas.get(i));
+						numAnterior = boletas.get(i).getSilla();
+					}
+					else{
+						throw new Exception("las sillas no son contiguas");
+					}
+				}
+			}
+			else{
+				for (int i = 0; i < boletas.size(); i++) {
+					daoTablaBoletas.addBoleta(boletas.get(i));
+				}
+			}
+			System.out.println("El AUTOCOMMIT2 ES: "+conn.getAutoCommit());
+			conn.commit();
+
+		} catch (SQLException e) {
+			conn.rollback(s);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			conn.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
@@ -282,8 +344,8 @@ public class FestivAndesMaster {
 			}
 		}
 	}
-	
-	
+
+
 	public ListaBoletas darBoletasPorId(int idBoleta) throws Exception {
 		ArrayList<BoletaDetail> boletas;
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
@@ -315,7 +377,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaBoletas(boletas);
 	}
-	
+
 	public ListaBoletas darBoletas() throws Exception {
 		ArrayList<BoletaDetail> boletas;
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
@@ -347,7 +409,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaBoletas(boletas);
 	}
-	
+
 	public ListaSitios darSitios() throws Exception {
 		ArrayList<Sitio> sitios;
 		DAOTablaSitios daoSitios = new DAOTablaSitios();
@@ -379,7 +441,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaSitios(sitios);
 	}
-	
+
 	public Sitio darSitiosPorId(int idSitio) throws Exception {
 		Sitio sitio = null;
 		DAOTablaSitios daoSitios = new DAOTablaSitios();
@@ -411,8 +473,8 @@ public class FestivAndesMaster {
 		}
 		return sitio;
 	}
-	
-	
+
+
 	public void registrarRealizacionFuncion(int idFuncion) throws Exception {
 		DAOTablaFunciones daoTablaFunciones = new DAOTablaFunciones();
 		try 
@@ -699,5 +761,5 @@ public class FestivAndesMaster {
 		}
 		return new ListaReporteEspectaculo(reportes);
 	}
-	
+
 }

@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
+import vos.Abono;
 import vos.Preferencia;
 import vos.Video;
 
@@ -37,6 +38,20 @@ public class ClientesServices {
 	
 	private String doErrorMessage(Exception e){
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
+	}
+	
+	@POST
+	@Path("/abono")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addAbono(Abono abono) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		try {
+			tm.addAbono(abono);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(abono).build();
 	}
 	
 	@POST

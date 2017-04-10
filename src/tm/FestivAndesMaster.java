@@ -17,6 +17,7 @@ import dao.DAOTablaFunciones;
 import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
+import vos.Abono;
 import vos.Boleta;
 import vos.BoletaDetail;
 import vos.CompraBoletas;
@@ -288,7 +289,7 @@ public class FestivAndesMaster {
 		return r;
 	}
 
-	public void addBoleta(CompraBoletas lista) throws Exception {
+	public void addBoletas(CompraBoletas lista) throws Exception {
 		DAOTablaBoletas daoTablaBoletas = new DAOTablaBoletas();
 		this.conn = darConexion();
 		daoTablaBoletas.setConn(conn);
@@ -298,27 +299,7 @@ public class FestivAndesMaster {
 		List<Boleta> boletas = lista.getBoletas();
 		try 
 		{
-			//////Transacción
-			boolean n =verificarCompra(lista.getBoletas().get(0).getLocalidad(), lista.getBoletas().get(0).getFuncion());
-			if(n)
-			{
-				int numAnterior = lista.getBoletas().get(0).getSilla()-1;
-				for (int i = 0; i < boletas.size() ; i++) {
-					if(numAnterior==(boletas.get(i).getSilla())-1)
-					{
-						daoTablaBoletas.addBoleta(boletas.get(i));
-						numAnterior = boletas.get(i).getSilla();
-					}
-					else{
-						throw new Exception("las sillas no son contiguas");
-					}
-				}
-			}
-			else{
-				for (int i = 0; i < boletas.size(); i++) {
-					daoTablaBoletas.addBoleta(boletas.get(i));
-				}
-			}
+			daoTablaBoletas.addBoletas(boletas);
 			System.out.println("El AUTOCOMMIT2 ES: "+conn.getAutoCommit());
 			conn.commit();
 
@@ -760,6 +741,42 @@ public class FestivAndesMaster {
 			}
 		}
 		return new ListaReporteEspectaculo(reportes);
+	}
+
+	public void addAbono(Abono abono) throws SQLException,Exception {
+		DAOTablaClientes daoClientes = new DAOTablaClientes();
+		this.conn = darConexion();
+		daoClientes.setConn(conn);
+		conn.setAutoCommit(false);
+		Savepoint s = conn.setSavepoint("ComprarAbono");
+		try 
+		{
+			//////Transacción
+			daoClientes.addAbono(abono);
+			conn.commit();
+
+		} catch (SQLException e) {
+			conn.rollback(s);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			conn.rollback(s);
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoClientes.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		
 	}
 
 }

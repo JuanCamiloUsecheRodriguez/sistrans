@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import vos.Boleta;
 import vos.BoletaDetail;
@@ -13,7 +14,7 @@ import vos.Usuario;
 import vos.BoletaDetail;
 
 public class DAOTablaBoletas {
-	
+
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
@@ -133,7 +134,7 @@ public class DAOTablaBoletas {
 
 		return Boletas;
 	}
-	
+
 	public boolean verificarCompra(String localidad, int funcion) throws Exception{
 		String sql = "SELECT NUMERADA FROM LOCALIDAD WHERE "
 				+ "ID_LOCALIDAD = '" + localidad+"' AND "
@@ -144,7 +145,7 @@ public class DAOTablaBoletas {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
-		
+
 		if(rs.next())
 		{
 			String r = rs.getString("NUMERADA");
@@ -160,9 +161,9 @@ public class DAOTablaBoletas {
 		{
 			throw new Exception("no existe esa localidad para esa funcion");
 		}
-		
-		
-		
+
+
+
 	}
 
 	/**
@@ -173,20 +174,77 @@ public class DAOTablaBoletas {
 	 * @throws SQLException - Cualquier error que la base de datos arroje. No pudo agregar el Boleta a la base de datos
 	 * @throws Exception - Cualquier error que no corresponda a la base de datos
 	 */
-	public void addBoleta(Boleta Boleta) throws SQLException, Exception {
+	public void addBoletas(List<Boleta> boletas) throws SQLException, Exception {
 
-		String sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
-		sql += Boleta.getSilla()+ ",";
-		sql += Boleta.getUsario() + ",'";
-		sql += Boleta.getLocalidad()+ "',";
-		sql += Boleta.getFuncion()+ ")";
+		String sql = "SELECT NUMERADA FROM LOCALIDAD WHERE "
+				+ "ID_LOCALIDAD = '" + boletas.get(0).getLocalidad()+"' AND "
+				+ "FK_IDFUNCION = "+ boletas.get(0).getFuncion() ;
+		String loc = boletas.get(0).getLocalidad();
 		
-
 		System.out.println("SQL stmt:" + sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
-		prepStmt.executeQuery();
+		ResultSet rs = prepStmt.executeQuery();
+		if(rs.next())
+		{
+			if(rs.getString("NUMERADA").equals("Y"))
+			{
+				int numAnterior = boletas.get(0).getSilla()-1;
+				for (int i = 0; i < boletas.size() ; i++) {
+					if(numAnterior==(boletas.get(i).getSilla())-1 && boletas.get(i).getLocalidad().equals(loc))
+					{
+						sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
+						sql += boletas.get(i).getSilla()+ ",";
+						sql += boletas.get(i).getUsario() + ",'";
+						sql += boletas.get(i).getLocalidad()+ "',";
+						sql += boletas.get(i).getFuncion()+ ")";
+
+
+						System.out.println("SQL stmt:" + sql);
+
+						PreparedStatement prepStmt2 = conn.prepareStatement(sql);
+						recursos.add(prepStmt2);
+						prepStmt2.executeQuery();
+						
+						sql = "UPDATE LOCALIDAD SET CUPOSDISPONIBLES = CUPOSDISPONIBLES-1 WHERE "
+								+ "ID_LOCALIDAD = '" + boletas.get(0).getLocalidad()+"' AND "
+								+ "FK_IDFUNCION = "+ boletas.get(0).getFuncion() ;
+						System.out.println("SQL stmt:" + sql);
+
+						PreparedStatement prepStmt3 = conn.prepareStatement(sql);
+						recursos.add(prepStmt3);
+						prepStmt3.executeQuery();
+
+						numAnterior = boletas.get(i).getSilla();
+					}
+					else{
+						throw new Exception("las sillas no son contiguas");
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < boletas.size() ; i++) {
+
+					sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
+					sql += boletas.get(i).getSilla()+ ",";
+					sql += boletas.get(i).getUsario() + ",'";
+					sql += boletas.get(i).getLocalidad()+ "',";
+					sql += boletas.get(i).getFuncion()+ ")";
+
+					System.out.println("SQL stmt:" + sql);
+
+					PreparedStatement prepStmt2 = conn.prepareStatement(sql);
+					recursos.add(prepStmt2);
+					prepStmt2.executeQuery();
+
+				}
+			}
+
+		}	
 
 	}
+	
+	
 }

@@ -6,13 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.Abono;
 import vos.Cliente;
 import vos.Preferencia;
 import vos.Usuario;
 import vos.Video;
 
 public class DAOTablaClientes {
-	
+
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
@@ -54,7 +55,7 @@ public class DAOTablaClientes {
 	public void setConn(Connection con){
 		this.conn = con;
 	}
-	
+
 	/**
 	 * Metodo que registra una nueva preferencia para un cliente
 	 * @param pIdCliente
@@ -73,7 +74,7 @@ public class DAOTablaClientes {
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
-	
+
 	public void actualizarPreferenciaCliente(int pIdCategoriaAnterior,Preferencia pref) throws SQLException
 	{
 		String sql = "UPDATE PREFIEREN SET CATEGORIA=";
@@ -85,7 +86,7 @@ public class DAOTablaClientes {
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
-	
+
 	public void eliminarPreferenciaCliente(Preferencia pref) throws SQLException
 	{
 		String sql = "DELETE FROM PREFIEREN WHERE ID_CLIENTE=";
@@ -96,6 +97,36 @@ public class DAOTablaClientes {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
+	}
+
+	public void addAbono(Abono abono) throws SQLException {
+
+		String sql = "SELECT FECHAINICIO FROM FESTIVANDES";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if(rs.next())
+		{
+			if(rs.getDate("FECHAINICIO").getTime() - System.currentTimeMillis() > 1814400000)
+			{
+				for (int i = 0; i < abono.getFunciones().size(); i++) {
+					String sql2 = "INSERT INTO ABONO VALUES (SEC_ABONO.NEXTVAL,"
+							+ abono.getCliente()+","
+							+ abono.getFunciones().get(i)+")";
+
+					System.out.println("SQL stmt:" + sql2);
+
+					PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+					recursos.add(prepStmt2);
+					prepStmt2.executeQuery();
+				}
+
+			}
+		}
 	}
 
 }

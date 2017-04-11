@@ -24,6 +24,7 @@ import vos.CompraBoletas;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaFunciones;
+import vos.ListaNotas;
 import vos.ListaReporteEspectaculo;
 import vos.ListaReporteFuncion;
 import vos.ListaSitios;
@@ -852,6 +853,43 @@ public class FestivAndesMaster {
 			}
 		}
 		return r;
+	}
+
+	public ListaNotas deleteFuncion(int idFuncion) throws SQLException, Exception{
+		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
+		this.conn = darConexion();
+		daoFunciones.setConn(conn);
+		conn.setAutoCommit(false);
+		Savepoint s = conn.setSavepoint("deleteBoleta");
+		List<NotaDebito> r = null;
+		try 
+		{
+			//////Transacción
+			r = daoFunciones.deleteFuncion(idFuncion);
+			conn.commit();
+
+		} catch (SQLException e) {
+			conn.rollback(s);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			conn.rollback(s);
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaNotas(r);
 	}
 
 }

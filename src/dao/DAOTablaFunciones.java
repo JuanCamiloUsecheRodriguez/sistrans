@@ -6,10 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import vos.Espectaculo;
 import vos.Funcion;
+import vos.ListaNotas;
 import vos.ListaReporteFuncion;
+import vos.NotaDebito;
 import vos.ReporteFuncion;
 import vos.Sitio;
 import vos.Video;
@@ -25,7 +28,7 @@ public class DAOTablaFunciones {
 	 * Atributo que genera la conexión a la base de datos
 	 */
 	private Connection conn;
-	
+
 	/**
 	 * Método constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
@@ -56,8 +59,8 @@ public class DAOTablaFunciones {
 	public void setConn(Connection con){
 		this.conn = con;
 	}
-	
-	
+
+
 	public ArrayList<Funcion> darFunciones() throws SQLException, Exception {
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
@@ -78,16 +81,16 @@ public class DAOTablaFunciones {
 			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
 			daoEspectaculos.cerrarRecursos();
 			daoEspectaculos.setConn(conn);
-			
+
 			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
 			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));
 		}
 		return funciones;
 	}
-	
+
 	public Funcion darFuncionPorId(int pId) throws SQLException, Exception {
 		Funcion funcion = null;
-		
+
 		String sql = "SELECT * FROM FUNCION WHERE ID ='"+pId+"'";
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -104,9 +107,9 @@ public class DAOTablaFunciones {
 			daoEspectaculos.setConn(conn);
 			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
 			daoEspectaculos.cerrarRecursos();
-			
+
 			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
-			
+
 			funcion = new Funcion(id, fecha, sitio, espectaculo, realizada);
 		}
 		return funcion;
@@ -123,16 +126,16 @@ public class DAOTablaFunciones {
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
-	
+
 	public ArrayList<Funcion> darFuncionesEntreRangoDeFechas(String pFechaMenor, String pFechaMayor, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
-		
+
 		String fechaMenor = pFechaMenor.replace("-", "/");
 		String fechaMayor = pFechaMayor.replace("-", "/");
-		
+
 		String sql = "SELECT * FROM FUNCION WHERE FECHA BETWEEN to_date('"+ fechaMenor +"','mm/dd/yyyy') AND to_date('"+ fechaMayor+"','mm/dd/yyyy') ORDER BY ID "+ orden;
-		
+
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
@@ -156,14 +159,14 @@ public class DAOTablaFunciones {
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM" +
-                     " (SELECT ID,NOMBRE,IDESPECTACULO FROM COMPANIA"+
-                     " INNER JOIN PATROCINA ON COMPANIA.ID=PATROCINA.IDCOMPANIA)T1"+
-                     " INNER JOIN"+
-                     " (SELECT * FROM(SELECT ID AS ESPECTACULOID FROM ESPECTACULO)E1"+
-                     " INNER JOIN "+
-                     " (SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO)T2"+
-                     " ON T1.IDESPECTACULO = T2.ESPECTACULOID"+
-                     " WHERE NOMBRE = '"+ nombreCompania +"' ORDER BY IDFUNCION " + orden;
+				" (SELECT ID,NOMBRE,IDESPECTACULO FROM COMPANIA"+
+				" INNER JOIN PATROCINA ON COMPANIA.ID=PATROCINA.IDCOMPANIA)T1"+
+				" INNER JOIN"+
+				" (SELECT * FROM(SELECT ID AS ESPECTACULOID FROM ESPECTACULO)E1"+
+				" INNER JOIN "+
+				" (SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO)T2"+
+				" ON T1.IDESPECTACULO = T2.ESPECTACULOID"+
+				" WHERE NOMBRE = '"+ nombreCompania +"' ORDER BY IDFUNCION " + orden;
 
 		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -184,20 +187,20 @@ public class DAOTablaFunciones {
 		}
 		return funciones;
 	}
-	
+
 	public ArrayList<Funcion> darFuncionesPorCategoriaDeEspectaculo(String categoria, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM "+
-					"(SELECT ID,NOMBRECATEGORIA,ID_ESPECTACULO FROM CATEGORIA "+
-					"INNER JOIN CATEGORIA_ESPECTACULO ON CATEGORIA.ID=CATEGORIA_ESPECTACULO.ID_CATEGORIA)T1 "+
-					"INNER JOIN "+
-					"(SELECT * FROM(SELECT ID AS ESPECTACULOID FROM ESPECTACULO)E1 "+
-					"INNER JOIN " +
-					"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO)T2 "+
-					"ON T1.ID_ESPECTACULO = T2.ESPECTACULOID "+
-					"WHERE NOMBRECATEGORIA = '"+ categoria + "' ORDER BY IDFUNCION "+ orden;
+				"(SELECT ID,NOMBRECATEGORIA,ID_ESPECTACULO FROM CATEGORIA "+
+				"INNER JOIN CATEGORIA_ESPECTACULO ON CATEGORIA.ID=CATEGORIA_ESPECTACULO.ID_CATEGORIA)T1 "+
+				"INNER JOIN "+
+				"(SELECT * FROM(SELECT ID AS ESPECTACULOID FROM ESPECTACULO)E1 "+
+				"INNER JOIN " +
+				"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO)T2 "+
+				"ON T1.ID_ESPECTACULO = T2.ESPECTACULOID "+
+				"WHERE NOMBRECATEGORIA = '"+ categoria + "' ORDER BY IDFUNCION "+ orden;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -217,17 +220,17 @@ public class DAOTablaFunciones {
 		}
 		return funciones;
 	}
-	
+
 	public ArrayList<Funcion> darFuncionesPorIdioma(String pIdioma, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
 		String idioma = pIdioma.toUpperCase();
-		
+
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM(SELECT ID AS ESPECTACULOID,IDIOMA FROM ESPECTACULO)E1 "+
-						"INNER JOIN "+
-						"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO "+
-						"WHERE E1.IDIOMA='"+idioma+"' ORDER BY IDFUNCION "+ orden;
+				"INNER JOIN "+
+				"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.ESPECTACULOID = E2.ESPECTACULO "+
+				"WHERE E1.IDIOMA='"+idioma+"' ORDER BY IDFUNCION "+ orden;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -247,15 +250,15 @@ public class DAOTablaFunciones {
 		}
 		return funciones;
 	}
-	
+
 	public ArrayList<Funcion> darFuncionesPorAccesibilidad(String accesibilidad, String orden) throws NumberFormatException, Exception
 	{
 		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
 		String sql = "SELECT IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM(SELECT ID AS SITIOID,ACCESIBILIDAD FROM SITIO)E1 "+
-				  		"INNER JOIN "+
-				  		"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.SITIOID = E2.SITIO "+
-				  		"WHERE ACCESIBILIDAD = '"+ accesibilidad + "' ORDER BY IDFUNCION " + orden;
+				"INNER JOIN "+
+				"(SELECT ID AS IDFUNCION,FECHA,SITIO,ESPECTACULO,REALIZADA FROM FUNCION)E2 ON E1.SITIOID = E2.SITIO "+
+				"WHERE ACCESIBILIDAD = '"+ accesibilidad + "' ORDER BY IDFUNCION " + orden;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -275,18 +278,18 @@ public class DAOTablaFunciones {
 		}
 		return funciones;
 	}
-	
+
 	public ArrayList<ReporteFuncion> darReporteFuncion(int idFuncion, String ordenamiento) throws Exception
 	{
 		ArrayList<ReporteFuncion> reporte = new ArrayList<ReporteFuncion>();
-		
+
 		String sql =   "SELECT IDFUNCION,COUNT(IDBOLETA),SUM(PRECIO),LOCALIDAD,ID_CLIENTE FROM " +
-						"(SELECT * FROM(SELECT ID AS IDFUNCION FROM FUNCION)E1 "+
-						"INNER JOIN "+
-						"(SELECT ID AS IDBOLETA,PRECIO,LOCALIDAD,FUNCION,USUARIODOC FROM BOLETA)E2 ON E1.IDFUNCION = E2.FUNCION)T1 "+
-						"FULL OUTER JOIN " +
-						"(SELECT ID_CLIENTE FROM CLIENTE)T2 ON T1.USUARIODOC = T2.ID_CLIENTE "+
-						"WHERE IDFUNCION = "+idFuncion+ "GROUP BY IDFUNCION,LOCALIDAD,ID_CLIENTE ORDER BY IDFUNCION " + ordenamiento;
+				"(SELECT * FROM(SELECT ID AS IDFUNCION FROM FUNCION)E1 "+
+				"INNER JOIN "+
+				"(SELECT ID AS IDBOLETA,PRECIO,LOCALIDAD,FUNCION,USUARIODOC FROM BOLETA)E2 ON E1.IDFUNCION = E2.FUNCION)T1 "+
+				"FULL OUTER JOIN " +
+				"(SELECT ID_CLIENTE FROM CLIENTE)T2 ON T1.USUARIODOC = T2.ID_CLIENTE "+
+				"WHERE IDFUNCION = "+idFuncion+ "GROUP BY IDFUNCION,LOCALIDAD,ID_CLIENTE ORDER BY IDFUNCION " + ordenamiento;
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
@@ -298,9 +301,53 @@ public class DAOTablaFunciones {
 			String localidad = rs.getString(4);
 			String idCliente = rs.getString(5);
 			boolean esCliente = idCliente==null?true:false;
-			
+
 			reporte.add(new ReporteFuncion(id, boletasVendidas, producido, localidad, esCliente));
 		}
 		return reporte;
+	}
+
+	public List<NotaDebito> deleteFuncion(int idFuncion) throws SQLException, Exception {
+		//revisar realizada
+		//usar metodo deleteBoleta y guardar notas
+		//borrar funcion
+		ArrayList<NotaDebito> respuesta = new ArrayList<NotaDebito>();
+		
+		String sql =   "SELECT REALIZADA FROM FUNCION WHERE ID ="+idFuncion;
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		System.out.println("SQL stmt:" + sql);
+		ResultSet rs = prepStmt.executeQuery();
+		
+		if(rs.next() && rs.getString(1).equals("N"))
+		{
+			String sql2 =   "SELECT ID FROM BOLETA WHERE FUNCION ="+idFuncion;
+			PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+			recursos.add(prepStmt2);
+			System.out.println("SQL stmt:" + sql2);
+			ResultSet rs2 = prepStmt2.executeQuery();
+			while(rs2.next())
+			{
+				DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
+				daoBoletas.setConn(conn);
+				NotaDebito n = daoBoletas.deleteBoleta(Integer.parseInt(rs2.getString(1))); 
+				respuesta.add(n);
+			}
+			
+			String sql3 =   "DELETE FROM BOLETA WHERE FUNCION ="+idFuncion;
+			PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+			recursos.add(prepStmt3);
+			System.out.println("SQL stmt:" + sql3);
+			prepStmt3.executeQuery();
+			
+		}
+		else{
+			throw new Exception("Solo se puede cancelar una funcion antes de que termine.");
+		}
+		
+		
+		
+		return respuesta;
+
 	}
 }

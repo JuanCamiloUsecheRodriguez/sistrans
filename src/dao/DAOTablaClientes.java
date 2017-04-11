@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import vos.Abono;
 import vos.Cliente;
+import vos.NotaDebito;
 import vos.Preferencia;
 import vos.Usuario;
 import vos.Video;
@@ -99,7 +100,7 @@ public class DAOTablaClientes {
 		prepStmt.executeQuery();
 	}
 
-	public void addAbono(Abono abono) throws SQLException {
+	public void addAbono(Abono abono) throws SQLException,Exception {
 
 		String sql = "SELECT FECHAINICIO FROM FESTIVANDES";
 
@@ -126,7 +127,92 @@ public class DAOTablaClientes {
 				}
 
 			}
+			else
+			{
+				throw new Exception("Esta operacion solo se puede hacer 3 semanas antes del inicio de FestivAndes.");
+			}
 		}
+	}
+
+	public NotaDebito deleteAbono(int idCliente) throws SQLException,Exception {
+		String sql = "SELECT FECHAINICIO FROM FESTIVANDES";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		NotaDebito nota = null;
+
+		if(rs.next())
+		{
+			if(rs.getDate("FECHAINICIO").getTime() - System.currentTimeMillis() > 1814400000)
+			{
+				int valor = 0;
+				String sqlAbono = "SELECT ID_FUNCION FROM ABONO WHERE CLIENTE = "+idCliente;
+
+				System.out.println("SQL stmt:" + sqlAbono);
+
+				PreparedStatement prepStmtA = conn.prepareStatement(sqlAbono);
+				recursos.add(prepStmtA);
+				ResultSet rsAbono = prepStmtA.executeQuery();
+
+				while(rsAbono.next())
+				{
+					String sqlB = "SELECT PRECIO FROM BOLETA INNER JOIN LOCALIDAD ON LOCALIDAD.ID_LOCALIDAD = BOLETA.ID_LOCALIDAD WHERE BOLETA.USUARIODOC = "
+							+ idCliente +" AND "
+							+ "FUNCION = "+Integer.parseInt(rsAbono.getString("ID_FUNCION"));
+
+					System.out.println("SQL stmt:" + sqlB);
+
+					PreparedStatement prepStmtB = conn.prepareStatement(sqlB);
+					recursos.add(prepStmtB);
+					ResultSet rsBoleta = prepStmtB.executeQuery();
+					if(rsBoleta.next())
+					{
+						valor += Integer.parseInt(rsBoleta.getString("PRECIO"));
+
+						String sqlDelete = "DELETE FROM BOLETA WHERE BOLETA.USUARIODOC = "
+								+ idCliente +" AND "
+								+ "FUNCION = "+Integer.parseInt(rsAbono.getString("ID_FUNCION"));
+
+						System.out.println("SQL stmt:" + sqlDelete);
+
+						PreparedStatement prepStmtD = conn.prepareStatement(sqlDelete);
+						recursos.add(prepStmtD);
+						prepStmtD.executeQuery();
+					}
+
+				}
+				String sqlDelete = "DELETE FROM ABONO WHERE CLIENTE ="+idCliente;
+
+					System.out.println("SQL stmt:" + sqlDelete);
+
+					PreparedStatement prepStmtD = conn.prepareStatement(sqlDelete);
+					recursos.add(prepStmtD);
+					prepStmtD.executeQuery();
+
+				String sql2 = "INSERT INTO NOTADEBITO (ID_CLIENTE,VALOR) VALUES ("
+						+idCliente+ ","
+						+valor+")";
+
+				System.out.println("SQL stmt:" + sql2);
+
+				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+				recursos.add(prepStmt2);
+				prepStmt2.executeQuery();
+
+
+				nota = new NotaDebito(idCliente, valor, false);
+
+			}
+			else
+			{
+				throw new Exception("Esta operación se puede hacer hasta tres (3) semanas antes del inicio de FestivAndes");
+			}
+		}
+		return nota;
 	}
 
 }

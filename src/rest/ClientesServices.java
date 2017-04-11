@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
 import vos.Abono;
+import vos.NotaDebito;
 import vos.Preferencia;
 import vos.Video;
 
@@ -96,4 +97,18 @@ public class ClientesServices {
 		return Response.status(200).entity(pref).build();
 	}
 	
+	@DELETE
+	@Path("abono/{idCliente}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteBoleta(@PathParam("idCliente") int idCliente) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		NotaDebito nota = null;
+		try {
+			nota = tm.deleteAbono(idCliente);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(nota).build();
+	}
 }

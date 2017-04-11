@@ -10,6 +10,7 @@ import java.util.List;
 import vos.Boleta;
 import vos.BoletaDetail;
 import vos.Funcion;
+import vos.NotaDebito;
 import vos.Usuario;
 import vos.BoletaDetail;
 
@@ -180,7 +181,7 @@ public class DAOTablaBoletas {
 				+ "ID_LOCALIDAD = '" + boletas.get(0).getLocalidad()+"' AND "
 				+ "FK_IDFUNCION = "+ boletas.get(0).getFuncion() ;
 		String loc = boletas.get(0).getLocalidad();
-		
+
 		System.out.println("SQL stmt:" + sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -206,7 +207,7 @@ public class DAOTablaBoletas {
 						PreparedStatement prepStmt2 = conn.prepareStatement(sql);
 						recursos.add(prepStmt2);
 						prepStmt2.executeQuery();
-						
+
 						sql = "UPDATE LOCALIDAD SET CUPOSDISPONIBLES = CUPOSDISPONIBLES-1 WHERE "
 								+ "ID_LOCALIDAD = '" + boletas.get(0).getLocalidad()+"' AND "
 								+ "FK_IDFUNCION = "+ boletas.get(0).getFuncion() ;
@@ -245,6 +246,66 @@ public class DAOTablaBoletas {
 		}	
 
 	}
-	
-	
+
+	public NotaDebito deleteBoleta(int idBoleta) throws SQLException,Exception {
+		String sql = "SELECT FECHA FROM FUNCION WHERE ID = (SELECT FUNCION FROM BOLETA WHERE ID = "
+				+ idBoleta +")";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		NotaDebito nota = null;
+
+		if(rs.next())
+		{
+			if(rs.getDate("FECHA").getTime() - System.currentTimeMillis() > 432000000)
+			{
+				String sql2 = "INSERT INTO NOTADEBITO (ID_CLIENTE,VALOR) VALUES ("
+						+ "(SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+"),"
+						+ "(SELECT PRECIO FROM BOLETA INNER JOIN LOCALIDAD ON LOCALIDAD.ID_LOCALIDAD = BOLETA.ID_LOCALIDAD WHERE ID ="
+						+idBoleta+")) ";
+
+				System.out.println("SQL stmt:" + sql2);
+
+				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+				recursos.add(prepStmt2);
+				prepStmt2.executeQuery();
+
+				String sql4 = "SELECT * FROM NOTADEBITO WHERE ID_CLIENTE = (SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+")";
+
+				System.out.println("SQL stmt:" + sql4);
+
+				PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
+				recursos.add(prepStmt4);
+				ResultSet r2 =prepStmt4.executeQuery();
+				if(r2.next())
+				{
+					int cliente = Integer.parseInt(r2.getString(1));
+					int valor = Integer.parseInt(r2.getString(2));
+					boolean reclamada = r2.getString(3).equals("Y") ? true : false;
+					nota = new NotaDebito(cliente, valor, reclamada);
+				}
+
+				String sql3 = "DELETE FROM BOLETA WHERE ID = "
+						+ idBoleta;
+
+				System.out.println("SQL stmt:" + sql3);
+
+				PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+				recursos.add(prepStmt3);
+				prepStmt3.executeQuery();
+
+			}
+			else
+			{
+				throw new Exception("Esta operación se puede hacer hasta cinco (5) días antes de la función");
+			}
+		}
+		return nota;
+	}
+
+
 }

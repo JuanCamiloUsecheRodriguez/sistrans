@@ -2,6 +2,7 @@ package rest;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,6 +19,7 @@ import vos.BoletaDetail;
 import vos.CompraBoletas;
 import vos.ListaBoletas;
 import vos.ListaVideos;
+import vos.NotaDebito;
 import vos.Preferencia;
 
 @Path("boletas")
@@ -54,6 +56,21 @@ public class BoletasServices {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(listaBoletas).build();
+	}
+	
+	@DELETE
+	@Path("/{idBoleta}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteBoleta(@PathParam("idBoleta") int idBoleta) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		NotaDebito nota = null;
+		try {
+			nota = tm.deleteBoleta(idBoleta);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(nota).build();
 	}
 	
 	@GET

@@ -17,6 +17,7 @@ import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
 import vos.Abono;
 import vos.ListaReporteAsistencia;
+import vos.ListaReporteCompania;
 import vos.NotaDebito;
 import vos.Preferencia;
 import vos.Video;
@@ -51,6 +52,21 @@ public class ClientesServices {
 		ListaReporteAsistencia reporte = null;
 		try {
 			reporte = tm.darReporteAsistencia(idUsuario);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(reporte).build();
+	}
+	
+	
+	@GET
+	@Path("/{idCompania}/reporteCompania")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response consultarCompania(@PathParam("idCompania")int idCompania){
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaReporteCompania reporte = null;
+		try {
+			reporte = tm.darReporteCompania(idCompania);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

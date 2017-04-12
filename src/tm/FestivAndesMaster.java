@@ -26,6 +26,7 @@ import vos.ListaBoletas;
 import vos.ListaFunciones;
 import vos.ListaNotas;
 import vos.ListaReporteAsistencia;
+import vos.ListaReporteCompania;
 import vos.ListaReporteEspectaculo;
 import vos.ListaReporteFuncion;
 import vos.ListaSitios;
@@ -34,6 +35,7 @@ import vos.ListaVideos;
 import vos.NotaDebito;
 import vos.Preferencia;
 import vos.ReporteAsistencia;
+import vos.ReporteCompania;
 import vos.ReporteEspectaculo;
 import vos.ReporteFuncion;
 import vos.Sitio;
@@ -894,9 +896,9 @@ public class FestivAndesMaster {
 		return new ListaNotas(r);
 	}
 
-	public ListaReporteAsistencia darReporteAsistencia(int idUsuario) throws SQLException , Exception{
+	public ListaReporteAsistencia darReporteAsistencia(int idUsuario) {
 		ArrayList<ReporteAsistencia> reportes;
-		DAOTablaClientes daoClientes = new DAOTablaClientes();
+		DAOTablaClientes daoClientes = new DAOTablaClientes();throws SQLException , Exception
 		
 		try 
 		{
@@ -926,6 +928,40 @@ public class FestivAndesMaster {
 			}
 		}
 		return new ListaReporteAsistencia(reportes);
+	}
+
+	public ListaReporteCompania darReporteCompania(int idCompania) throws SQLException , Exception{
+		ArrayList<ReporteCompania> reportes;
+		DAOTablaClientes daoClientes = new DAOTablaClientes();
+		
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoClientes.setConn(conn);
+			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			reportes = daoClientes.darReporteCompania(idCompania);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoClientes.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaReporteCompania(reportes);
 	}
 
 }

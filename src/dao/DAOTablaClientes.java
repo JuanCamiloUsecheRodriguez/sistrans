@@ -11,6 +11,7 @@ import vos.Cliente;
 import vos.NotaDebito;
 import vos.Preferencia;
 import vos.ReporteAsistencia;
+import vos.ReporteCompania;
 import vos.Usuario;
 import vos.Video;
 
@@ -18,17 +19,17 @@ public class DAOTablaClientes {
 
 
 	/**
-	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
+	 * Arraylits de recursos que se usan para la ejecuciÃ³n de sentencias SQL
 	 */
 	private ArrayList<Object> recursos;
 
 	/**
-	 * Atributo que genera la conexión a la base de datos
+	 * Atributo que genera la conexiÃ³n a la base de datos
 	 */
 	private Connection conn;
 
 	/**
-	 * Método constructor que crea DAOCliente
+	 * MÃ©todo constructor que crea DAOCliente
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
 	public DAOTablaClientes() {
@@ -36,7 +37,7 @@ public class DAOTablaClientes {
 	}
 
 	/**
-	 * Método que cierra todos los recursos que estan enel arreglo de recursos
+	 * MÃ©todo que cierra todos los recursos que estan enel arreglo de recursos
 	 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
 	 */
 	public void cerrarRecursos() {
@@ -51,7 +52,7 @@ public class DAOTablaClientes {
 	}
 
 	/**
-	 * Método que inicializa la connection del DAO a la base de datos con la conexión que entra como parámetro.
+	 * MÃ©todo que inicializa la connection del DAO a la base de datos con la conexiÃ³n que entra como parÃ¡metro.
 	 * @param con  - connection a la base de datos
 	 */
 	public void setConn(Connection con){
@@ -210,7 +211,7 @@ public class DAOTablaClientes {
 			}
 			else
 			{
-				throw new Exception("Esta operación se puede hacer hasta tres (3) semanas antes del inicio de FestivAndes");
+				throw new Exception("Esta operacioÌ�n se puede hacer hasta tres (3) semanas antes del inicio de FestivAndes");
 			}
 		}
 		return nota;
@@ -283,6 +284,11 @@ public class DAOTablaClientes {
 		}
 		
 		return reporte;
+	}
+
+	public ArrayList<ReporteCompania> darReporteCompania(int idCompania) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

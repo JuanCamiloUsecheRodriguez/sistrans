@@ -896,9 +896,9 @@ public class FestivAndesMaster {
 		return new ListaNotas(r);
 	}
 
-	public ListaReporteAsistencia darReporteAsistencia(int idUsuario) {
+	public ListaReporteAsistencia darReporteAsistencia(int idUsuario)throws SQLException , Exception {
 		ArrayList<ReporteAsistencia> reportes;
-		DAOTablaClientes daoClientes = new DAOTablaClientes();throws SQLException , Exception
+		DAOTablaClientes daoClientes = new DAOTablaClientes();
 		
 		try 
 		{

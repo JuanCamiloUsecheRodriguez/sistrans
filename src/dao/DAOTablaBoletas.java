@@ -289,7 +289,7 @@ public class DAOTablaBoletas {
 					nota = new NotaDebito(cliente, valor, reclamada);
 				}
 
-				String sql3 = "DELETE FROM BOLETA WHERE ID = "
+				String sql3 = "UPDATE BOLETA SET DEVUELTA = 'Y' WHERE ID = "
 						+ idBoleta;
 
 				System.out.println("SQL stmt:" + sql3);

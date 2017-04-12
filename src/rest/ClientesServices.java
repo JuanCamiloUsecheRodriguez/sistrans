@@ -3,6 +3,7 @@ package rest;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
 import vos.Abono;
+import vos.ListaReporteAsistencia;
 import vos.NotaDebito;
 import vos.Preferencia;
 import vos.Video;
@@ -40,6 +42,22 @@ public class ClientesServices {
 	private String doErrorMessage(Exception e){
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
 	}
+	
+	@GET
+	@Path("/{idUsuario}/reporteAsistencia")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response consultarAsistencia(@PathParam("idUsuario")int idUsuario){
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaReporteAsistencia reporte = null;
+		try {
+			reporte = tm.darReporteAsistencia(idUsuario);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(reporte).build();
+	}
+	
+	
 	
 	@POST
 	@Path("/abono")

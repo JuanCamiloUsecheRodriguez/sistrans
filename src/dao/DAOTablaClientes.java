@@ -10,6 +10,7 @@ import vos.Abono;
 import vos.Cliente;
 import vos.NotaDebito;
 import vos.Preferencia;
+import vos.ReporteAsistencia;
 import vos.Usuario;
 import vos.Video;
 
@@ -213,6 +214,75 @@ public class DAOTablaClientes {
 			}
 		}
 		return nota;
+	}
+
+	public ArrayList<ReporteAsistencia> darReporteAsistencia(int idUsuario) throws SQLException , Exception{
+		ArrayList<ReporteAsistencia> reporte = new ArrayList<>();
+		
+		String sql = "SELECT ROL FROM USUARIO WHERE NUMDOCUMENTO = "+idUsuario;
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		if(rs.next())
+		{
+			if(rs.getString(1).equals("ADMIN"))
+			{
+				String sqlAdmin = "SELECT IDCLIENTE, ID AS IDFUNCION, IDBOLETA, REALIZADA AS FUNCIONREALIZADA, DEVUELTA FROM "
+						+ "(SELECT USUARIODOC AS IDCLIENTE, FUNCION, ID AS IDBOLETA, DEVUELTA FROM BOLETA)T1 "
+						+ "INNER JOIN FUNCION ON T1.FUNCION = FUNCION.ID ORDER BY DEVUELTA,FUNCIONREALIZADA DESC";
+
+				System.out.println("SQL stmt:" + sqlAdmin);
+
+				PreparedStatement prepStmtAdmin = conn.prepareStatement(sqlAdmin);
+				recursos.add(prepStmtAdmin);
+				ResultSet rsAdmin = prepStmtAdmin.executeQuery();
+				while(rsAdmin.next())
+				{
+					int idCliente = Integer.parseInt(rsAdmin.getString(1));
+					int idFuncion = Integer.parseInt(rsAdmin.getString(2));
+					int idBoleta = Integer.parseInt(rsAdmin.getString(3));
+					boolean funcionRealizada = rsAdmin.getString(4).equals("Y") ? true: false;
+					boolean devuelta= rsAdmin.getString(5).equals("Y") ? true: false;
+					
+					reporte.add(new ReporteAsistencia(idCliente, idFuncion, idBoleta, funcionRealizada, devuelta));
+				}
+			}
+			else if(rs.getString(1).equals("USUARIO"))
+			{
+				String sqlUsuario = "SELECT IDCLIENTE, ID AS IDFUNCION, IDBOLETA, REALIZADA AS FUNCIONREALIZADA, DEVUELTA FROM "
+						+ "(SELECT USUARIODOC AS IDCLIENTE, FUNCION, ID AS IDBOLETA, DEVUELTA FROM BOLETA)T1 "
+						+ "INNER JOIN FUNCION ON T1.FUNCION = FUNCION.ID "
+						+ "WHERE IDCLIENTE = "+idUsuario+" ORDER BY DEVUELTA,FUNCIONREALIZADA DESC";
+
+				System.out.println("SQL stmt:" + sqlUsuario);
+
+				PreparedStatement prepStmtUsuario = conn.prepareStatement(sqlUsuario);
+				recursos.add(prepStmtUsuario);
+				ResultSet rsUsuario= prepStmtUsuario.executeQuery();
+				while(rsUsuario.next())
+				{
+					int idCliente = Integer.parseInt(rsUsuario.getString(1));
+					int idFuncion = Integer.parseInt(rsUsuario.getString(2));
+					int idBoleta = Integer.parseInt(rsUsuario.getString(3));
+					boolean funcionRealizada = rsUsuario.getString(4).equals("Y") ? true: false;
+					boolean devuelta= rsUsuario.getString(5).equals("Y") ? true: false;
+					
+					reporte.add(new ReporteAsistencia(idCliente, idFuncion, idBoleta, funcionRealizada, devuelta));
+				}
+			}
+			else{
+				throw new Exception("Consulta no permitida para representantes");
+			}
+		}
+		else
+		{
+			throw new Exception("Usuario no registrado en el sistema.");
+		}
+		
+		return reporte;
 	}
 
 }

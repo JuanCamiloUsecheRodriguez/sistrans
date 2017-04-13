@@ -62,7 +62,7 @@ public class ClientesServices {
 	@GET
 	@Path("/{idCompania}/reporteCompania")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response consultarCompania(@PathParam("idCompania")int idCompania){
+	public Response darReporteCompania(@PathParam("idCompania")int idCompania){
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaReporteCompania reporte = null;
 		try {
@@ -135,7 +135,7 @@ public class ClientesServices {
 	@Path("abono/{idCliente}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteBoleta(@PathParam("idCliente") int idCliente) {
+	public Response deleteAbono(@PathParam("idCliente") int idCliente) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		NotaDebito nota = null;
 		try {

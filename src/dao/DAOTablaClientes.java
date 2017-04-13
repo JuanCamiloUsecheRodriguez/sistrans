@@ -195,9 +195,9 @@ public class DAOTablaClientes {
 					recursos.add(prepStmtD);
 					prepStmtD.executeQuery();
 
-				String sql2 = "INSERT INTO NOTADEBITO (ID_CLIENTE,VALOR) VALUES ("
+				String sql2 = "INSERT INTO NOTADEBITO (ID_CLIENTE,VALOR,ID) VALUES ("
 						+idCliente+ ","
-						+valor+")";
+						+valor+",SEC_NOTADEBITO.NEXTVAL)";
 
 				System.out.println("SQL stmt:" + sql2);
 
@@ -286,9 +286,104 @@ public class DAOTablaClientes {
 		return reporte;
 	}
 
-	public ArrayList<ReporteCompania> darReporteCompania(int idCompania) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<ReporteCompania> darReporteCompania(int idCompania) throws NumberFormatException, SQLException ,Exception{
+		ArrayList<ReporteCompania> reporte = new ArrayList<>();
+		
+		String sql = "SELECT ROL FROM USUARIO WHERE NUMDOCUMENTO = "+idCompania;
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		if(rs.next())
+		{
+			if(rs.getString(1).equals("ADMIN"))
+			{
+				String sqlAdmin = "SELECT COUNT(USUARIODOC) AS ASISTENCIATOTAL, "
+								+ "COUNT(ID_CLIENTE) AS ASISTENCIACLIENTES,SUM(PRECIO),IDCOMPANIA,IDESPECTACULO FROM "
+								+ "(SELECT * FROM PATROCINA INNER JOIN (SELECT ID AS ID_ESPECTACULO FROM ESPECTACULO)ESP "
+								+ "ON PATROCINA.IDESPECTACULO = ESP.ID_ESPECTACULO)T1 "
+								+ "INNER JOIN (SELECT * FROM (SELECT IDFUNCION,REALIZADA,ESPECTACULO,IDBOLETA,IDLOCALIDAD,PRECIO,USUARIODOC FROM "
+								+ "(SELECT * FROM (SELECT ID AS IDFUNCION ,REALIZADA, ESPECTACULO FROM FUNCION WHERE REALIZADA = 'Y')FUNC "
+								+ "INNER JOIN (SELECT ID AS IDBOLETA,USUARIODOC,ID_LOCALIDAD,FUNCION,DEVUELTA FROM BOLETA)BOL "
+								+ "ON FUNC.IDFUNCION = BOL.FUNCION)T2 "
+								+ "INNER JOIN (SELECT ID_LOCALIDAD AS IDLOCALIDAD,FK_IDFUNCION,PRECIO FROM LOCALIDAD)LOC "
+								+ "ON T2.ID_LOCALIDAD = LOC.IDLOCALIDAD)T3 "
+								+ "FULL OUTER JOIN (SELECT ID_CLIENTE FROM CLIENTE)CLI ON T3.USUARIODOC = CLI.ID_CLIENTE)T4 "
+								+ "ON T1.ID_ESPECTACULO = T4.ESPECTACULO group by IDCOMPANIA, IDESPECTACULO ";
+								
+				System.out.println("SQL stmt:" + sqlAdmin);
+
+				PreparedStatement prepStmtAdmin = conn.prepareStatement(sqlAdmin);
+				recursos.add(prepStmtAdmin);
+				ResultSet rsAdmin = prepStmtAdmin.executeQuery();
+				while(rsAdmin.next())
+				{
+					int compania = Integer.parseInt(rsAdmin.getString(4));
+					int idEspectaculo = Integer.parseInt(rsAdmin.getString(5));
+					int asistenciaTotal = Integer.parseInt(rsAdmin.getString(1));
+					int asistenciaClientes = Integer.parseInt(rsAdmin.getString(2));
+					int dineroGeneradoTaquilla = Integer.parseInt(rsAdmin.getString(3));
+					
+					reporte.add(new ReporteCompania(compania, idEspectaculo, asistenciaTotal, asistenciaClientes, dineroGeneradoTaquilla));
+				}
+			}
+			else if(rs.getString(1).equals("REPRESENTANTE"))
+			{
+				int comp = 0;
+				
+				String sqlComp = "SELECT ID_COMPANIA FROM REPRESENTA WHERE ID_REPRESENTANTE = "+idCompania;
+
+				System.out.println("SQL stmt:" + sqlComp);
+
+				PreparedStatement prepStmtComp = conn.prepareStatement(sqlComp);
+				recursos.add(prepStmtComp);
+				ResultSet rsComp= prepStmtComp.executeQuery();
+				if(rsComp.next())
+				{
+					comp = Integer.parseInt(rsComp.getString(1));
+				}
+				
+				String sqlUsuario = "SELECT COUNT(USUARIODOC) AS ASISTENCIATOTAL, "
+						+ "COUNT(ID_CLIENTE) AS ASISTENCIACLIENTES,SUM(PRECIO),IDCOMPANIA,IDESPECTACULO FROM "
+						+ "(SELECT * FROM PATROCINA INNER JOIN (SELECT ID AS ID_ESPECTACULO FROM ESPECTACULO)ESP "
+						+ "ON PATROCINA.IDESPECTACULO = ESP.ID_ESPECTACULO)T1 "
+						+ "INNER JOIN (SELECT * FROM (SELECT IDFUNCION,REALIZADA,ESPECTACULO,IDBOLETA,IDLOCALIDAD,PRECIO,USUARIODOC FROM "
+						+ "(SELECT * FROM (SELECT ID AS IDFUNCION ,REALIZADA, ESPECTACULO FROM FUNCION WHERE REALIZADA = 'Y')FUNC "
+						+ "INNER JOIN (SELECT ID AS IDBOLETA,USUARIODOC,ID_LOCALIDAD,FUNCION,DEVUELTA FROM BOLETA)BOL "
+						+ "ON FUNC.IDFUNCION = BOL.FUNCION)T2 "
+						+ "INNER JOIN (SELECT ID_LOCALIDAD AS IDLOCALIDAD,FK_IDFUNCION,PRECIO FROM LOCALIDAD)LOC "
+						+ "ON T2.ID_LOCALIDAD = LOC.IDLOCALIDAD)T3 "
+						+ "FULL OUTER JOIN (SELECT ID_CLIENTE FROM CLIENTE)CLI ON T3.USUARIODOC = CLI.ID_CLIENTE)T4 "
+						+ "ON T1.ID_ESPECTACULO = T4.ESPECTACULO WHERE IDCOMPANIA = "+comp+" group by IDCOMPANIA, IDESPECTACULO ";
+
+				System.out.println("SQL stmt:" + sqlUsuario);
+
+				PreparedStatement prepStmtUsuario = conn.prepareStatement(sqlUsuario);
+				recursos.add(prepStmtUsuario);
+				ResultSet rsUsuario= prepStmtUsuario.executeQuery();
+				while(rsUsuario.next())
+				{
+					int compania = Integer.parseInt(rsUsuario.getString(4));
+					int idEspectaculo = Integer.parseInt(rsUsuario.getString(5));
+					int asistenciaTotal = Integer.parseInt(rsUsuario.getString(1));
+					int asistenciaClientes = Integer.parseInt(rsUsuario.getString(2));
+					int dineroGeneradoTaquilla = Integer.parseInt(rsUsuario.getString(3));
+					
+					reporte.add(new ReporteCompania(compania, idEspectaculo, asistenciaTotal, asistenciaClientes, dineroGeneradoTaquilla));
+				}
+			}
+			else{
+				throw new Exception("Consulta no permitida para clientes");
+			}
+		}
+		else
+		{
+			throw new Exception("Usuario no registrado en el sistema.");
+		}
+			
+		return reporte;
 	}
 
 }

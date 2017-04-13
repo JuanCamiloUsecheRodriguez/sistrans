@@ -197,9 +197,9 @@ public class DAOTablaBoletas {
 					{
 						sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
 						sql += boletas.get(i).getSilla()+ ",";
-						sql += boletas.get(i).getUsario() + ",'";
-						sql += boletas.get(i).getLocalidad()+ "',";
-						sql += boletas.get(i).getFuncion()+ ")";
+						sql += boletas.get(i).getUsario() + ",";
+						sql += boletas.get(i).getLocalidad()+ ",";
+						sql += boletas.get(i).getFuncion()+ ",'N')";
 
 
 						System.out.println("SQL stmt:" + sql);
@@ -229,10 +229,10 @@ public class DAOTablaBoletas {
 				for (int i = 0; i < boletas.size() ; i++) {
 
 					sql = "INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
-					sql += boletas.get(i).getSilla()+ ",";
+					sql +=  "NULL,";
 					sql += boletas.get(i).getUsario() + ",'";
 					sql += boletas.get(i).getLocalidad()+ "',";
-					sql += boletas.get(i).getFuncion()+ ")";
+					sql += boletas.get(i).getFuncion()+ ",'N')";
 
 					System.out.println("SQL stmt:" + sql);
 
@@ -248,6 +248,7 @@ public class DAOTablaBoletas {
 	}
 
 	public NotaDebito deleteBoleta(int idBoleta) throws SQLException,Exception {
+		
 		String sql = "SELECT FECHA FROM FUNCION WHERE ID = (SELECT FUNCION FROM BOLETA WHERE ID = "
 				+ idBoleta +")";
 
@@ -263,32 +264,7 @@ public class DAOTablaBoletas {
 		{
 			if(rs.getDate("FECHA").getTime() - System.currentTimeMillis() > 432000000)
 			{
-				String sql2 = "INSERT INTO NOTADEBITO (ID_CLIENTE,VALOR) VALUES ("
-						+ "(SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+"),"
-						+ "(SELECT PRECIO FROM BOLETA INNER JOIN LOCALIDAD ON LOCALIDAD.ID_LOCALIDAD = BOLETA.ID_LOCALIDAD WHERE ID ="
-						+idBoleta+")) ";
-
-				System.out.println("SQL stmt:" + sql2);
-
-				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
-				recursos.add(prepStmt2);
-				prepStmt2.executeQuery();
-
-				String sql4 = "SELECT * FROM NOTADEBITO WHERE ID_CLIENTE = (SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+")";
-
-				System.out.println("SQL stmt:" + sql4);
-
-				PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
-				recursos.add(prepStmt4);
-				ResultSet r2 =prepStmt4.executeQuery();
-				if(r2.next())
-				{
-					int cliente = Integer.parseInt(r2.getString(1));
-					int valor = Integer.parseInt(r2.getString(2));
-					boolean reclamada = r2.getString(3).equals("Y") ? true : false;
-					nota = new NotaDebito(cliente, valor, reclamada);
-				}
-
+				
 				String sql3 = "UPDATE BOLETA SET DEVUELTA = 'Y' WHERE ID = "
 						+ idBoleta;
 
@@ -304,8 +280,46 @@ public class DAOTablaBoletas {
 				throw new Exception("Esta operación se puede hacer hasta cinco (5) días antes de la función");
 			}
 		}
+		else
+		{
+			throw new Exception("la boleta con id: "+idBoleta+" no existe.");
+		}
 		return nota;
 	}
+	
+		public NotaDebito addNotasDebito(int idBoleta ) throws SQLException,Exception {
 
+		NotaDebito nota = null;
+		
+		String sql2 = "INSERT INTO NOTADEBITO (ID_CLIENTE,VALOR,ID) VALUES ("
+				+ "(SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+"),"
+				+ "(SELECT PRECIO FROM BOLETA INNER JOIN LOCALIDAD ON LOCALIDAD.ID_LOCALIDAD = BOLETA.ID_LOCALIDAD WHERE ID ="
+				+idBoleta+"),SEC_NOTADEBITO.NEXTVAL) ";
+
+		System.out.println("SQL stmt:" + sql2);
+
+		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+		recursos.add(prepStmt2);
+		prepStmt2.executeQuery();
+		
+
+		String sql4 = "SELECT * FROM NOTADEBITO WHERE ID_CLIENTE = (SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+")";
+
+		System.out.println("SQL stmt:" + sql4);
+
+		PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
+		recursos.add(prepStmt4);
+		ResultSet r2 =prepStmt4.executeQuery();
+		while(r2.next())
+		{
+			int cliente = Integer.parseInt(r2.getString(1));
+			int valor = Integer.parseInt(r2.getString(2));
+			boolean reclamada = r2.getString(3).equals("Y") ? true : false;
+			nota = new NotaDebito(cliente, valor, reclamada);
+		}
+	
+		return nota;
+	}
+		
 
 }

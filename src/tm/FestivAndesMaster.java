@@ -858,6 +858,48 @@ public class FestivAndesMaster {
 		}
 		return r;
 	}
+	
+	public ListaNotas generarNotas(List<Integer> boletas) throws SQLException, Exception{
+		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
+		this.conn = darConexion();
+		daoBoletas.setConn(conn);
+		conn.setAutoCommit(false);
+		Savepoint s = conn.setSavepoint("notaDebito");
+		List<NotaDebito> r = new ArrayList<NotaDebito>();
+		try 
+		{
+			//////Transacción
+			for (int i = 0; i < boletas.size(); i++) {
+				r.add(daoBoletas.addNotasDebito(boletas.get(i)));
+				conn.commit();
+			}
+			
+			
+			
+
+		} catch (SQLException e) {
+			conn.rollback(s);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			conn.rollback(s);
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoBoletas.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaNotas(r);
+	}
 
 	public ListaNotas deleteFuncion(int idFuncion) throws SQLException, Exception{
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
@@ -865,12 +907,16 @@ public class FestivAndesMaster {
 		daoFunciones.setConn(conn);
 		conn.setAutoCommit(false);
 		Savepoint s = conn.setSavepoint("deleteBoleta");
-		List<NotaDebito> r = null;
+		ListaNotas r = null;
+		List<Integer> boletas = null;
 		try 
 		{
 			//////Transacción
-			r = daoFunciones.deleteFuncion(idFuncion);
+			boletas = daoFunciones.deleteFuncion(idFuncion);
+			
 			conn.commit();
+			
+			r = generarNotas(boletas);
 
 		} catch (SQLException e) {
 			conn.rollback(s);
@@ -893,7 +939,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return new ListaNotas(r);
+		return r;
 	}
 
 	public ListaReporteAsistencia darReporteAsistencia(int idUsuario)throws SQLException , Exception {

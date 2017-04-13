@@ -307,11 +307,11 @@ public class DAOTablaFunciones {
 		return reporte;
 	}
 
-	public List<NotaDebito> deleteFuncion(int idFuncion) throws SQLException, Exception {
+	public List<Integer> deleteFuncion(int idFuncion) throws SQLException, Exception {
 		//revisar realizada
 		//usar metodo deleteBoleta y guardar notas
 		//borrar funcion
-		ArrayList<NotaDebito> respuesta = new ArrayList<NotaDebito>();
+		ArrayList<Integer> respuesta = new ArrayList<Integer>();
 		
 		String sql =   "SELECT REALIZADA FROM FUNCION WHERE ID ="+idFuncion;
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -328,17 +328,14 @@ public class DAOTablaFunciones {
 			ResultSet rs2 = prepStmt2.executeQuery();
 			while(rs2.next())
 			{
-				DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
-				daoBoletas.setConn(conn);
-				NotaDebito n = daoBoletas.deleteBoleta(Integer.parseInt(rs2.getString(1))); 
-				respuesta.add(n);
+				respuesta.add(Integer.parseInt(rs2.getString(1)));
 			}
 			
-			String sql3 =   "DELETE FROM BOLETA WHERE FUNCION ="+idFuncion;
-			PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
-			recursos.add(prepStmt3);
-			System.out.println("SQL stmt:" + sql3);
-			prepStmt3.executeQuery();
+//			String sql3 =   "DELETE FROM BOLETA WHERE FUNCION ="+idFuncion;
+//			PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+//			recursos.add(prepStmt3);
+//			System.out.println("SQL stmt:" + sql3);
+//			prepStmt3.executeQuery();
 			
 		}
 		else{

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import vos.Abono;
 import vos.Cliente;
@@ -386,4 +387,6 @@ public class DAOTablaClientes {
 		return reporte;
 	}
 
+	
+	
 }

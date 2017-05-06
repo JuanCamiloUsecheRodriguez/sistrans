@@ -147,6 +147,36 @@ public class FuncionesServices {
 		return Response.status(200).entity(reporte).build();
 	}
 	
+	@GET
+	@Path("/reporte/RFC9/{companiaId}/{fechaI}/{fechaF}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getConsultarAsistenciaRFC9(@PathParam("companiaId")int companiaId,@PathParam("fechaI")String fechaI,@PathParam("fechaF")String fechaF) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaUsuarios reporte;
+		
+		try {
+			reporte = tm.darAsistenciaRFC9(companiaId, fechaI, fechaF);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(reporte).build();
+	}
+	
+	@GET
+	@Path("/reporte/RFC10/{companiaId}/{fechaI}/{fechaF}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getConsultarAsistenciaRFC10(@PathParam("companiaId")int companiaId,@PathParam("fechaI")String fechaI,@PathParam("fechaF")String fechaF) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaUsuarios reporte;
+		
+		try {
+			reporte = tm.darAsistenciaRFC10(companiaId, fechaI, fechaF);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(reporte).build();
+	}
+	
 	@DELETE
 	@Path("/{idFuncion}")
 	@Consumes(MediaType.APPLICATION_JSON)

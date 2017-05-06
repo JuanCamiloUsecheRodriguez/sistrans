@@ -15,6 +15,7 @@ import vos.ListaReporteFuncion;
 import vos.NotaDebito;
 import vos.ReporteFuncion;
 import vos.Sitio;
+import vos.Usuario;
 import vos.Video;
 
 public class DAOTablaFunciones {
@@ -346,5 +347,77 @@ public class DAOTablaFunciones {
 		
 		return respuesta;
 
+	}
+	
+	public List<Usuario> consultarAsistenciaRFC9(int companiaId, String fechaI, String fechaF) throws SQLException{
+		ArrayList<Usuario> respuesta = new ArrayList<>();
+		
+		String fechaMenor = fechaI.replace("-", "/");
+		String fechaMayor = fechaF.replace("-", "/");
+		
+		String sql = "SELECT NUMDOCUMENTO,USUARIO.NOMBRE,EMAIL,ROL,USUARIO,PASSWORD FROM USUARIO"
+				+ " INNER JOIN BOLETA ON USUARIO.NUMDOCUMENTO = BOLETA.USUARIODOC"
+				+ " INNER JOIN FUNCION ON BOLETA.FUNCION = FUNCION.ID"
+				+ " INNER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID"
+				+ " INNER JOIN PATROCINA ON ESPECTACULO.ID = PATROCINA.IDESPECTACULO"
+				+ " INNER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID"
+				+ " WHERE COMPANIA.ID =" + companiaId
+				+ " AND FUNCION.FECHA BETWEEN TO_DATE('"+fechaMayor+"','DD/MM/RR')"
+				+ " AND TO_DATE('"+fechaMenor+"','DD/MM/RR')";
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		System.out.println("SQL stmt:" + sql);
+		ResultSet rs = prepStmt.executeQuery();
+		
+		while(rs.next()){
+			int numDocumento = rs.getInt(1);
+			String nombre = rs.getString(2);
+			String email = rs.getString(3);
+			String rol = rs.getString(4);
+			String usuario = rs.getString(5);
+			String password = rs.getString(6);
+			
+			respuesta.add(new Usuario(numDocumento, nombre, email, rol, usuario, password));
+		}
+		
+		return respuesta;
+	}
+	
+	public List<Usuario> consultarAsistenciaRFC10(int companiaId, String fechaI, String fechaF) throws SQLException{
+		ArrayList<Usuario> respuesta = new ArrayList<>();
+		
+		String fechaMenor = fechaI.replace("-", "/");
+		String fechaMayor = fechaF.replace("-", "/");
+		
+		String sql = "SELECT NUMDOCUMENTO,USUARIO.NOMBRE,EMAIL,ROL,USUARIO,PASSWORD"
+				+ " FROM USUARIO"
+				+ " FULL OUTER JOIN BOLETA ON USUARIO.NUMDOCUMENTO = BOLETA.USUARIODOC"
+				+ " INNER JOIN FUNCION ON BOLETA.FUNCION = FUNCION.ID"
+				+ " INNER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID"
+				+ "	INNER JOIN PATROCINA ON ESPECTACULO.ID = PATROCINA.IDESPECTACULO"
+				+ "	INNER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID"
+				+ "	WHERE COMPANIA.ID = " + companiaId
+				+ " AND FUNCION.FECHA BETWEEN TO_DATE('"+fechaMenor+"','DD/MM/RR') "
+				+ " AND TO_DATE('"+fechaMayor+"','DD/MM/RR')"
+				+ " AND BOLETA.ID = NULL";
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		System.out.println("SQL stmt:" + sql);
+		ResultSet rs = prepStmt.executeQuery();
+		
+		while(rs.next()){
+			int numDocumento = rs.getInt(1);
+			String nombre = rs.getString(2);
+			String email = rs.getString(3);
+			String rol = rs.getString(4);
+			String usuario = rs.getString(5);
+			String password = rs.getString(6);
+			
+			respuesta.add(new Usuario(numDocumento, nombre, email, rol, usuario, password));
+		}
+		
+		return respuesta;
 	}
 }

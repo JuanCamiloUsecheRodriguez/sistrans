@@ -20,11 +20,14 @@ import dao.DAOTablaVideos;
 import vos.Abono;
 import vos.Boleta;
 import vos.BoletaDetail;
+import vos.BuenCliente;
 import vos.CompraBoletas;
 import vos.Funcion;
 import vos.ListaBoletas;
+import vos.ListaBuenCliente;
 import vos.ListaFunciones;
 import vos.ListaNotas;
+import vos.ListaRFC11;
 import vos.ListaReporteAsistencia;
 import vos.ListaReporteCompania;
 import vos.ListaReporteEspectaculo;
@@ -34,6 +37,7 @@ import vos.ListaUsuarios;
 import vos.ListaVideos;
 import vos.NotaDebito;
 import vos.Preferencia;
+import vos.RFC11;
 import vos.ReporteAsistencia;
 import vos.ReporteCompania;
 import vos.ReporteEspectaculo;
@@ -1010,4 +1014,133 @@ public class FestivAndesMaster {
 		return new ListaReporteCompania(reportes);
 	}
 
+	public ListaUsuarios darAsistenciaRFC9(int companiaId,String fechaI, String fechaF) throws Exception {
+		List<Usuario> usuarios;
+		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoFunciones.setConn(conn);
+			usuarios = daoFunciones.consultarAsistenciaRFC9(companiaId, fechaI, fechaF);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaUsuarios(usuarios);
+	}
+	
+	public ListaUsuarios darAsistenciaRFC10(int companiaId,String fechaI, String fechaF) throws Exception {
+		List<Usuario> usuarios;
+		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoFunciones.setConn(conn);
+			usuarios = daoFunciones.consultarAsistenciaRFC10(companiaId, fechaI, fechaF);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaUsuarios(usuarios);
+	}
+	
+	public ListaRFC11 consultarComprasRFC11(int idGerente,String pfechaI,String pfechaF, String[] requerimientos,String localidad ) throws Exception {
+		List<RFC11> reporte;
+		DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoUsuarios.setConn(conn);
+			reporte = daoUsuarios.consultarCompras(idGerente, pfechaI, pfechaF, requerimientos, localidad);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuarios.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaRFC11(reporte);
+	}
+	
+	public ListaBuenCliente consultarBuenosClientes(int idGerente,int cantboletas ) throws Exception {
+		List<BuenCliente> reporte;
+		DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoUsuarios.setConn(conn);
+			reporte = daoUsuarios.consultarBuenosClientes(idGerente, cantboletas);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuarios.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaBuenCliente(reporte);
+	}
+	
+	
 }

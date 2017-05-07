@@ -1142,5 +1142,34 @@ public class FestivAndesMaster {
 		return new ListaBuenCliente(reporte);
 	}
 	
+	public void generarUsuarios(int inicial,int cant) throws SQLException{
+		DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoUsuarios.setConn(conn);
+			daoUsuarios.generarDatos(inicial, cant);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuarios.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
 	
 }

@@ -22,7 +22,7 @@ public class PeticionRFC11 {
 	public PeticionRFC11(
 			@JsonProperty(value="idGerente")int idGerente, 
 			@JsonProperty(value="fechaI")String fechaI, 
-			@JsonProperty(value="requerimientos")String fechaF, 
+			@JsonProperty(value="fechaF")String fechaF, 
 			@JsonProperty(value="requerimientos")String[] requerimientos, 
 			@JsonProperty(value="localidad")String localidad) {
 		super();

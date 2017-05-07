@@ -103,9 +103,15 @@ public class DAOTablaUsuarios {
 	public String aux(String[] s){
 		String r = "";
 		for (int i = 0; i < s.length; i++) {
-			r += "'"+s[i]+"'";
+			
+			if (i==s.length-1)
+			{
+				r+="'"+s[i]+"'";
+			}
+			else{
+				r += "'"+s[i]+"',";
+			}
 		}
-		r.replace("''", "','");
 		return r;
 	}
 
@@ -191,12 +197,12 @@ public class DAOTablaUsuarios {
 				ResultSet rs2 = prepStmt2.executeQuery();
 
 				while(rs2.next()){
-					int numDocumento = rs.getInt(1);
-					String nombre = rs.getString(2);
-					String email = rs.getString(3);
-					String rol = rs.getString(4);
-					String usuario = rs.getString(5);
-					int numBoletas = rs.getInt(6);
+					int numDocumento = rs2.getInt(1);
+					String nombre = rs2.getString(2);
+					String email = rs2.getString(3);
+					String rol = rs2.getString(4);
+					String usuario = rs2.getString(5);
+					int numBoletas = rs2.getInt(6);
 
 					respuesta.add(new BuenCliente(numDocumento, nombre, email, rol, usuario, numBoletas));
 				}
@@ -209,5 +215,26 @@ public class DAOTablaUsuarios {
 		}
 		return respuesta;
 
+	}
+	
+	public void generarDatos(int inicial, int cant) throws SQLException{
+		for (int i = inicial; i < cant; i++) {
+			int numDocumento = 10000000 + i;
+			String nombre = "Nombre"+i;
+			String email = "Email"+i+"@ggizi.com";
+			String rol = (i%3==1)?"ADMIN":"USUARIO";
+			String usuario = "Usuario"+i;
+			String password = "contrasena"+i;
+			
+			
+			String sql = "INSERT INTO USUARIO VALUES"
+				+ "("+numDocumento+",'"+nombre+"','"+email+"','"+rol+"','"+usuario+"','"+password+"')";
+			
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			System.out.println("SQL stmt:" + sql);
+			ResultSet rs = prepStmt.executeQuery();
+		}
+		
 	}
 }

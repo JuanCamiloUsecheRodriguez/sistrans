@@ -362,8 +362,8 @@ public class DAOTablaFunciones {
 				+ " INNER JOIN PATROCINA ON ESPECTACULO.ID = PATROCINA.IDESPECTACULO"
 				+ " INNER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID"
 				+ " WHERE COMPANIA.ID =" + companiaId
-				+ " AND FUNCION.FECHA BETWEEN TO_DATE('"+fechaMayor+"','DD/MM/RR')"
-				+ " AND TO_DATE('"+fechaMenor+"','DD/MM/RR')";
+				+ " AND FUNCION.FECHA BETWEEN TO_DATE('"+fechaMenor+"','DD/MM/RR')"
+				+ " AND TO_DATE('"+fechaMayor+"','DD/MM/RR')";
 		
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

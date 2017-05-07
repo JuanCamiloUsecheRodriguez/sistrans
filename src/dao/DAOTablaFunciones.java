@@ -390,7 +390,8 @@ public class DAOTablaFunciones {
 		String fechaMenor = fechaI.replace("-", "/");
 		String fechaMayor = fechaF.replace("-", "/");
 		
-		String sql = "SELECT NUMDOCUMENTO,USUARIO.NOMBRE,EMAIL,ROL,USUARIO,PASSWORD"
+		String sql = "(SELECT NUMDOCUMENTO,USUARIO.NOMBRE,EMAIL,ROL,USUARIO,PASSWORD FROM USUARIO) MINUS"
+				+ " (SELECT NUMDOCUMENTO,USUARIO.NOMBRE,EMAIL,ROL,USUARIO,PASSWORD"
 				+ " FROM USUARIO"
 				+ " FULL OUTER JOIN BOLETA ON USUARIO.NUMDOCUMENTO = BOLETA.USUARIODOC"
 				+ " INNER JOIN FUNCION ON BOLETA.FUNCION = FUNCION.ID"
@@ -399,8 +400,8 @@ public class DAOTablaFunciones {
 				+ "	INNER JOIN COMPANIA ON PATROCINA.IDCOMPANIA = COMPANIA.ID"
 				+ "	WHERE COMPANIA.ID = " + companiaId
 				+ " AND FUNCION.FECHA BETWEEN TO_DATE('"+fechaMenor+"','DD/MM/RR') "
-				+ " AND TO_DATE('"+fechaMayor+"','DD/MM/RR')"
-				+ " AND BOLETA.ID = NULL";
+				+ " AND TO_DATE('"+fechaMayor+"','DD/MM/RR'))";
+				
 		
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

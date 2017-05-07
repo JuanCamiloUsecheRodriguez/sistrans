@@ -1412,4 +1412,34 @@ public class FestivAndesMaster {
 		}
 	}
 	
+	public void generarRequerimientos(int inicial,int cant) throws SQLException{
+		DAOTablaSitios daoTablaSitios = new DAOTablaSitios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoTablaSitios.setConn(conn);
+			daoTablaSitios.generarOfreceReq(inicial, cant);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaSitios.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
 }

@@ -205,7 +205,7 @@ public class DAOTablaSitios {
 				cuposDisponibles = 30;
 			}
 			String sql = "INSERT INTO LOCALIDAD VALUES"
-					+ "("+id+","+funcion+","+precio+",'"+numerada+"','"+nombre+"',"+cuposTotales+","+cuposDisponibles+")";
+					+ "("+id+","+funcion+","+precio+",'"+numerada+"',"+cuposTotales+","+cuposDisponibles+",'"+nombre+"')";
 				
 				PreparedStatement prepStmt = conn.prepareStatement(sql);
 				recursos.add(prepStmt);
@@ -213,4 +213,22 @@ public class DAOTablaSitios {
 				ResultSet rs = prepStmt.executeQuery();
 			}
 		}
+	
+	public void generarOfreceReq(int inicial, int cant) throws SQLException{
+		for (int i = inicial; i < cant; i++) {
+			int idSitio = (int) (Math.random()*499+1);
+			int idRequerimiento = (int) (Math.random()*14+1);
+			
+			
+			
+			String sql = "INSERT INTO OFRECEREQUERIMIENTO VALUES"
+				+ "("+idSitio+","+idRequerimiento+")";
+			
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			System.out.println("SQL stmt:" + sql);
+			ResultSet rs = prepStmt.executeQuery();
+		}
+		
+	}
 }

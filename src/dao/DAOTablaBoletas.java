@@ -326,9 +326,9 @@ public class DAOTablaBoletas {
 			
 			int silla = (int) (Math.random()*100+1);
 			int usuariodoc = 10000000 + i;
-			int localidad = (int) (Math.random()*4999+1);
-			int funcion = (int) (Math.random()*4999+1);
-
+			int localidad = (int) (Math.random()*1999+1);
+			int funcion = (int) (Math.random()*4949+1);
+			funcion = funcion + 50;
 
 			String sql ="INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
 			sql += silla+",";

@@ -248,7 +248,7 @@ public class DAOTablaBoletas {
 	}
 
 	public NotaDebito deleteBoleta(int idBoleta) throws SQLException,Exception {
-		
+
 		String sql = "SELECT FECHA FROM FUNCION WHERE ID = (SELECT FUNCION FROM BOLETA WHERE ID = "
 				+ idBoleta +")";
 
@@ -264,7 +264,7 @@ public class DAOTablaBoletas {
 		{
 			if(rs.getDate("FECHA").getTime() - System.currentTimeMillis() > 432000000)
 			{
-				
+
 				String sql3 = "UPDATE BOLETA SET DEVUELTA = 'Y' WHERE ID = "
 						+ idBoleta;
 
@@ -286,11 +286,11 @@ public class DAOTablaBoletas {
 		}
 		return nota;
 	}
-	
-		public NotaDebito addNotasDebito(int idBoleta ) throws SQLException,Exception {
+
+	public NotaDebito addNotasDebito(int idBoleta ) throws SQLException,Exception {
 
 		NotaDebito nota = null;
-		
+
 		String sql2 = "INSERT INTO NOTADEBITO (ID_CLIENTE,VALOR,ID) VALUES ("
 				+ "(SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+"),"
 				+ "(SELECT PRECIO FROM BOLETA INNER JOIN LOCALIDAD ON LOCALIDAD.ID_LOCALIDAD = BOLETA.ID_LOCALIDAD WHERE ID ="
@@ -301,7 +301,7 @@ public class DAOTablaBoletas {
 		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 		recursos.add(prepStmt2);
 		prepStmt2.executeQuery();
-		
+
 
 		String sql4 = "SELECT * FROM NOTADEBITO WHERE ID_CLIENTE = (SELECT USUARIODOC FROM BOLETA WHERE ID = "+idBoleta+")";
 
@@ -317,9 +317,31 @@ public class DAOTablaBoletas {
 			boolean reclamada = r2.getString(3).equals("Y") ? true : false;
 			nota = new NotaDebito(cliente, valor, reclamada);
 		}
-	
+
 		return nota;
 	}
-		
+
+	public void generarDatos(int inicial, int cant) throws SQLException{
+		for (int i = inicial; i < cant; i++) {
+			
+			int silla = (int) (Math.random()*100+1);
+			int usuariodoc = 10000000 + i;
+			int localidad = (int) (Math.random()*4999+1);
+			int funcion = (int) (Math.random()*4999+1);
+
+
+			String sql ="INSERT INTO BOLETA VALUES (SEC_BOLETA.NEXTVAL,";
+			sql += silla+",";
+			sql += usuariodoc + ",";
+			sql += localidad+ ",";
+			sql += funcion+ ",'N')"; 
+
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			System.out.println("SQL stmt:" + sql);
+			ResultSet rs = prepStmt.executeQuery();
+		}
+
+	}
 
 }

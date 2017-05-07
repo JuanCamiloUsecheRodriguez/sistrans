@@ -99,5 +99,19 @@ public class BoletasServices {
 		}
 		return Response.status(200).entity(boletas).build();
 	}
+	
+	@GET
+	@Path("/generar/{inicial}/{final}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response generarDatos(@PathParam("inicial")int inicial,@PathParam("final")int cant) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		
+		try {
+			tm.generarBoletas(inicial,cant);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).build();
+	}
 
 }

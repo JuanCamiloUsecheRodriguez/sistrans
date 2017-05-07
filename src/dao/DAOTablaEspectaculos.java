@@ -175,4 +175,91 @@ public class DAOTablaEspectaculos {
 		}
 		return reporte;
 	}
+	
+	public void generarCompanias(int inicial, int cant) throws SQLException{
+		for (int i = inicial; i < cant; i++) {
+			int id = i;
+			String nombre = "Nombre" + i;
+			String web = "www.web" + i +".com";
+			int random = (int) (Math.random() * 3) + 1;
+			String fechaLlegada = null;
+			String fechaSalida = null;
+			if(random == 1){
+				fechaLlegada = "24/05/2017";
+				fechaSalida = "12/06/2017";
+			}
+			if(random ==2){
+				fechaLlegada = "27/05/2017";
+				fechaSalida = "17/06/2017";
+			}
+			else
+			{
+				fechaLlegada = "29/05/2017";
+				fechaSalida = "19/06/2017";
+			}
+			
+			String sql = "INSERT INTO COMPANIA VALUES"
+					+ "("+id+",'"+nombre+"','"+web+"',TO_DATE('"+ fechaLlegada +"','DD/MM/RR'),TO_DATE('"+ fechaSalida +"','DD/MM/RR'))";
+				
+				PreparedStatement prepStmt = conn.prepareStatement(sql);
+				recursos.add(prepStmt);
+				System.out.println("SQL stmt:" + sql);
+				ResultSet rs = prepStmt.executeQuery();
+		}
+	}
+	
+	public void generarPatrocinas(int inicialCompanias, int inicialEspectaculos, int cant) throws SQLException{
+		for (int i = inicialCompanias; i < cant; i++, inicialEspectaculos++) {
+			int idCompania = i;
+			int idEspectaculo = inicialEspectaculos;
+			String sql = "INSERT INTO PATROCINA VALUES"
+					+ "("+idCompania+","+idEspectaculo+")";
+				PreparedStatement prepStmt = conn.prepareStatement(sql);
+				recursos.add(prepStmt);
+				System.out.println("SQL stmt:" + sql);
+				ResultSet rs = prepStmt.executeQuery();
+		}
+	}
+	
+	public void generarEspaectaculo(int inicial, int cant) throws SQLException{
+		for (int i = inicial; i < cant; i++) {
+			int id = i;
+			String nombre = "nombre" + i;
+			String formato = null;
+			int duracion = 60;
+			String idioma = null;
+			String fechaLlegada = null;
+			String fechaSalida = null;
+			String clasificacion = null;
+			int costo = 40000;
+			String interactivo = null;
+			String descripcion = "descripcion" + i;
+			int random = (int) (Math.random() * 3) + 1;
+			if(random == 1){
+				formato = "Obra";
+				idioma = "Español";
+				fechaLlegada = "24/05/2017";
+				fechaSalida = "12/06/2017";
+				clasificacion = "TODOPUBLICO";
+				interactivo = "N";
+			}
+			if(random ==2){
+				formato = "Musical";
+				idioma = "Ingles";
+				fechaLlegada = "27/05/2017";
+				fechaSalida = "17/06/2017";
+				clasificacion = "ADULTOS";
+				interactivo = "N";
+			}
+			else
+			{
+				formato = "Titeres";
+				idioma = "Frances";
+				fechaLlegada = "29/05/2017";
+				fechaSalida = "19/06/2017";
+				clasificacion = "NINOS";
+				interactivo = "Y";
+			}
+		}
+	}
 }

@@ -50,4 +50,31 @@ public class EspectaculosServices {
 		return Response.status(200).entity(reporte).build();
 	}
 
+	@GET
+	@Path("/generar/{inicial}/{final}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response generarDatos(@PathParam("inicial")int inicial,@PathParam("final")int cant) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		
+		try {
+			tm.generarCompania(inicial,cant);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).build();
+	}
+
+	@GET
+	@Path("/generarPatrocina/{inicialcom}/{inicialespec}/{final}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response generarDatos(@PathParam("inicialcom")int inicialcom, @PathParam("inicialespec")int inicialespec, @PathParam("final")int cant) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		
+		try {
+			tm.generarPatrocina(inicialcom,inicialespec,cant);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).build();
+	}
 }

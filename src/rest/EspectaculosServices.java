@@ -51,7 +51,7 @@ public class EspectaculosServices {
 	}
 
 	@GET
-	@Path("/generar/{inicial}/{final}")
+	@Path("/generarCompania/{inicial}/{final}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response generarDatos(@PathParam("inicial")int inicial,@PathParam("final")int cant) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
@@ -71,7 +71,32 @@ public class EspectaculosServices {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		
 		try {
-			tm.generarPatrocina(inicialcom,inicialespec,cant);
+			//tm.generarPatrocina(inicialcom,inicialespec,cant);
+			tm.generarPatrocina(100,200, 800);
+			tm.generarPatrocina(200,400, 800);
+			tm.generarPatrocina(300,500, 800);
+			tm.generarPatrocina(400,600, 800);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).build();
+	}
+	
+	@GET
+	@Path("/generar/{inicial}/{final}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response generarDatosEspectaculo(@PathParam("inicial")int inicial,@PathParam("final")int cant) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		
+		try {
+			
+			tm.generarEspectaculo(1000, 1250);
+			tm.generarEspectaculo(1250, 1500);
+			tm.generarEspectaculo(1500, 1750);
+			tm.generarEspectaculo(1750, 2000);
+			tm.generarEspectaculo(2000, 2250);
+			tm.generarEspectaculo(2250, 2500);
+			tm.generarEspectaculo(2500, 2750);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

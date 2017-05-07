@@ -425,8 +425,8 @@ public class DAOTablaFunciones {
 		int d = 1;
 		for (int i = inicial; i < cant; i++) {
 			String fecha = d+"/"+ (i%2==0?"05/2017":"06/2017");
-			int sitio = (int) (Math.random()*500+1);
-			int espectactulo = (int) (Math.random()*500+1);
+			int sitio = (int) (Math.random()*499+1);
+			int espectactulo = (int) (Math.random()*2749+1);
 	
 			
 			String sql = "INSERT INTO FUNCION VALUES"

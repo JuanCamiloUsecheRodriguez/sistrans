@@ -387,6 +387,21 @@ public class DAOTablaClientes {
 		return reporte;
 	}
 
-	
+	public void generarDatos(int inicial, int cant) throws SQLException{
+		for (int i = inicial; i < cant; i++) {
+			int idCliente = 10000000 + i*3;
+			int edad = (int) (Math.random()*60+1);
+			
+			
+			String sql = "INSERT INTO CLIENTE VALUES"
+				+ "("+idCliente+","+edad+")";
+			
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			System.out.println("SQL stmt:" + sql);
+			ResultSet rs = prepStmt.executeQuery();
+		}
+		
+	}
 	
 }

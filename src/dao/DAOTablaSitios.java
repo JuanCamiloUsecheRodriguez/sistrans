@@ -135,4 +135,40 @@ public class DAOTablaSitios {
 		}
 		return sitio;
 	}
+	
+	public void generarDatos(int inicial, int cant) throws SQLException{
+		int d = 1;
+		for (int i = inicial; i < cant; i++) {
+			int id = i;
+			String nombre = "Sitio"+i;
+			String tipo = "";
+			String silleteria = "";
+			if(i%3==0){
+				tipo = "TEATRO";
+				silleteria = "FIJA";
+			}
+			else if (i%3==1)
+			{
+				tipo = "PARQUE";
+				silleteria = "MOVIL";
+			}
+			else{
+				tipo = "PLAZOLETA";
+				silleteria = "REMOVIBLE";
+			}
+			int cupos = (int) (Math.random()*300+1);
+			String acces = i%3==0?"'N'":"'Y'";
+			String horas = "+00 06:00:00.000000','+00 23:00:00.000000";
+			
+			
+			String sql = "INSERT INTO SITIO VALUES"
+				+ "("+id+",'"+nombre+"','"+tipo+"',"+cupos+","+acces+",'"+horas+"','"+silleteria+"')";
+			
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			System.out.println("SQL stmt:" + sql);
+			ResultSet rs = prepStmt.executeQuery();
+		}
+		
+	}
 }

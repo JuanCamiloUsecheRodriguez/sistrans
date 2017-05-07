@@ -420,4 +420,23 @@ public class DAOTablaFunciones {
 		
 		return respuesta;
 	}
+	
+	public void generarDatos(int inicial, int cant) throws SQLException{
+		int d = 1;
+		for (int i = inicial; i < cant; i++) {
+			String fecha = d+"/"+ (i%2==0?"05/2017":"06/2017");
+			int sitio = (int) (Math.random()*500+1);
+			int espectactulo = (int) (Math.random()*500+1);
+	
+			
+			String sql = "INSERT INTO FUNCION VALUES"
+				+ "(SEC_FUNCION.NEXTVAL,TO_DATE('"+fecha+"','DD/MM/RR),"+sitio+","+espectactulo+",'N')";
+			
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			System.out.println("SQL stmt:" + sql);
+			ResultSet rs = prepStmt.executeQuery();
+		}
+		
+	}
 }

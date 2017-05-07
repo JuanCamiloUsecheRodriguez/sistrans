@@ -391,6 +391,7 @@ public class DAOTablaClientes {
 		for (int i = inicial; i < cant; i++) {
 			int idCliente = 10000000 + i*3;
 			int edad = (int) (Math.random()*60+1);
+			edad= edad + 18;
 			
 			
 			String sql = "INSERT INTO CLIENTE VALUES"

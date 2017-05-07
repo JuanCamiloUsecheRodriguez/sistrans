@@ -145,4 +145,18 @@ public class ClientesServices {
 		}
 		return Response.status(200).entity(nota).build();
 	}
+	
+	@GET
+	@Path("/generar/{inicial}/{final}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response generarDatos(@PathParam("inicial")int inicial,@PathParam("final")int cant) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		
+		try {
+			tm.generarClientes(inicial,cant);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).build();
+	}
 }

@@ -1202,7 +1202,7 @@ public class FestivAndesMaster {
 		}
 	}
 	
-	public void generarSitio(int inicial,int cant) throws SQLException{
+	public void generarSitios(int inicial,int cant) throws SQLException{
 		DAOTablaSitios daoSitios = new DAOTablaSitios();
 		try 
 		{
@@ -1252,6 +1252,96 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public void generarCompania(int inicial,int cant) throws SQLException{
+		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoEspectaculos.setConn(conn);
+			daoEspectaculos.generarCompania(inicial, cant);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoEspectaculos.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public void generarPatrocina(int inicial,int cant) throws SQLException{
+		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoEspectaculos.setConn(conn);
+			daoEspectaculos.generarPatrocina(inicial, cant);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoEspectaculos.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public void generarEspectaculo(int inicial,int cant) throws SQLException{
+		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoEspectaculos.setConn(conn);
+			daoEspectaculos.generarEspectaculo(inicial, cant);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoEspectaculos.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {

@@ -430,7 +430,7 @@ public class DAOTablaFunciones {
 	
 			
 			String sql = "INSERT INTO FUNCION VALUES"
-				+ "(SEC_FUNCION.NEXTVAL,TO_DATE('"+fecha+"','DD/MM/RR),"+sitio+","+espectactulo+",'N')";
+				+ "(SEC_FUNCION.NEXTVAL,TO_DATE('"+fecha+"','DD/MM/RR'),"+sitio+","+espectactulo+",'N')";
 			
 			PreparedStatement prepStmt = conn.prepareStatement(sql);
 			recursos.add(prepStmt);

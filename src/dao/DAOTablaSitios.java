@@ -171,4 +171,46 @@ public class DAOTablaSitios {
 		}
 		
 	}
+	
+	public void generarLocalidad(int inicial, int cant) throws SQLException{
+		for (int i = inicial; i < cant; i++) {
+			int id = i;
+			int funcion = (int) (Math.random() * 4999) + 1;
+			int precio = 0;
+			String numerada = null;
+			String  nombre = null;
+			int cuposTotales = 0;
+			int cuposDisponibles = 0;
+			int random = (int) (Math.random() * 3) + 1;
+			if(random == 1){
+				nombre = "GENERAL";
+				precio = 30000;
+				numerada = "N";
+				cuposTotales = 60;
+				cuposDisponibles = 60;
+			}
+			if(random ==2){
+				nombre = "PALCO";
+				precio = 50000;
+				numerada = "Y";
+				cuposTotales = 40;
+				cuposDisponibles = 40;
+			}
+			else
+			{
+				nombre = "PREFERENCIAL";
+				precio = 30000;
+				numerada = "Y";
+				cuposTotales = 30;
+				cuposDisponibles = 30;
+			}
+			String sql = "INSERT INTO LOCALIDAD VALUES"
+					+ "("+id+","+funcion+","+precio+",'"+numerada+"','"+nombre+"',"+cuposTotales+","+cuposDisponibles+")";
+				
+				PreparedStatement prepStmt = conn.prepareStatement(sql);
+				recursos.add(prepStmt);
+				System.out.println("SQL stmt:" + sql);
+				ResultSet rs = prepStmt.executeQuery();
+			}
+		}
 }

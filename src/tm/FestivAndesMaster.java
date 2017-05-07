@@ -1269,7 +1269,7 @@ public class FestivAndesMaster {
 			//////Transacción
 			this.conn = darConexion();
 			daoEspectaculos.setConn(conn);
-			daoEspectaculos.generarCompania(inicial, cant);
+			daoEspectaculos.generarCompanias(inicial, cant);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -1292,14 +1292,14 @@ public class FestivAndesMaster {
 		}
 	}
 	
-	public void generarPatrocina(int inicial,int cant) throws SQLException{
+	public void generarPatrocina(int inicialCompanias,int inicialEspectaculos,int cant) throws SQLException{
 		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
 			daoEspectaculos.setConn(conn);
-			daoEspectaculos.generarPatrocina(inicial, cant);
+			daoEspectaculos.generarPatrocinas(inicialCompanias,inicialEspectaculos, cant);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());

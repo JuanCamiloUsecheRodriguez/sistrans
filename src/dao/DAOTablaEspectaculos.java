@@ -221,7 +221,7 @@ public class DAOTablaEspectaculos {
 		}
 	}
 	
-	public void generarEspaectaculo(int inicial, int cant) throws SQLException{
+	public void generarEspectaculo(int inicial, int cant) throws SQLException{
 		for (int i = inicial; i < cant; i++) {
 			int id = i;
 			String nombre = "nombre" + i;
@@ -260,6 +260,13 @@ public class DAOTablaEspectaculos {
 				clasificacion = "NINOS";
 				interactivo = "Y";
 			}
+			String sql = "INSERT INTO ESPECTACULO VALUES"
+					+ "("+id+",'"+nombre+"','"+formato+"',"+duracion+",'"+idioma+"','"+fechaLlegada+"','"+fechaSalida+"','"+clasificacion+"',"+costo+",'"+interactivo+"','"+descripcion+"')";
+					
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			System.out.println("SQL stmt:" + sql);
+			ResultSet rs = prepStmt.executeQuery();
 		}
 	}
 }

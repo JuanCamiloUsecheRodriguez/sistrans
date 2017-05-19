@@ -17,5 +17,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="C:/Users/Orlando/Downloads/amqp-client-4.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Orlando/Downloads/rabbitmq-jms-1.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Orlando/Documents/java-server-jms/WebContent/WEB-INF/lib/geronimo-jms_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

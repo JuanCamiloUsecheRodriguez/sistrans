@@ -5,10 +5,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import dtm.FestivAndesDistributed;
+
 public class ContextListener implements ServletContextListener {
 
 	
-	private VideoAndesDistributed dtm;
+	private FestivAndesDistributed dtm;
 	
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) 
@@ -26,8 +28,8 @@ public class ContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent arg0) {
 		
 		final ServletContext context = arg0.getServletContext();
-		VideoAndesDistributed.setPath(context.getRealPath("WEB-INF/ConnectionData"));
-		dtm = VideoAndesDistributed.getInstance();
+		FestivAndesDistributed.setPath(context.getRealPath("WEB-INF/ConnectionData"));
+		dtm = FestivAndesDistributed.getInstance();
 	}
 
 }

@@ -15,7 +15,10 @@ import org.codehaus.jackson.map.JsonMappingException;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import com.rabbitmq.jms.admin.RMQDestination;
 
+import jms.AllFuncionesMDB;
+import jms.NonReplyException;
 import tm.FestivAndesMaster;
+import vos.ListaFunciones;
 
 public class FestivAndesDistributed {
 
@@ -30,7 +33,7 @@ public class FestivAndesDistributed {
 	
 	private TopicConnectionFactory factory;
 	
-	//private AllVideosMDB allVideosMQ;
+	private AllFuncionesMDB allFuncionesMQ;
 	
 	private static String path;
 
@@ -39,15 +42,15 @@ public class FestivAndesDistributed {
 	{
 		InitialContext ctx = new InitialContext();
 		factory = (RMQConnectionFactory) ctx.lookup(MQ_CONNECTION_NAME);
-		allVideosMQ = new AllVideosMDB(factory, ctx);
+		allFuncionesMQ = new AllFuncionesMDB(factory, ctx);
 		
-		allVideosMQ.start();
+		allFuncionesMQ.start();
 		
 	}
 	
 	public void stop() throws JMSException
 	{
-		allVideosMQ.close();
+		allFuncionesMQ.close();
 	}
 	
 	/**
@@ -100,13 +103,13 @@ public class FestivAndesDistributed {
 		return getInstance(tm);
 	}
 	
-	public ListaVideos getLocalVideos() throws Exception
+	public ListaFunciones getLocalFunciones() throws Exception
 	{
-		return tm.darVideosLocal();
+		return tm.darFunciones();
 	}
 	
-	public ListaVideos getRemoteVideos() throws JsonGenerationException, JsonMappingException, JMSException, IOException, NonReplyException, InterruptedException, NoSuchAlgorithmException
+	public ListaFunciones getRemoteVideos() throws JsonGenerationException, JsonMappingException, JMSException, IOException, NonReplyException, InterruptedException, NoSuchAlgorithmException
 	{
-		return allVideosMQ.getRemoteVideos();
+		return allFuncionesMQ.getRemoteFunciones();
 	}
 }

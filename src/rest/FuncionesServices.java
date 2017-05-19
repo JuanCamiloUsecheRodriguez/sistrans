@@ -56,6 +56,21 @@ public class FuncionesServices {
 	}
 	
 	@GET
+	@Path("")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getFunciones() {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaFunciones funciones;
+		
+		try {
+			funciones = tm.darFunciones();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(funciones).build();
+	}
+	
+	@GET
 	@Path("/{fecha1}/{fecha2}/{order}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getFuncionesRangoFecha(@PathParam("fecha1")String fechaInicial,

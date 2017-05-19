@@ -17,6 +17,8 @@ import dao.DAOTablaFunciones;
 import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
+import dtm.FestivAndesDistributed;
+import jms.NonReplyException;
 import vos.Abono;
 import vos.Boleta;
 import vos.BoletaDetail;
@@ -83,6 +85,8 @@ public class FestivAndesMaster {
 	 * Conexión a la base de datos
 	 */
 	private Connection conn;
+	
+	private FestivAndesDistributed dtm;
 
 
 	/**
@@ -497,8 +501,23 @@ public class FestivAndesMaster {
 		}
 
 	}
-
+	
 	public ListaFunciones darFunciones() throws Exception {
+		ListaFunciones remL = darFuncionesLocal();
+		try
+		{
+			ListaFunciones resp = dtm.getRemoteFunciones();
+			System.out.println(resp.getFunciones().size());
+			remL.getFunciones().addAll(resp.getFunciones());
+		}
+		catch(NonReplyException e)
+		{
+			
+		}
+		return remL;
+	}
+
+	public ListaFunciones darFuncionesLocal() throws Exception {
 		ArrayList<Funcion> funciones;
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
 		try 

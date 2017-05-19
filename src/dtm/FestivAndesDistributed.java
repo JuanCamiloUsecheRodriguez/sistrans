@@ -108,7 +108,7 @@ public class FestivAndesDistributed {
 		return tm.darFunciones();
 	}
 	
-	public ListaFunciones getRemoteVideos() throws JsonGenerationException, JsonMappingException, JMSException, IOException, NonReplyException, InterruptedException, NoSuchAlgorithmException
+	public ListaFunciones getRemoteFunciones() throws JsonGenerationException, JsonMappingException, JMSException, IOException, NonReplyException, InterruptedException, NoSuchAlgorithmException
 	{
 		return allFuncionesMQ.getRemoteFunciones();
 	}

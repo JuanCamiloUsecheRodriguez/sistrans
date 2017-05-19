@@ -35,23 +35,20 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import com.rabbitmq.jms.admin.RMQDestination;
 
 import dtm.FestivAndesDistributed;
 import vos.ExchangeMsg;
 import vos.Funcion;
 import vos.ListaFunciones;
-import vos.ListaVideos;
-import vos.Video;
 
 public class AllFuncionesMDB implements MessageListener, ExceptionListener {
 
 	public final static int TIME_OUT = 5;
-	private final static String APP = "app1";
+	private final static String APP = "app3";
 	
-	private final static String GLOBAL_TOPIC_NAME = "java:global/RMQTopicAllVideos";
-	private final static String LOCAL_TOPIC_NAME = "java:global/RMQAllVideosLocal";
+	private final static String GLOBAL_TOPIC_NAME = "java:global/RMQTopicAllFunciones";
+	private final static String LOCAL_TOPIC_NAME = "java:global/RMQAllFuncionesLocal";
 	
 	private final static String REQUEST = "REQUEST";
 	private final static String REQUEST_ANSWER = "REQUEST_ANSWER";
@@ -122,7 +119,7 @@ public class AllFuncionesMDB implements MessageListener, ExceptionListener {
 	{
 		ObjectMapper mapper = new ObjectMapper();
 		System.out.println(id);
-		ExchangeMsg msg = new ExchangeMsg("funciones.general.app1", APP, payload, status, id);
+		ExchangeMsg msg = new ExchangeMsg("funciones.general.app3", APP, payload, status, id);
 		TopicPublisher topicPublisher = topicSession.createPublisher(dest);
 		topicPublisher.setDeliveryMode(DeliveryMode.PERSISTENT);
 		TextMessage txtMsg = topicSession.createTextMessage();
@@ -151,9 +148,9 @@ public class AllFuncionesMDB implements MessageListener, ExceptionListener {
 				if(ex.getStatus().equals(REQUEST))
 				{
 					FestivAndesDistributed dtm = FestivAndesDistributed.getInstance();
-					ListaFunciones videos = dtm.getLocalFunciones();
-					String payload = mapper.writeValueAsString(videos);
-					Topic t = new RMQDestination("", "videos.test", ex.getRoutingKey(), "", false);
+					ListaFunciones funciones = dtm.getLocalFunciones();
+					String payload = mapper.writeValueAsString(funciones);
+					Topic t = new RMQDestination("", "funciones.test", ex.getRoutingKey(), "", false);
 					sendMessage(payload, REQUEST_ANSWER, t, id);
 				}
 				else if(ex.getStatus().equals(REQUEST_ANSWER))

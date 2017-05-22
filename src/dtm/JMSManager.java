@@ -272,10 +272,11 @@ public class JMSManager implements MessageListener, ExceptionListener
 		// conecta al Topic para mandar la petición
 		TopicPublisher topicPublisher = this.topicSession.createPublisher(this.topic);
 		topicPublisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-		TextMessage message = topicSession.createTextMessage();
-		message.setText(GET_ALL_VIDEO_ASK + CONNECTOR + this.myQueue);
-		topicPublisher.publish(message);
-		System.out.println("published: " + message.getText());
+		TextMessage txtMsg = topicSession.createTextMessage();
+		txtMsg.setJMSType("TextMessage");
+		txtMsg.setText(GET_ALL_VIDEO_ASK + CONNECTOR + this.myQueue);
+		topicPublisher.publish(txtMsg);
+		System.out.println("published: " + txtMsg.getText());
 	}
 
 	/**

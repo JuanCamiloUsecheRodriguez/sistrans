@@ -43,7 +43,7 @@ public class UsuariosServices {
 		ListaUsuarios usuarios;
 		
 		try {
-			usuarios = tm.darUsuarios();
+			usuarios = tm.darUsuariosRemote();
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

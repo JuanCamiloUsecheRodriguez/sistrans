@@ -56,14 +56,13 @@ public class FuncionesServices {
 	}
 	
 	@GET
-	@Path("")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getFunciones() {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaFunciones funciones;
 		
 		try {
-			funciones = tm.darFunciones();
+			funciones = tm.darFuncionesLocal();
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

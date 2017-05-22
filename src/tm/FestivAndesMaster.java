@@ -17,8 +17,9 @@ import dao.DAOTablaFunciones;
 import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
-import dtm.FestivAndesDistributed;
-import jms.NonReplyException;
+import dtm.IncompleteReplyException;
+import dtm.JMSManager;
+import dtm.NonReplyException;
 import vos.Abono;
 import vos.Boleta;
 import vos.BoletaDetail;
@@ -54,7 +55,7 @@ public class FestivAndesMaster {
 	/**
 	 * Atributo estático que contiene el path relativo del archivo que tiene los datos de la conexión
 	 */
-	private static final String CONNECTION_DATA_FILE_NAME_REMOTE = "/conexion.properties";
+	public static final String CONNECTION_DATA_FILE_NAME_REMOTE = "/conexion.properties";
 
 	/**
 	 * Atributo estático que contiene el path absoluto del archivo que tiene los datos de la conexión
@@ -86,7 +87,12 @@ public class FestivAndesMaster {
 	 */
 	private Connection conn;
 	
-	private FestivAndesDistributed dtm;
+	private String myQueue;
+
+
+	private int numberApps;
+
+	private String topicAllUsuarios;
 
 
 	/**
@@ -116,6 +122,9 @@ public class FestivAndesMaster {
 			this.user = prop.getProperty("usuario");
 			this.password = prop.getProperty("clave");
 			this.driver = prop.getProperty("driver");
+			this.myQueue = prop.getProperty("myQueue");
+			this.topicAllUsuarios = prop.getProperty("topicAllUsuarios");
+			this.numberApps = Integer.parseInt(prop.getProperty("numberApps"));
 			Class.forName(driver);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -142,7 +151,7 @@ public class FestivAndesMaster {
 	 * @return ListaVideos - objeto que modela  un arreglo de videos. este arreglo contiene el resultado de la búsqueda
 	 * @throws Exception -  cualquier error que se genere durante la transacción
 	 */
-	public ListaUsuarios darUsuarios() throws Exception {
+	public ListaUsuarios darUsuariosLocal() throws Exception {
 		ArrayList<Usuario> usuarios;
 		DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
 		try 
@@ -173,28 +182,34 @@ public class FestivAndesMaster {
 		}
 		return new ListaUsuarios(usuarios);
 	}
-
-	public void addPreferencia(Preferencia pref) throws Exception {
-		DAOTablaClientes daoClientes = new DAOTablaClientes();
-		try 
-		{
-			//////Transacción
-			this.conn = darConexion();
-			daoClientes.setConn(conn);
-			daoClientes.registrarPreferenciaCliente(pref);
-			conn.commit();
-
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
+	
+	public ListaUsuarios darUsuariosRemote() throws Exception {
+		ListaUsuarios usuarios;
+		DAOTablaUsuarios dao = new DAOTablaUsuarios();
+		ArrayList<Usuario> usuariosLocal = new ArrayList<Usuario>();
+		try {	
+			Connection conn = darConexion();
+			dao.setConn(conn);
+			usuariosLocal = dao.darUsuarios();
+			
+			JMSManager instancia = JMSManager.darInstacia(this);
+			instancia.setUpJMSManager(this.numberApps, this.myQueue, this.topicAllUsuarios);
+			usuarios = instancia.getResponse();  
+			
+			usuarios.addUsuario(new ListaUsuarios(usuariosLocal));
+			System.out.println("size:" + usuarios.getUsuarios().size());
+		} catch (NonReplyException e) {
+			throw new IncompleteReplyException("No Reply from apps - Local Videos:",new ListaUsuarios(usuariosLocal));
+		} catch (IncompleteReplyException e) {
+			ListaUsuarios temp = e.getPartialResponse();
+			temp.addUsuario(new ListaUsuarios(usuariosLocal));
+			throw new IncompleteReplyException("Incomplete Reply:",temp);
 		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
-				daoClientes.cerrarRecursos();
+				dao.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -203,6 +218,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
+		return usuarios; 
 
 	}
 
@@ -502,20 +518,7 @@ public class FestivAndesMaster {
 
 	}
 	
-	public ListaFunciones darFunciones() throws Exception {
-		ListaFunciones remL = darFuncionesLocal();
-		try
-		{
-			ListaFunciones resp = dtm.getRemoteFunciones();
-			System.out.println(resp.getFunciones().size());
-			remL.getFunciones().addAll(resp.getFunciones());
-		}
-		catch(NonReplyException e)
-		{
-			
-		}
-		return remL;
-	}
+	
 
 	public ListaFunciones darFuncionesLocal() throws Exception {
 		ArrayList<Funcion> funciones;

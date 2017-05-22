@@ -1,4 +1,4 @@
-package jms;
+package dtm;
 
 public class NonReplyException extends Exception {
 

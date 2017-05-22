@@ -96,7 +96,7 @@ public class ClientesServices {
 	public Response addPreferencia(Preferencia pref) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		try {
-			tm.addPreferencia(pref);
+			//tm.addPreferencia(pref);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

@@ -62,7 +62,7 @@ public class FuncionesServices {
 		ListaFunciones funciones;
 		
 		try {
-			funciones = tm.darFuncionesLocal();
+			funciones = tm.darFuncionesRemote();
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

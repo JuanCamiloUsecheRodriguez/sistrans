@@ -1,5 +1,6 @@
 package vos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -13,6 +14,10 @@ public class ListaFunciones {
 		super();
 		this.funciones = funciones;
 	}
+	
+	public ListaFunciones() {
+		funciones = new ArrayList<Funcion>();
+	}
 
 	public List<Funcion> getFunciones() {
 		return funciones;
@@ -22,4 +27,7 @@ public class ListaFunciones {
 		this.funciones = funciones;
 	}	
 	
+	public void addFunciones(ListaFunciones funcionesNew){
+		this.funciones.addAll(funcionesNew.getFunciones());
+	}
 }

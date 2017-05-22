@@ -39,25 +39,27 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import dao.DAOTablaFunciones;
 import dao.DAOTablaUsuarios;
 import tm.FestivAndesMaster;
+import vos.ListaFunciones;
 import vos.ListaUsuarios;
 
 /**
  * Clase Manejador de JMS  que se manda y recibe 
  */
-public class JMSManager implements MessageListener, ExceptionListener
+public class JMSFunciones implements MessageListener, ExceptionListener
 {
 
 	/**
 	 * Atributo tipo JMSManager para manejar la única instancia del patron singleton
 	 */
-	private static JMSManager instancia;
+	private static JMSFunciones instancia;
 	
 	/**
 	 * Atributo tipo ListaVideos que va guardando todos los videos que llegan como respuesta de las otra aplicaciones 
 	 */
-	private ListaUsuarios respuesta;
+	private ListaFunciones respuesta;
 	
 	/**
 	 * Atributo tipo TopicSession que se usa para la conexión a los topics 
@@ -108,7 +110,7 @@ public class JMSManager implements MessageListener, ExceptionListener
 	/**
 	 * Atributo que representa el topic: topicAllVideos
 	 */
-	private String topicAllUsuarios;
+	private String topicAllFunciones;
 
 	/////Protocol
 
@@ -126,12 +128,12 @@ public class JMSManager implements MessageListener, ExceptionListener
 	/**
 	 * Atributo que representa, dentro del mensaje, la solicitud de todos los videos de manera distribuida
 	 */
-	public final static String GET_ALL_VIDEO_ASK = "GETALLUSUARIOS";
+	public final static String GET_ALL_VIDEO_ASK = "GETALLFUNCIONES";
 
 	/**
 	 * Atributo que representa, dentro del mensaje, la respuesta del requerimiento dar todos los videos.
 	 */
-	public final static String GET_ALL_VIDEO_REPLY = "GETALLUSUARIOSRES";
+	public final static String GET_ALL_VIDEO_REPLY = "GETALLFUNCIONESRES";
 
 	/**
 	 * Atributo que representa, dentro del mensaje, el conector para el formateo de todos los mensajes
@@ -153,8 +155,8 @@ public class JMSManager implements MessageListener, ExceptionListener
 	 * @param videoAndesMaster - instancia que hace referencia a la clase principal VideoAndesMaster
 	 * @return JMSManager - instancia única de la clase
 	 */
-	public static JMSManager darInstacia(FestivAndesMaster festivAndesMaster){
-		instancia = instancia == null? new JMSManager() : instancia;
+	public static JMSFunciones darInstacia(FestivAndesMaster festivAndesMaster){
+		instancia = instancia == null? new JMSFunciones() : instancia;
 		instancia.setUpMaster(festivAndesMaster);
 		return instancia;
 	}
@@ -165,9 +167,9 @@ public class JMSManager implements MessageListener, ExceptionListener
 	 */
 	public void cerrarRecursos() {
 		for(Object ob : recursos){
-			if(ob instanceof DAOTablaUsuarios)
+			if(ob instanceof DAOTablaFunciones)
 				try {
-					((DAOTablaUsuarios) ob).cerrarRecursos();
+					((DAOTablaFunciones) ob).cerrarRecursos();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -183,15 +185,15 @@ public class JMSManager implements MessageListener, ExceptionListener
 	 * <b>post: </b> se han inicializado los atributos de la clase y 
 	 * se han generado la suscripciones y publicaciones a las colas y topics
 	 */
-	public void setUpJMSManager(int numerApps, String myQueue, String topicAllUsuarios){
+	public void setUpJMSManager(int numerApps, String myQueue, String topicAllFunciones){
 		try {
 			this.numberAppsTotal = numerApps - 1;
 			this.myQueue = myQueue;
-			this.topicAllUsuarios = topicAllUsuarios;
+			this.topicAllFunciones = topicAllFunciones;
 			setupMyQueue();
 			setupSubscriptions();
 			waiting = false;
-			respuesta = new ListaUsuarios();
+			respuesta = new ListaFunciones();
 			this.recursos = new ArrayList<Object>();
 		} catch (JMSException e) {
 			e.printStackTrace();
@@ -207,7 +209,7 @@ public class JMSManager implements MessageListener, ExceptionListener
 	 * @throws NonReplyException - Caso de NonReplyException
 	 * @throws JMSException - Caso de JMSException
 	 */
-	public ListaUsuarios getResponse() throws IncompleteReplyException, JMSException, NamingException, InterruptedException, NonReplyException {
+	public ListaFunciones getFuncionesResponse() throws IncompleteReplyException, JMSException, NamingException, InterruptedException, NonReplyException {
 		sendMessage(); // manda el mensaje de solicitud del requerimiento al topic
 		waiting = true; // Lo hace para< indicar que si esta esperando respuestas
 		this.numberApps = 0; // Pone en 0 el numero de respuestas que han llegado
@@ -219,7 +221,7 @@ public class JMSManager implements MessageListener, ExceptionListener
 		}
 		
 		if(count == TIME_OUT){ // Verifica si se cumplió el time out 
-			if(this.respuesta.getUsuarios().isEmpty()){
+			if(this.respuesta.getFunciones().isEmpty()){
 				waiting = false;
 				this.numberApps = 0;
 				throw new NonReplyException("Time Out - No Reply"); // Exception que indica que se cumplido el time out y nadie respondido 
@@ -230,10 +232,10 @@ public class JMSManager implements MessageListener, ExceptionListener
 		}
 		waiting = false;
 		this.numberApps = 0;
-		if(respuesta.getUsuarios().isEmpty())
+		if(respuesta.getFunciones().isEmpty())
 			throw new NonReplyException("Got all responses but no videos were detected"); // Exception que indica que todos respondieron pero no llegaron videos
-		ListaUsuarios res = respuesta;
-		respuesta = new ListaUsuarios();
+		ListaFunciones res = respuesta;
+		respuesta = new ListaFunciones();
 		return res; // Retorna con la respuesta completa de todas las aplicaciones
 	}
 
@@ -247,7 +249,7 @@ public class JMSManager implements MessageListener, ExceptionListener
 		// init Topic para consumir donde llegan las peticiones
 		try {
 			InitialContext ctx = new InitialContext();
-			this.topic = (Topic) ctx.lookup(topicAllUsuarios);
+			this.topic = (Topic) ctx.lookup(topicAllFunciones);
 			TopicConnectionFactory connFactory = (TopicConnectionFactory) ctx.lookup(REMOTE_CONNECTION_FACTORY);
 			TopicConnection topicConn = connFactory.createTopicConnection();
 			this.topicSession = topicConn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -337,16 +339,16 @@ public class JMSManager implements MessageListener, ExceptionListener
 			System.out.println("received: " + mes);
 			String[] a = mes.split(CONNECTOR);
 			if(a[0].equals(GET_ALL_VIDEO_ASK) && !a[1].equals(this.myQueue)){
-				ListaUsuarios usuarios = this.master.darUsuariosLocal();
+				ListaFunciones funciones = this.master.darFuncionesLocal();
 				ObjectMapper mapper = new ObjectMapper();
-				String jsonString = mapper.writeValueAsString(usuarios);
+				String jsonString = mapper.writeValueAsString(funciones);
 				doResponseToQueue(a[1], GET_ALL_VIDEO_REPLY + CONNECTOR + jsonString);
 			}
 			else if(a[0].equals(GET_ALL_VIDEO_REPLY)){
 				ObjectMapper mapper = new ObjectMapper();
 				if(waiting){
-					ListaUsuarios obj = mapper.readValue(a[1], ListaUsuarios.class);
-					this.respuesta.addUsuario(obj);
+					ListaFunciones obj = mapper.readValue(a[1], ListaFunciones.class);
+					this.respuesta.addFunciones(obj);
 					this.numberApps++;
 				}
 			}

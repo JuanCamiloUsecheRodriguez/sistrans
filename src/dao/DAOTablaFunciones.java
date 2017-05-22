@@ -79,9 +79,9 @@ public class DAOTablaFunciones {
 			Sitio sitio = daoSitios.darSitioPorId(Integer.parseInt(rs.getString(3)));
 			daoSitios.cerrarRecursos();
 			DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+			daoEspectaculos.setConn(conn);
 			Espectaculo espectaculo = daoEspectaculos.darEspectaculoPorId(Integer.parseInt(rs.getString(4)));
 			daoEspectaculos.cerrarRecursos();
-			daoEspectaculos.setConn(conn);
 
 			boolean realizada = rs.getString("REALIZADA") =="Y"?true:false;
 			funciones.add(new Funcion(id, fecha, sitio, espectaculo, realizada));

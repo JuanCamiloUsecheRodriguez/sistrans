@@ -18,7 +18,7 @@ import dao.DAOTablaSitios;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import dtm.IncompleteReplyException;
-import dtm.JMSManager;
+import dtm.JMSFunciones;
 import dtm.NonReplyException;
 import vos.Abono;
 import vos.Boleta;
@@ -183,26 +183,26 @@ public class FestivAndesMaster {
 		return new ListaUsuarios(usuarios);
 	}
 	
-	public ListaUsuarios darUsuariosRemote() throws Exception {
-		ListaUsuarios usuarios;
-		DAOTablaUsuarios dao = new DAOTablaUsuarios();
-		ArrayList<Usuario> usuariosLocal = new ArrayList<Usuario>();
+	public ListaFunciones darFuncionesRemote() throws Exception {
+		ListaFunciones funciones;
+		DAOTablaFunciones dao = new DAOTablaFunciones();
+		ArrayList<Funcion> funcionesLocal = new ArrayList<Funcion>();
 		try {	
 			Connection conn = darConexion();
 			dao.setConn(conn);
-			usuariosLocal = dao.darUsuarios();
+			funcionesLocal = dao.darFunciones();
 			
-			JMSManager instancia = JMSManager.darInstacia(this);
+			JMSFunciones instancia = JMSFunciones.darInstacia(this);
 			instancia.setUpJMSManager(this.numberApps, this.myQueue, this.topicAllUsuarios);
-			usuarios = instancia.getResponse();  
+			funciones = instancia.getFuncionesResponse();  
 			
-			usuarios.addUsuario(new ListaUsuarios(usuariosLocal));
-			System.out.println("size:" + usuarios.getUsuarios().size());
+			funciones.addFunciones(new ListaFunciones(funcionesLocal));
+			System.out.println("size:" + funciones.getFunciones().size());
 		} catch (NonReplyException e) {
-			throw new IncompleteReplyException("No Reply from apps - Local Videos:",new ListaUsuarios(usuariosLocal));
+			throw new IncompleteReplyException("No Reply from apps - Local Videos:",new ListaFunciones(funcionesLocal));
 		} catch (IncompleteReplyException e) {
-			ListaUsuarios temp = e.getPartialResponse();
-			temp.addUsuario(new ListaUsuarios(usuariosLocal));
+			ListaFunciones temp = e.getPartialResponseFunciones();
+			temp.addFunciones(new ListaFunciones(funcionesLocal));
 			throw new IncompleteReplyException("Incomplete Reply:",temp);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -218,7 +218,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return usuarios; 
+		return funciones; 
 
 	}
 

@@ -65,17 +65,37 @@ public class FestivAndesMaster {
 	/**
 	 * Atributo que guarda el usuario que se va a usar para conectarse a la base de datos.
 	 */
-	private String user;
+	private String user1;
 
 	/**
 	 * Atributo que guarda la clave que se va a usar para conectarse a la base de datos.
 	 */
-	private String password;
+	private String password1;
 
 	/**
 	 * Atributo que guarda el URL que se va a usar para conectarse a la base de datos.
 	 */
-	private String url;
+	private String url1;
+	
+	/**
+	 * Atributo que guarda el usuario que se va a usar para conectarse a la base de datos.
+	 */
+	private String user2;
+
+	/**
+	 * Atributo que guarda la clave que se va a usar para conectarse a la base de datos.
+	 */
+	private String password2;
+	
+	/**
+	 * Atributo que guarda el usuario que se va a usar para conectarse a la base de datos.
+	 */
+	private String user3;
+
+	/**
+	 * Atributo que guarda la clave que se va a usar para conectarse a la base de datos.
+	 */
+	private String password3;
 
 	/**
 	 * Atributo que guarda el driver que se va a usar para conectarse a la base de datos.
@@ -118,9 +138,13 @@ public class FestivAndesMaster {
 			FileInputStream in = new FileInputStream(arch);
 			prop.load(in);
 			in.close();
-			this.url = prop.getProperty("url");
-			this.user = prop.getProperty("usuario");
-			this.password = prop.getProperty("clave");
+			this.url1 = prop.getProperty("url");
+			this.user1 = prop.getProperty("usuario1");
+			this.password1 = prop.getProperty("clave1");
+			this.user2 = prop.getProperty("usuario2");
+			this.password2 = prop.getProperty("clave2");
+			this.user3 = prop.getProperty("usuario3");
+			this.password3 = prop.getProperty("clave3");
 			this.driver = prop.getProperty("driver");
 			this.myQueue = prop.getProperty("myQueue");
 			this.topicAllFunciones = prop.getProperty("topicAllFunciones");
@@ -136,9 +160,19 @@ public class FestivAndesMaster {
 	 * @return Connection - la conexión a la base de datos
 	 * @throws SQLException - Cualquier error que se genere durante la conexión a la base de datos
 	 */
-	private Connection darConexion() throws SQLException {
-		System.out.println("Connecting to: " + url + " With user: " + user);
-		return DriverManager.getConnection(url, user, password);
+	private Connection darConexion1() throws SQLException {
+		System.out.println("Connecting to DataSource1: " + url1 + " With user: " + user1);
+		return DriverManager.getConnection(url1, user1, password1);
+	}
+	
+	private Connection darConexion2() throws SQLException {
+		System.out.println("Connecting to DataSource1: " + url1 + " With user: " + user2);
+		return DriverManager.getConnection(url1, user2, password2);
+	}
+	
+	private Connection darConexion3() throws SQLException {
+		System.out.println("Connecting to DataSource1: " + url1 + " With user: " + user3);
+		return DriverManager.getConnection(url1, user3, password3);
 	}
 
 	////////////////////////////////////////
@@ -157,7 +191,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoUsuarios.setConn(conn);
 			usuarios = daoUsuarios.darUsuarios();
 
@@ -188,7 +222,7 @@ public class FestivAndesMaster {
 		DAOTablaFunciones dao = new DAOTablaFunciones();
 		ArrayList<Funcion> funcionesLocal = new ArrayList<Funcion>();
 		try {	
-			Connection conn = darConexion();
+			Connection conn = darConexion1();
 			dao.setConn(conn);
 			funcionesLocal = dao.darFunciones();
 			
@@ -228,7 +262,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoClientes.setConn(conn);
 			daoClientes.actualizarPreferenciaCliente(idCategoriaAnterior, pref);
 			conn.commit();
@@ -259,7 +293,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoClientes.setConn(conn);
 			daoClientes.eliminarPreferenciaCliente(pref);
 			conn.commit();
@@ -292,7 +326,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			conn.setAutoCommit(false);
 			daoBoletas.setConn(conn);
 			r = daoBoletas.verificarCompra(localidad, funcion);
@@ -321,7 +355,7 @@ public class FestivAndesMaster {
 
 	public void addBoletas(CompraBoletas lista) throws Exception {
 		DAOTablaBoletas daoTablaBoletas = new DAOTablaBoletas();
-		this.conn = darConexion();
+		this.conn = darConexion1();
 		daoTablaBoletas.setConn(conn);
 		conn.setAutoCommit(false);
 		System.out.println("El AUTOCOMMIT ES: "+conn.getAutoCommit());
@@ -363,7 +397,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoBoletas.setConn(conn);
 			boletas = daoBoletas.darBoletasPorId(idBoleta);
 
@@ -395,7 +429,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoBoletas.setConn(conn);
 			boletas = daoBoletas.darBoletas();
 
@@ -427,7 +461,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoSitios.setConn(conn);
 			sitios = daoSitios.darSitios();
 
@@ -459,7 +493,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoSitios.setConn(conn);
 			sitio = daoSitios.darSitioPorId(idSitio);
 
@@ -491,7 +525,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoTablaFunciones.setConn(conn);
 			daoTablaFunciones.registrarRelizacionFuncion(idFuncion);;
 			conn.commit();
@@ -526,7 +560,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			funciones = daoFunciones.darFunciones();
 
@@ -558,7 +592,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			funciones = daoFunciones.darFuncionesEntreRangoDeFechas(fechaInicial, fechaFin, order);
 
@@ -590,7 +624,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			funciones = daoFunciones.darFuncionesDeCompaniaDeTeatro(compania, order);
 
@@ -622,7 +656,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			funciones = daoFunciones.darFuncionesPorCategoriaDeEspectaculo(categoria, order);
 
@@ -654,7 +688,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			funciones = daoFunciones.darFuncionesPorIdioma(idioma, order);
 
@@ -686,7 +720,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			funciones = daoFunciones.darFuncionesPorAccesibilidad(accesibilidad, order);
 
@@ -718,7 +752,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoSitios.setConn(conn);
 			sitio = daoSitios.consultarSitio(idSitio,order);
 
@@ -750,7 +784,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			reportes = daoFunciones.darReporteFuncion(idFuncion,order);
 
@@ -781,7 +815,7 @@ public class FestivAndesMaster {
 		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
 		try{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoEspectaculos.setConn(conn);
 			reportes = daoEspectaculos.darReporteEspectaculo(idEspectaculo,order);
 
@@ -809,7 +843,7 @@ public class FestivAndesMaster {
 
 	public void addAbono(Abono abono) throws SQLException,Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
-		this.conn = darConexion();
+		this.conn = darConexion1();
 		daoClientes.setConn(conn);
 		conn.setAutoCommit(false);
 		Savepoint s = conn.setSavepoint("ComprarAbono");
@@ -845,7 +879,7 @@ public class FestivAndesMaster {
 
 	public NotaDebito deleteBoleta(int idBoleta) throws SQLException, Exception {
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
-		this.conn = darConexion();
+		this.conn = darConexion1();
 		daoBoletas.setConn(conn);
 		conn.setAutoCommit(false);
 		Savepoint s = conn.setSavepoint("deleteBoleta");
@@ -882,7 +916,7 @@ public class FestivAndesMaster {
 
 	public NotaDebito deleteAbono(int idCliente) throws SQLException,Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
-		this.conn = darConexion();
+		this.conn = darConexion1();
 		daoClientes.setConn(conn);
 		conn.setAutoCommit(false);
 		Savepoint s = conn.setSavepoint("deleteBoleta");
@@ -919,7 +953,7 @@ public class FestivAndesMaster {
 	
 	public ListaNotas generarNotas(List<Integer> boletas) throws SQLException, Exception{
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
-		this.conn = darConexion();
+		this.conn = darConexion1();
 		daoBoletas.setConn(conn);
 		conn.setAutoCommit(false);
 		Savepoint s = conn.setSavepoint("notaDebito");
@@ -961,7 +995,7 @@ public class FestivAndesMaster {
 
 	public ListaNotas deleteFuncion(int idFuncion) throws SQLException, Exception{
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
-		this.conn = darConexion();
+		this.conn = darConexion1();
 		daoFunciones.setConn(conn);
 		conn.setAutoCommit(false);
 		Savepoint s = conn.setSavepoint("deleteBoleta");
@@ -1007,7 +1041,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoClientes.setConn(conn);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			reportes = daoClientes.darReporteAsistencia(idUsuario);
@@ -1041,7 +1075,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoClientes.setConn(conn);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			reportes = daoClientes.darReporteCompania();
@@ -1074,7 +1108,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			usuarios = daoFunciones.consultarAsistenciaRFC9(companiaId, fechaI, fechaF);
 
@@ -1106,7 +1140,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			usuarios = daoFunciones.consultarAsistenciaRFC10(companiaId, fechaI, fechaF);
 
@@ -1138,7 +1172,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoUsuarios.setConn(conn);
 			reporte = daoUsuarios.consultarCompras(idGerente, pfechaI, pfechaF, requerimientos, localidad);
 
@@ -1170,7 +1204,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoUsuarios.setConn(conn);
 			reporte = daoUsuarios.consultarBuenosClientes(idGerente, cantboletas);
 
@@ -1201,7 +1235,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoUsuarios.setConn(conn);
 			daoUsuarios.generarDatos(inicial, cant);
 
@@ -1231,7 +1265,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoClientes.setConn(conn);
 			daoClientes.generarDatos(inicial, cant);
 
@@ -1261,7 +1295,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoSitios.setConn(conn);
 			daoSitios.generarDatos(inicial, cant);
 
@@ -1291,7 +1325,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoFunciones.setConn(conn);
 			daoFunciones.generarDatos(inicial, cant);
 
@@ -1321,7 +1355,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoEspectaculos.setConn(conn);
 			daoEspectaculos.generarCompanias(inicial, cant);
 
@@ -1351,7 +1385,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoEspectaculos.setConn(conn);
 			daoEspectaculos.generarPatrocinas(inicialCompanias,inicialEspectaculos, cant);
 
@@ -1381,7 +1415,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoEspectaculos.setConn(conn);
 			daoEspectaculos.generarEspectaculo(inicial, cant);
 
@@ -1411,7 +1445,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoBoletas.setConn(conn);
 			daoBoletas.generarDatos(inicial, cant);
 
@@ -1441,7 +1475,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoTablaSitios.setConn(conn);
 			daoTablaSitios.generarLocalidad(inicial,cant);
 
@@ -1471,7 +1505,7 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion();
+			this.conn = darConexion1();
 			daoTablaSitios.setConn(conn);
 			daoTablaSitios.generarOfreceReq(inicial, cant);
 

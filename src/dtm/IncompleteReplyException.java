@@ -11,6 +11,7 @@
 package dtm;
 
 import vos.ListaFunciones;
+import vos.ListaReporteCompania;
 import vos.ListaUsuarios;
 import vos.ListaVideos;
 
@@ -34,6 +35,10 @@ public class IncompleteReplyException extends Exception {
 	private ListaFunciones partialResponseFunciones;
 	
 	/**
+	 * Atributo con las respuestas parciales
+	 */
+	private ListaReporteCompania partialResponseReporteCompania;
+	/**
 	 * Método constructor de la clase IncompleteReplyException
 	 * <b>post: </b> Crea la  IncompleteReplyException con los valores que entran como parámetro
 	 * @param message - mensaje de la IncompleteReplyException
@@ -56,6 +61,16 @@ public class IncompleteReplyException extends Exception {
 	}
 	
 	/**
+	 * Método constructor de la clase IncompleteReplyException
+	 * <b>post: </b> Crea la  IncompleteReplyException con los valores que entran como parámetro
+	 * @param message - mensaje de la IncompleteReplyException
+	 * @param partialResponse - respuesta parcial a guardar.
+	 */
+	public IncompleteReplyException(String message,ListaReporteCompania partialResponse){
+		super(message);
+		this.partialResponseReporteCompania = partialResponse;
+	}
+	/**
 	 * Método que retorna la respuesta parcial
 	 * @return ListaVideos - respuesta parcial
 	 */
@@ -71,4 +86,11 @@ public class IncompleteReplyException extends Exception {
 		return this.partialResponseFunciones;
 	}
 
+	/**
+	 * Método que retorna la respuesta parcial
+	 * @return ListaVideos - respuesta parcial
+	 */
+	public ListaReporteCompania getPartialResponseReporteCompania(){
+		return this.partialResponseReporteCompania;
+	}
 }

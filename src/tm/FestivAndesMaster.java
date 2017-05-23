@@ -1034,7 +1034,7 @@ public class FestivAndesMaster {
 		return new ListaReporteAsistencia(reportes);
 	}
 
-	public ListaReporteCompania darReporteCompania(int idCompania) throws SQLException , Exception{
+	public ListaReporteCompania darReporteCompaniaLocal() throws SQLException , Exception{
 		ArrayList<ReporteCompania> reportes;
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
 		
@@ -1044,7 +1044,7 @@ public class FestivAndesMaster {
 			this.conn = darConexion();
 			daoClientes.setConn(conn);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			reportes = daoClientes.darReporteCompania(idCompania);
+			reportes = daoClientes.darReporteCompania();
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());

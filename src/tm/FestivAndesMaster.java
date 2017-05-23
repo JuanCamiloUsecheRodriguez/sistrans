@@ -92,7 +92,7 @@ public class FestivAndesMaster {
 
 	private int numberApps;
 
-	private String topicAllUsuarios;
+	private String topicAllFunciones;
 
 
 	/**
@@ -123,7 +123,7 @@ public class FestivAndesMaster {
 			this.password = prop.getProperty("clave");
 			this.driver = prop.getProperty("driver");
 			this.myQueue = prop.getProperty("myQueue");
-			this.topicAllUsuarios = prop.getProperty("topicAllUsuarios");
+			this.topicAllFunciones = prop.getProperty("topicAllFunciones");
 			this.numberApps = Integer.parseInt(prop.getProperty("numberApps"));
 			Class.forName(driver);
 		} catch (Exception e) {
@@ -193,7 +193,7 @@ public class FestivAndesMaster {
 			funcionesLocal = dao.darFunciones();
 			
 			JMSFunciones instancia = JMSFunciones.darInstacia(this);
-			instancia.setUpJMSManager(this.numberApps, this.myQueue, this.topicAllUsuarios);
+			instancia.setUpJMSManager(this.numberApps, this.myQueue, this.topicAllFunciones);
 			funciones = instancia.getFuncionesResponse();  
 			
 			funciones.addFunciones(new ListaFunciones(funcionesLocal));

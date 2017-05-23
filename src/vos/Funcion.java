@@ -6,41 +6,41 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Funcion {
 	
-	@JsonProperty(value="id")
-	private int id;
+	@JsonProperty(value="idfuncion")
+	private int idfuncion;
 	
 	@JsonProperty(value="fecha")
 	private Date fecha;
 	
-	@JsonProperty(value="sitio")
-	private Sitio sitio;
+	@JsonProperty(value="idsitio")
+	private int idsitio;
 	
-	@JsonProperty(value="espectaculo")
-	private Espectaculo espectaculo;
+	@JsonProperty(value="idespectaculo")
+	private int idespectaculo;
 	
-	@JsonProperty(value="realizada")
-	private boolean realizada;
+	@JsonProperty(value="realizado")
+	private boolean realizado;
 
 	public Funcion(
-			@JsonProperty(value="id")int id,
+			@JsonProperty(value="idfuncion")int idfuncion,
 			@JsonProperty(value="fecha")Date fecha, 
-			@JsonProperty(value="sitio")Sitio sitio, 
-			@JsonProperty(value="espectaculo")Espectaculo espectaculo, 
-			@JsonProperty(value="realizada")boolean realizada) {
+			@JsonProperty(value="idsitio")int idsitio, 
+			@JsonProperty(value="idespectaculo")int idespectaculo, 
+			@JsonProperty(value="realizado")boolean realizado) {
 		super();
-		this.id = id;
+		this.idfuncion = idfuncion;
 		this.fecha = fecha;
-		this.sitio = sitio;
-		this.espectaculo = espectaculo;
-		this.realizada = realizada;
+		this.idsitio = idsitio;
+		this.idespectaculo = idespectaculo;
+		this.realizado = realizado;
 	}
 
-	public int getId() {
-		return id;
+	public int getIdfuncion() {
+		return idfuncion;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setIdfuncion(int idfuncion) {
+		this.idfuncion = idfuncion;
 	}
 
 	public Date getFecha() {
@@ -51,31 +51,30 @@ public class Funcion {
 		this.fecha = fecha;
 	}
 
-	public Sitio getSitio() {
-		return sitio;
+	public int getIdsitio() {
+		return idsitio;
 	}
 
-	public void setSitio(Sitio sitio) {
-		this.sitio = sitio;
+	public void setIdsitio(int idsitio) {
+		this.idsitio = idsitio;
 	}
 
-	public Espectaculo getEspectaculo() {
-		return espectaculo;
+	public int getIdespectaculo() {
+		return idespectaculo;
 	}
 
-	public void setEspectaculo(Espectaculo espectaculo) {
-		this.espectaculo = espectaculo;
+	public void setIdespectaculo(int idespectaculo) {
+		this.idespectaculo = idespectaculo;
 	}
 
-	public boolean isRealizada() {
-		return realizada;
+	public boolean isRealizado() {
+		return realizado;
 	}
 
-	public void setRealizada(boolean realizada) {
-		this.realizada = realizada;
+	public void setRealizado(boolean realizado) {
+		this.realizado = realizado;
 	}
-	
-	
+
 	
 
 }

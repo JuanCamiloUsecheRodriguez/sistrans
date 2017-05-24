@@ -50,13 +50,13 @@ import vos.ListaUsuarios;
 /**
  * Clase Manejador de JMS  que se manda y recibe 
  */
-public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
+public class JMSRetirarCompania implements MessageListener, ExceptionListener
 {
 
 	/**
 	 * Atributo tipo JMSManager para manejar la única instancia del patron singleton
 	 */
-	private static JMSCompraAbonamiento instancia;
+	private static JMSRetirarCompania instancia;
 	
 	/**
 	 * Atributo tipo ListaVideos que va guardando todos los videos que llegan como respuesta de las otra aplicaciones 
@@ -112,7 +112,7 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 	/**
 	 * Atributo que representa el topic: topicAllVideos
 	 */
-	private String topicAllAbonamientos;
+	private String topicAllRetirarCompanias;
 
 	/////Protocol
 
@@ -130,12 +130,12 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 	/**
 	 * Atributo que representa, dentro del mensaje, la solicitud de todos los videos de manera distribuida
 	 */
-	public final static String GET_ALL_VIDEO_ASK = "GETALLAbonamientos";
+	public final static String GET_ALL_VIDEO_ASK = "GETALLRetirarCompanias";
 
 	/**
 	 * Atributo que representa, dentro del mensaje, la respuesta del requerimiento dar todos los videos.
 	 */
-	public final static String GET_ALL_VIDEO_REPLY = "GETALLAbonamientosRES";
+	public final static String GET_ALL_VIDEO_REPLY = "GETALLRetirarCompaniasRES";
 
 	/**
 	 * Atributo que representa, dentro del mensaje, el conector para el formateo de todos los mensajes
@@ -157,8 +157,8 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 	 * @param videoAndesMaster - instancia que hace referencia a la clase principal VideoAndesMaster
 	 * @return JMSManager - instancia única de la clase
 	 */
-	public static JMSCompraAbonamiento darInstacia(FestivAndesMaster festivAndesMaster){
-		instancia = instancia == null? new JMSCompraAbonamiento() : instancia;
+	public static JMSRetirarCompania darInstacia(FestivAndesMaster festivAndesMaster){
+		instancia = instancia == null? new JMSRetirarCompania() : instancia;
 		instancia.setUpMaster(festivAndesMaster);
 		return instancia;
 	}
@@ -187,11 +187,11 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 	 * <b>post: </b> se han inicializado los atributos de la clase y 
 	 * se han generado la suscripciones y publicaciones a las colas y topics
 	 */
-	public void setUpJMSManager(int numerApps, String myQueue, String topicAllAbonamientos){
+	public void setUpJMSManager(int numerApps, String myQueue, String topicAllRetirarCompanias){
 		try {
 			this.numberAppsTotal = numerApps - 1;
 			this.myQueue = myQueue;
-			this.topicAllAbonamientos = topicAllAbonamientos;
+			this.topicAllRetirarCompanias = topicAllRetirarCompanias;
 			setupMyQueue();
 			setupSubscriptions();
 			waiting = false;
@@ -211,7 +211,7 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 	 * @throws NonReplyException - Caso de NonReplyException
 	 * @throws JMSException - Caso de JMSException
 	 */
-	public void getAbonamientosResponse() throws IncompleteReplyException, JMSException, NamingException, InterruptedException, NonReplyException {
+	public void getRetirarCompaniasResponse() throws IncompleteReplyException, JMSException, NamingException, InterruptedException, NonReplyException {
 		sendMessage(); // manda el mensaje de solicitud del requerimiento al topic
 		waiting = true; // Lo hace para< indicar que si esta esperando respuestas
 		this.numberApps = 0; // Pone en 0 el numero de respuestas que han llegado
@@ -223,7 +223,7 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 		}
 		
 		if(count == TIME_OUT){ // Verifica si se cumplió el time out 
-			if(this.respuesta.getAbonamientos().isEmpty()){
+			if(this.respuesta.getRetirarCompanias().isEmpty()){
 				waiting = false;
 				this.numberApps = 0;
 				throw new NonReplyException("Time Out - No Reply"); // Exception que indica que se cumplido el time out y nadie respondido 
@@ -234,10 +234,10 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 		}
 		waiting = false;
 		this.numberApps = 0;
-		if(respuesta.getAbonamientos().isEmpty())
+		if(respuesta.getRetirarCompanias().isEmpty())
 			throw new NonReplyException("Got all responses but no videos were detected"); // Exception que indica que todos respondieron pero no llegaron videos
-		ListaAbonamientos res = respuesta;
-		respuesta = new ListaAbonamientos();
+		ListaRetirarCompanias res = respuesta;
+		respuesta = new ListaRetirarCompanias();
 		return res; // Retorna con la respuesta completa de todas las aplicaciones
 	}
 
@@ -251,7 +251,7 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 		// init Topic para consumir donde llegan las peticiones
 		try {
 			InitialContext ctx = new InitialContext();
-			this.topic = (Topic) ctx.lookup(topicAllAbonamientos);
+			this.topic = (Topic) ctx.lookup(topicAllRetirarCompanias);
 			TopicConnectionFactory connFactory = (TopicConnectionFactory) ctx.lookup(REMOTE_CONNECTION_FACTORY);
 			TopicConnection topicConn = connFactory.createTopicConnection();
 			this.topicSession = topicConn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -341,16 +341,16 @@ public class JMSCompraAbonamiento implements MessageListener, ExceptionListener
 			System.out.println("received: " + mes);
 			String[] a = mes.split(CONNECTOR);
 			if(a[0].equals(GET_ALL_VIDEO_ASK) && !a[1].equals(this.myQueue)){
-				ListaAbonamientos Abonamientos = this.master.darAbonamientosLocal();
+				ListaRetirarCompanias RetirarCompanias = this.master.darRetirarCompaniasLocal();
 				ObjectMapper mapper = new ObjectMapper();
-				String jsonString = mapper.writeValueAsString(Abonamientos);
+				String jsonString = mapper.writeValueAsString(RetirarCompanias);
 				doResponseToQueue(a[1], GET_ALL_VIDEO_REPLY + CONNECTOR + jsonString);
 			}
 			else if(a[0].equals(GET_ALL_VIDEO_REPLY)){
 				ObjectMapper mapper = new ObjectMapper();
 				if(waiting){
-					ListaAbonamientos obj = mapper.readValue(a[1], ListaAbonamientos.class);
-					this.respuesta.addAbonamientos(obj);
+					ListaRetirarCompanias obj = mapper.readValue(a[1], ListaRetirarCompanias.class);
+					this.respuesta.addRetirarCompanias(obj);
 					this.numberApps++;
 				}
 			}

@@ -23,6 +23,7 @@ import dao.DAOTablaUsuarios;
 import dao.DAOTablaVideos;
 import dtm.IncompleteReplyException;
 import dtm.JMSFunciones;
+import dtm.JMSRetirarCompania;
 import dtm.NonReplyException;
 import vos.Abono;
 import vos.Boleta;
@@ -224,7 +225,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaUsuarios(usuarios);
 	}
-	
+
 	public ListaFunciones darFuncionesRemote() throws Exception {
 		ListaFunciones funciones;
 		DAOTablaFunciones dao = new DAOTablaFunciones();
@@ -1094,6 +1095,32 @@ public class FestivAndesMaster {
 		return new ListaNotas(r);
 	}
 
+	public void deleteCompaniaRemote(int idCompania) throws Exception {
+		try {	
+			Connection conn1 = darConexion1();
+			
+			JMSRetirarCompania instancia = JMSRetirarCompania.darInstacia(this);
+			instancia.setUpJMSManager(this.numberApps, this.myQueue, this.topicAllFunciones);
+			instancia.getRetirarCompaniasResponse(idCompania);  
+	
+		} catch (NonReplyException e) {
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+			
+				if(this.conn1!=null)
+					this.conn1.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+
+	}
 	public void deleteCompaniaLocal(int idCompania) throws Exception{
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
 		this.conn1 = darConexion1();

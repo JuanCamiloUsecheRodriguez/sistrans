@@ -6,9 +6,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
 
 import dao.DAOTablaBoletas;
 import dao.DAOTablaClientes;
@@ -60,7 +64,7 @@ public class FestivAndesMaster {
 	/**
 	 * Atributo estático que contiene el path absoluto del archivo que tiene los datos de la conexión
 	 */
-	private  String connectionDataPath;
+	private  String conn1ectionDataPath;
 
 	/**
 	 * Atributo que guarda el usuario que se va a usar para conectarse a la base de datos.
@@ -105,7 +109,11 @@ public class FestivAndesMaster {
 	/**
 	 * Conexión a la base de datos
 	 */
-	private Connection conn;
+	private Connection conn1;
+	
+	private Connection conn2;
+	
+	private Connection conn3;
 	
 	private String myQueue;
 
@@ -123,7 +131,7 @@ public class FestivAndesMaster {
 	 * @param contextPathP - path absoluto en el servidor del contexto del deploy actual
 	 */
 	public FestivAndesMaster(String contextPathP) {
-		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
+		conn1ectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
 		initConnectionData();
 	}
 
@@ -133,7 +141,7 @@ public class FestivAndesMaster {
 	 */
 	private void initConnectionData() {
 		try {
-			File arch = new File(this.connectionDataPath);
+			File arch = new File(this.conn1ectionDataPath);
 			Properties prop = new Properties();
 			FileInputStream in = new FileInputStream(arch);
 			prop.load(in);
@@ -191,8 +199,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoUsuarios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoUsuarios.setConn(conn1);
 			usuarios = daoUsuarios.darUsuarios();
 
 		} catch (SQLException e) {
@@ -206,8 +214,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoUsuarios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -222,8 +230,8 @@ public class FestivAndesMaster {
 		DAOTablaFunciones dao = new DAOTablaFunciones();
 		ArrayList<Funcion> funcionesLocal = new ArrayList<Funcion>();
 		try {	
-			Connection conn = darConexion1();
-			dao.setConn(conn);
+			Connection conn1 = darConexion1();
+			dao.setConn(conn1);
 			funcionesLocal = dao.darFunciones();
 			
 			JMSFunciones instancia = JMSFunciones.darInstacia(this);
@@ -244,8 +252,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				dao.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -262,10 +270,10 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoClientes.setConn(conn);
+			this.conn1 = darConexion1();
+			daoClientes.setConn(conn1);
 			daoClientes.actualizarPreferenciaCliente(idCategoriaAnterior, pref);
-			conn.commit();
+			conn1.commit();
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -278,8 +286,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoClientes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -293,10 +301,10 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoClientes.setConn(conn);
+			this.conn1 = darConexion1();
+			daoClientes.setConn(conn1);
 			daoClientes.eliminarPreferenciaCliente(pref);
-			conn.commit();
+			conn1.commit();
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -309,8 +317,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoClientes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -326,9 +334,9 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			conn.setAutoCommit(false);
-			daoBoletas.setConn(conn);
+			this.conn1 = darConexion1();
+			conn1.setAutoCommit(false);
+			daoBoletas.setConn(conn1);
 			r = daoBoletas.verificarCompra(localidad, funcion);
 
 		} catch (SQLException e) {
@@ -342,8 +350,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoBoletas.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -355,33 +363,33 @@ public class FestivAndesMaster {
 
 	public void addBoletas(CompraBoletas lista) throws Exception {
 		DAOTablaBoletas daoTablaBoletas = new DAOTablaBoletas();
-		this.conn = darConexion1();
-		daoTablaBoletas.setConn(conn);
-		conn.setAutoCommit(false);
-		System.out.println("El AUTOCOMMIT ES: "+conn.getAutoCommit());
-		Savepoint s =  conn.setSavepoint("comprarBoletas");
+		this.conn1 = darConexion1();
+		daoTablaBoletas.setConn(conn1);
+		conn1.setAutoCommit(false);
+		System.out.println("El AUTOCOMMIT ES: "+conn1.getAutoCommit());
+		Savepoint s =  conn1.setSavepoint("comprarBoletas");
 		List<Boleta> boletas = lista.getBoletas();
 		try 
 		{
 			daoTablaBoletas.addBoletas(boletas);
-			System.out.println("El AUTOCOMMIT2 ES: "+conn.getAutoCommit());
-			conn.commit();
+			System.out.println("El AUTOCOMMIT2 ES: "+conn1.getAutoCommit());
+			conn1.commit();
 
 		} catch (SQLException e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
 				daoTablaBoletas.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -397,8 +405,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoBoletas.setConn(conn);
+			this.conn1 = darConexion1();
+			daoBoletas.setConn(conn1);
 			boletas = daoBoletas.darBoletasPorId(idBoleta);
 
 		} catch (SQLException e) {
@@ -412,8 +420,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoBoletas.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -429,8 +437,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoBoletas.setConn(conn);
+			this.conn1 = darConexion1();
+			daoBoletas.setConn(conn1);
 			boletas = daoBoletas.darBoletas();
 
 		} catch (SQLException e) {
@@ -444,8 +452,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoBoletas.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -461,8 +469,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoSitios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoSitios.setConn(conn1);
 			sitios = daoSitios.darSitios();
 
 		} catch (SQLException e) {
@@ -476,8 +484,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoSitios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -493,8 +501,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoSitios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoSitios.setConn(conn1);
 			sitio = daoSitios.darSitioPorId(idSitio);
 
 		} catch (SQLException e) {
@@ -508,8 +516,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoSitios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -525,10 +533,10 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoTablaFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoTablaFunciones.setConn(conn1);
 			daoTablaFunciones.registrarRelizacionFuncion(idFuncion);;
-			conn.commit();
+			conn1.commit();
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -541,8 +549,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoTablaFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -560,8 +568,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			funciones = daoFunciones.darFunciones();
 
 		} catch (SQLException e) {
@@ -575,8 +583,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -592,8 +600,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			funciones = daoFunciones.darFuncionesEntreRangoDeFechas(fechaInicial, fechaFin, order);
 
 		} catch (SQLException e) {
@@ -607,8 +615,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -624,8 +632,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			funciones = daoFunciones.darFuncionesDeCompaniaDeTeatro(compania, order);
 
 		} catch (SQLException e) {
@@ -639,8 +647,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -656,8 +664,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			funciones = daoFunciones.darFuncionesPorCategoriaDeEspectaculo(categoria, order);
 
 		} catch (SQLException e) {
@@ -671,8 +679,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -688,8 +696,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			funciones = daoFunciones.darFuncionesPorIdioma(idioma, order);
 
 		} catch (SQLException e) {
@@ -703,8 +711,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -720,8 +728,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			funciones = daoFunciones.darFuncionesPorAccesibilidad(accesibilidad, order);
 
 		} catch (SQLException e) {
@@ -735,8 +743,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -752,8 +760,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoSitios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoSitios.setConn(conn1);
 			sitio = daoSitios.consultarSitio(idSitio,order);
 
 		} catch (SQLException e) {
@@ -767,8 +775,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoSitios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -784,8 +792,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			reportes = daoFunciones.darReporteFuncion(idFuncion,order);
 
 		} catch (SQLException e) {
@@ -799,8 +807,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -815,8 +823,8 @@ public class FestivAndesMaster {
 		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
 		try{
 			//////Transacción
-			this.conn = darConexion1();
-			daoEspectaculos.setConn(conn);
+			this.conn1 = darConexion1();
+			daoEspectaculos.setConn(conn1);
 			reportes = daoEspectaculos.darReporteEspectaculo(idEspectaculo,order);
 
 		} catch (SQLException e) {
@@ -830,8 +838,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoEspectaculos.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -843,31 +851,31 @@ public class FestivAndesMaster {
 
 	public void addAbono(Abono abono) throws SQLException,Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
-		this.conn = darConexion1();
-		daoClientes.setConn(conn);
-		conn.setAutoCommit(false);
-		Savepoint s = conn.setSavepoint("ComprarAbono");
+		this.conn1 = darConexion1();
+		daoClientes.setConn(conn1);
+		conn1.setAutoCommit(false);
+		Savepoint s = conn1.setSavepoint("ComprarAbono");
 		try 
 		{
 			//////Transacción
 			daoClientes.addAbono(abono);
-			conn.commit();
+			conn1.commit();
 
 		} catch (SQLException e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
 				daoClientes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -876,35 +884,128 @@ public class FestivAndesMaster {
 		}
 		
 	}
+	
+	public boolean deleteCompania2pc(int idCompania) throws SQLException, Exception {
+		try{
+			InitialContext ctx = new InitialContext();
+			UserTransaction utx = (UserTransaction) ctx.lookup("/UserTransaction");
+			
+			try {
+				
+				this.conn1 = darConexion1();
+				this.conn2 = darConexion2();
+				this.conn3 = darConexion3();
+				utx.begin();
+				try {
+					Statement st = conn1.createStatement();
+					String sql = "DELETE FROM BOLETA WHERE FUNCION IN (SELECT IDFUNCION FROM "
+							+ "(SELECT FUNCION.ID AS IDFUNCION,FUNCION.ESPECTACULO FROM FUNCION "
+							+ "INNER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 "
+							+ "INNER JOIN PATROCINA ON T1.ESPECTACULO = PATROCINA.IDESPECTACULO WHERE IDCOMPANIA ="+idCompania + ")";
+				System.out.println(sql);
+				st.executeQuery(sql);
+				sql = "DELETE FROM FUNCION WHERE ID IN (SELECT IDFUNCION FROM "
+						+ "(SELECT FUNCION.ID AS IDFUNCION,FUNCION.ESPECTACULO FROM FUNCION "
+						+ "INNER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 "
+						+ "INNER JOIN PATROCINA ON T1.ESPECTACULO = PATROCINA.IDESPECTACULO WHERE IDCOMPANIA ="+ idCompania +")";
+				st.executeQuery(sql);
+				sql = "DELETE FROM COMPANIA WHERE ID = "+ idCompania;
+				st.executeQuery(sql);
+				System.out.println("OK Datasource 1");
+				st.close();
+				
+				} catch (Exception e) {
+					// TODO: handle exception
+					utx.setRollbackOnly();
+				}
+				try {
+					Statement st = conn2.createStatement();
+					String sql = "DELETE FROM BOLETA WHERE IDBOLETA IN "
+							+ "(SELECT DISTINCT IDBOLETA FROM BOLETA NATURAL"
+							+ " JOIN FUNCION NATURAL JOIN OBRA NATURAL JOIN "
+							+ "FUNCION NATURAL JOIN COMPANIAOBRA NATURAL JOIN "
+							+ "COMPANIA WHERE IDCOMPANIA = "+ idCompania+ ")";
+				System.out.println(sql);
+				st.executeQuery(sql);
+				sql = "UPDATE FUNCION SET REALIZADO = 2 WHERE IDFUNCION IN "
+						+ "(SELECT DISTINCT IDFUNCION FROM FUNCION NATURAL JOIN "
+						+ "OBRA NATURAL JOIN FUNCION NATURAL JOIN COMPANIAOBRA NATURAL JOIN "
+						+ "COMPANIA WHERE IDCOMPANIA = "+ idCompania +")";
+				st.executeQuery(sql);
+				sql = "DELETE FROM COMPANIA WHERE ID = "+idCompania;
+				st.executeQuery(sql);
+				System.out.println("OK Datasource 2");
+				st.close();
+				
+				} catch (Exception e) {
+					// TODO: handle exception
+					utx.setRollbackOnly();
+				}
+				try {
+					Statement st = conn3.createStatement();
+					String sql = "DELETE FROM BOLETA WHERE FUNCION IN (SELECT IDFUNCION FROM "
+							+ "(SELECT FUNCION.ID AS IDFUNCION,FUNCION.ESPECTACULO FROM FUNCION "
+							+ "INNER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 "
+							+ "INNER JOIN PATROCINA ON T1.ESPECTACULO = PATROCINA.IDESPECTACULO WHERE IDCOMPANIA ="+idCompania + ")";
+				System.out.println(sql);
+				st.executeQuery(sql);
+				sql = "DELETE FROM FUNCION WHERE ID IN (SELECT IDFUNCION FROM "
+						+ "(SELECT FUNCION.ID AS IDFUNCION,FUNCION.ESPECTACULO FROM FUNCION "
+						+ "INNER JOIN ESPECTACULO ON FUNCION.ESPECTACULO = ESPECTACULO.ID)T1 "
+						+ "INNER JOIN PATROCINA ON T1.ESPECTACULO = PATROCINA.IDESPECTACULO WHERE IDCOMPANIA ="+ idCompania +")";
+				st.executeQuery(sql);
+				sql = "DELETE FROM COMPANIA WHERE ID = "+idCompania;
+				st.executeQuery(sql);
+				System.out.println("OK Datasource 3");
+				st.close();
+				
+				} catch (Exception e) {
+					// TODO: handle exception
+					utx.setRollbackOnly();
+				}
+				utx.commit();
+				conn1.close();
+				conn2.close();
+				conn3.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return true;
+	}
 
 	public NotaDebito deleteBoleta(int idBoleta) throws SQLException, Exception {
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
-		this.conn = darConexion1();
-		daoBoletas.setConn(conn);
-		conn.setAutoCommit(false);
-		Savepoint s = conn.setSavepoint("deleteBoleta");
+		this.conn1 = darConexion1();
+		daoBoletas.setConn(conn1);
+		conn1.setAutoCommit(false);
+		Savepoint s = conn1.setSavepoint("deleteBoleta");
 		NotaDebito r = null;
 		try 
 		{
 			//////Transacción
 			r = daoBoletas.deleteBoleta(idBoleta);
-			conn.commit();
+			conn1.commit();
 
 		} catch (SQLException e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
 				daoBoletas.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -916,32 +1017,32 @@ public class FestivAndesMaster {
 
 	public NotaDebito deleteAbono(int idCliente) throws SQLException,Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
-		this.conn = darConexion1();
-		daoClientes.setConn(conn);
-		conn.setAutoCommit(false);
-		Savepoint s = conn.setSavepoint("deleteBoleta");
+		this.conn1 = darConexion1();
+		daoClientes.setConn(conn1);
+		conn1.setAutoCommit(false);
+		Savepoint s = conn1.setSavepoint("deleteBoleta");
 		NotaDebito r = null;
 		try 
 		{
 			//////Transacción
 			r = daoClientes.deleteAbono(idCliente);
-			conn.commit();
+			conn1.commit();
 
 		} catch (SQLException e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
 				daoClientes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -953,37 +1054,37 @@ public class FestivAndesMaster {
 	
 	public ListaNotas generarNotas(List<Integer> boletas) throws SQLException, Exception{
 		DAOTablaBoletas daoBoletas = new DAOTablaBoletas();
-		this.conn = darConexion1();
-		daoBoletas.setConn(conn);
-		conn.setAutoCommit(false);
-		Savepoint s = conn.setSavepoint("notaDebito");
+		this.conn1 = darConexion1();
+		daoBoletas.setConn(conn1);
+		conn1.setAutoCommit(false);
+		Savepoint s = conn1.setSavepoint("notaDebito");
 		List<NotaDebito> r = new ArrayList<NotaDebito>();
 		try 
 		{
 			//////Transacción
 			for (int i = 0; i < boletas.size(); i++) {
 				r.add(daoBoletas.addNotasDebito(boletas.get(i)));
-				conn.commit();
+				conn1.commit();
 			}
 			
 			
 			
 
 		} catch (SQLException e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
 				daoBoletas.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1035,10 +1136,10 @@ public class FestivAndesMaster {
 	
 	public ListaNotas deleteFuncion(int idFuncion) throws SQLException, Exception{
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
-		this.conn = darConexion1();
-		daoFunciones.setConn(conn);
-		conn.setAutoCommit(false);
-		Savepoint s = conn.setSavepoint("deleteBoleta");
+		this.conn1 = darConexion1();
+		daoFunciones.setConn(conn1);
+		conn1.setAutoCommit(false);
+		Savepoint s = conn1.setSavepoint("deleteBoleta");
 		ListaNotas r = null;
 		List<Integer> boletas = null;
 		try 
@@ -1046,25 +1147,25 @@ public class FestivAndesMaster {
 			//////Transacción
 			boletas = daoFunciones.deleteFuncion(idFuncion);
 			
-			conn.commit();
+			conn1.commit();
 			
 			r = generarNotas(boletas);
 
 		} catch (SQLException e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1081,9 +1182,9 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoClientes.setConn(conn);
-			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			this.conn1 = darConexion1();
+			daoClientes.setConn(conn1);
+			conn1.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			reportes = daoClientes.darReporteAsistencia(idUsuario);
 
 		} catch (SQLException e) {
@@ -1097,8 +1198,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoClientes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1115,9 +1216,9 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoClientes.setConn(conn);
-			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			this.conn1 = darConexion1();
+			daoClientes.setConn(conn1);
+			conn1.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			reportes = daoClientes.darReporteCompania();
 
 		} catch (SQLException e) {
@@ -1131,8 +1232,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoClientes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1148,8 +1249,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			usuarios = daoFunciones.consultarAsistenciaRFC9(companiaId, fechaI, fechaF);
 
 		} catch (SQLException e) {
@@ -1163,8 +1264,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1180,8 +1281,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			usuarios = daoFunciones.consultarAsistenciaRFC10(companiaId, fechaI, fechaF);
 
 		} catch (SQLException e) {
@@ -1195,8 +1296,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1212,8 +1313,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoUsuarios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoUsuarios.setConn(conn1);
 			reporte = daoUsuarios.consultarCompras(idGerente, pfechaI, pfechaF, requerimientos, localidad);
 
 		} catch (SQLException e) {
@@ -1227,8 +1328,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoUsuarios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1244,8 +1345,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoUsuarios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoUsuarios.setConn(conn1);
 			reporte = daoUsuarios.consultarBuenosClientes(idGerente, cantboletas);
 
 		} catch (SQLException e) {
@@ -1259,8 +1360,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoUsuarios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1275,8 +1376,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoUsuarios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoUsuarios.setConn(conn1);
 			daoUsuarios.generarDatos(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1290,8 +1391,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoUsuarios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1305,8 +1406,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoClientes.setConn(conn);
+			this.conn1 = darConexion1();
+			daoClientes.setConn(conn1);
 			daoClientes.generarDatos(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1320,8 +1421,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoClientes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1335,8 +1436,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoSitios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoSitios.setConn(conn1);
 			daoSitios.generarDatos(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1350,8 +1451,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoSitios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1365,8 +1466,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoFunciones.setConn(conn);
+			this.conn1 = darConexion1();
+			daoFunciones.setConn(conn1);
 			daoFunciones.generarDatos(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1380,8 +1481,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1395,8 +1496,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoEspectaculos.setConn(conn);
+			this.conn1 = darConexion1();
+			daoEspectaculos.setConn(conn1);
 			daoEspectaculos.generarCompanias(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1410,8 +1511,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoEspectaculos.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1425,8 +1526,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoEspectaculos.setConn(conn);
+			this.conn1 = darConexion1();
+			daoEspectaculos.setConn(conn1);
 			daoEspectaculos.generarPatrocinas(inicialCompanias,inicialEspectaculos, cant);
 
 		} catch (SQLException e) {
@@ -1440,8 +1541,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoEspectaculos.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1455,8 +1556,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoEspectaculos.setConn(conn);
+			this.conn1 = darConexion1();
+			daoEspectaculos.setConn(conn1);
 			daoEspectaculos.generarEspectaculo(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1470,8 +1571,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoEspectaculos.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1485,8 +1586,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoBoletas.setConn(conn);
+			this.conn1 = darConexion1();
+			daoBoletas.setConn(conn1);
 			daoBoletas.generarDatos(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1500,8 +1601,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoBoletas.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1515,8 +1616,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoTablaSitios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoTablaSitios.setConn(conn1);
 			daoTablaSitios.generarLocalidad(inicial,cant);
 
 		} catch (SQLException e) {
@@ -1530,8 +1631,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoTablaSitios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -1545,8 +1646,8 @@ public class FestivAndesMaster {
 		try 
 		{
 			//////Transacción
-			this.conn = darConexion1();
-			daoTablaSitios.setConn(conn);
+			this.conn1 = darConexion1();
+			daoTablaSitios.setConn(conn1);
 			daoTablaSitios.generarOfreceReq(inicial, cant);
 
 		} catch (SQLException e) {
@@ -1560,8 +1661,8 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoTablaSitios.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();

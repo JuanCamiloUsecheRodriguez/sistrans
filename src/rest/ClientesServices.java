@@ -60,13 +60,13 @@ public class ClientesServices {
 	
 	
 	@GET
-	@Path("/{idCompania}/reporteCompania")
+	@Path("/reporteCompania")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response darReporteCompania(@PathParam("idCompania")int idCompania){
+	public Response darReporteCompania(){
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaReporteCompania reporte = null;
 		try {
-			reporte = tm.darReporteCompania(idCompania);
+			reporte = tm.darReporteCompaniaLocal();
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

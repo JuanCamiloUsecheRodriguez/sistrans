@@ -16,14 +16,17 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import dtm.JMSFunciones;
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
+import vos.NotaDebito;
 
 /**
  * Clase que expone servicios REST con ruta base: http://"ip o nombre de host":8080/VideoAndes/rest/admin/...
@@ -97,6 +100,18 @@ public class AdminServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@DELETE
+	@Path("/compania/{idCompania}")
+	public Response deleteCompania(@PathParam("idCompania")int idCompania) {
+		try {
+			FestivAndesMaster tm = new FestivAndesMaster(getPath());
+				tm.deleteCompania2pc(idCompania);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).build();
 	}
 	
 

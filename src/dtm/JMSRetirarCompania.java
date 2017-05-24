@@ -272,13 +272,13 @@ public class JMSRetirarCompania implements MessageListener, ExceptionListener
 	 * @throws JMSException - Caso de JMSException
 	 * @throws NamingException - Caso de NamingException
 	 */
-	public void sendMessage() throws JMSException, NamingException{
+	public void sendMessage(int idCompania) throws JMSException, NamingException{
 		// conecta al Topic para mandar la petición
 		TopicPublisher topicPublisher = this.topicSession.createPublisher(this.topic);
 		topicPublisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 		TextMessage txtMsg = topicSession.createTextMessage();
 		txtMsg.setJMSType("TextMessage");
-		txtMsg.setText(GET_ALL_VIDEO_ASK + CONNECTOR + this.myQueue);
+		txtMsg.setText(GET_ALL_VIDEO_ASK + CONNECTOR + this.myQueue + CONNECTOR + idCompania);
 		topicPublisher.publish(txtMsg);
 		System.out.println("published: " + txtMsg.getText());
 	}

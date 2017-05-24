@@ -128,12 +128,12 @@ public class JMSFunciones implements MessageListener, ExceptionListener
 	/**
 	 * Atributo que representa, dentro del mensaje, la solicitud de todos los videos de manera distribuida
 	 */
-	public final static String GET_ALL_VIDEO_ASK = "GETALLFUNCIONES";
+	public final static String GET_ALL_FUNCIONES_ASK = "GETALLFUNCIONES";
 
 	/**
 	 * Atributo que representa, dentro del mensaje, la respuesta del requerimiento dar todos los videos.
 	 */
-	public final static String GET_ALL_VIDEO_REPLY = "GETALLFUNCIONESRES";
+	public final static String GET_ALL_FUNCIONES_REPLY = "GETALLFUNCIONESRES";
 
 	/**
 	 * Atributo que representa, dentro del mensaje, el conector para el formateo de todos los mensajes
@@ -276,7 +276,7 @@ public class JMSFunciones implements MessageListener, ExceptionListener
 		topicPublisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 		TextMessage txtMsg = topicSession.createTextMessage();
 		txtMsg.setJMSType("TextMessage");
-		txtMsg.setText(GET_ALL_VIDEO_ASK + CONNECTOR + this.myQueue);
+		txtMsg.setText(GET_ALL_FUNCIONES_ASK + CONNECTOR + this.myQueue);
 		topicPublisher.publish(txtMsg);
 		System.out.println("published: " + txtMsg.getText());
 	}
@@ -346,13 +346,13 @@ public class JMSFunciones implements MessageListener, ExceptionListener
 			String mes = msg.getText();
 			System.out.println("received: " + mes);
 			String[] a = mes.split(CONNECTOR);
-			if(a[0].equals(GET_ALL_VIDEO_ASK) && !a[1].equals(this.myQueue)){
+			if(a[0].equals(GET_ALL_FUNCIONES_ASK) && !a[1].equals(this.myQueue)){
 				ListaFunciones funciones = this.master.darFuncionesLocal();
 				ObjectMapper mapper = new ObjectMapper();
 				String jsonString = mapper.writeValueAsString(funciones);
-				doResponseToQueue(a[1], GET_ALL_VIDEO_REPLY + CONNECTOR + jsonString);
+				doResponseToQueue(a[1], GET_ALL_FUNCIONES_REPLY + CONNECTOR + jsonString);
 			}
-			else if(a[0].equals(GET_ALL_VIDEO_REPLY)){
+			else if(a[0].equals(GET_ALL_FUNCIONES_REPLY)){
 				ObjectMapper mapper = new ObjectMapper();
 				if(waiting){
 					ListaFunciones obj = mapper.readValue(a[1], ListaFunciones.class);

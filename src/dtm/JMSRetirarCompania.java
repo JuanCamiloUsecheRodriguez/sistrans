@@ -211,8 +211,8 @@ public class JMSRetirarCompania implements MessageListener, ExceptionListener
 	 * @throws NonReplyException - Caso de NonReplyException
 	 * @throws JMSException - Caso de JMSException
 	 */
-	public void getRetirarCompaniasResponse() throws IncompleteReplyException, JMSException, NamingException, InterruptedException, NonReplyException {
-		sendMessage(); // manda el mensaje de solicitud del requerimiento al topic
+	public void getRetirarCompaniasResponse(int idCompania) throws IncompleteReplyException, JMSException, NamingException, InterruptedException, NonReplyException {
+		sendMessage(idCompania); // manda el mensaje de solicitud del requerimiento al topic
 		waiting = true; // Lo hace para< indicar que si esta esperando respuestas
 		this.numberApps = 0; // Pone en 0 el numero de respuestas que han llegado
 

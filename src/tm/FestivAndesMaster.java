@@ -1096,10 +1096,10 @@ public class FestivAndesMaster {
 
 	public void deleteCompaniaLocal(int idCompania) throws Exception{
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
-		this.conn = darConexion1();
-		daoFunciones.setConn(conn);
-		conn.setAutoCommit(false);
-		Savepoint s = conn.setSavepoint("deleteCompania");
+		this.conn1 = darConexion1();
+		daoFunciones.setConn(conn1);
+		conn1.setAutoCommit(false);
+		Savepoint s = conn1.setSavepoint("deleteCompania");
 		ListaNotas r = null;
 		List<Funcion> funciones = null;
 		try 
@@ -1112,20 +1112,20 @@ public class FestivAndesMaster {
 			}
 
 		} catch (SQLException e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
-			conn.rollback(s);
+			conn1.rollback(s);
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
 		} finally {
 			try {
 				daoFunciones.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
+				if(this.conn1!=null)
+					this.conn1.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();

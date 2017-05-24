@@ -264,7 +264,32 @@ public class FestivAndesMaster {
 		return funciones; 
 
 	}
-
+	
+	public void deleteCompaniaRemote(int idCompania) throws Exception {
+		try {	
+			Connection conn1 = darConexion1();
+			
+			JMSRetirarCompania instancia = JMSRetirarCompania.darInstacia(this);
+			instancia.setUpJMSManager(this.numberApps, this.myQueue, this.topicAllFunciones);
+			instancia.getRetirarCompaniasResponse(idCompania);  
+	
+		} catch (NonReplyException e) {
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+			
+				if(this.conn1!=null)
+					this.conn1.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
 
 	public void actualizarPreferencia( int idCategoriaAnterior, Preferencia pref) throws Exception {
 		DAOTablaClientes daoClientes = new DAOTablaClientes();
@@ -1095,39 +1120,16 @@ public class FestivAndesMaster {
 		return new ListaNotas(r);
 	}
 
-	public void deleteCompaniaRemote(int idCompania) throws Exception {
-		try {	
-			Connection conn1 = darConexion1();
-			
-			JMSRetirarCompania instancia = JMSRetirarCompania.darInstacia(this);
-			instancia.setUpJMSManager(this.numberApps, this.myQueue, this.topicAllFunciones);
-			instancia.getRetirarCompaniasResponse(idCompania);  
 	
-		} catch (NonReplyException e) {
 	
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-			
-				if(this.conn1!=null)
-					this.conn1.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-
-	}
-	public void deleteCompaniaLocal(int idCompania) throws Exception{
+	
+	public ListaNotas deleteCompaniaLocal(int idCompania) throws Exception{
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
 		this.conn1 = darConexion1();
 		daoFunciones.setConn(conn1);
 		conn1.setAutoCommit(false);
 		Savepoint s = conn1.setSavepoint("deleteCompania");
-		ListaNotas r = null;
+		ArrayList<NotaDebito> r = new ArrayList<NotaDebito>();
 		List<Funcion> funciones = null;
 		try 
 		{
@@ -1159,6 +1161,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
+		return new ListaNotas(r);
 	}
 	
 	public ListaNotas deleteFuncion(int idFuncion) throws SQLException, Exception{

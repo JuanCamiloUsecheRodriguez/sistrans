@@ -993,6 +993,46 @@ public class FestivAndesMaster {
 		return new ListaNotas(r);
 	}
 
+	public void deleteCompaniaLocal(int idCompania) throws Exception{
+		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
+		this.conn = darConexion1();
+		daoFunciones.setConn(conn);
+		conn.setAutoCommit(false);
+		Savepoint s = conn.setSavepoint("deleteCompania");
+		ListaNotas r = null;
+		List<Funcion> funciones = null;
+		try 
+		{
+			//////Transacción
+			funciones = daoFunciones.darFunciones();
+			for(int i = 0; i < funciones.size(); i++)
+			{
+				deleteFuncion(i);
+			}
+
+		} catch (SQLException e) {
+			conn.rollback(s);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			conn.rollback(s);
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFunciones.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
 	public ListaNotas deleteFuncion(int idFuncion) throws SQLException, Exception{
 		DAOTablaFunciones daoFunciones = new DAOTablaFunciones();
 		this.conn = darConexion1();

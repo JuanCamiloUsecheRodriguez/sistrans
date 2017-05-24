@@ -102,7 +102,6 @@ public class DAOTablaClientes {
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
-
 	public void addAbono(Abono abono) throws SQLException,Exception {
 
 		String sql = "SELECT FECHAINICIO FROM FESTIVANDES";
@@ -337,6 +336,6 @@ public class DAOTablaClientes {
 			ResultSet rs = prepStmt.executeQuery();
 		}
 		
-	}
+	} 
 	
 }

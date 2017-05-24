@@ -1130,6 +1130,7 @@ public class FestivAndesMaster {
 		conn1.setAutoCommit(false);
 		Savepoint s = conn1.setSavepoint("deleteCompania");
 		ArrayList<NotaDebito> r = new ArrayList<NotaDebito>();
+		ListaNotas notas= new ListaNotas(r);
 		List<Funcion> funciones = null;
 		try 
 		{
@@ -1137,7 +1138,7 @@ public class FestivAndesMaster {
 			funciones = daoFunciones.darFunciones();
 			for(int i = 0; i < funciones.size(); i++)
 			{
-				deleteFuncion(i);
+				notas.addNotas(deleteFuncion(i));
 			}
 
 		} catch (SQLException e) {
@@ -1161,7 +1162,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return new ListaNotas(r);
+		return notas;
 	}
 	
 	public ListaNotas deleteFuncion(int idFuncion) throws SQLException, Exception{

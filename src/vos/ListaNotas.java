@@ -22,4 +22,8 @@ public class ListaNotas {
 		this.notas = notas;
 	}	
 	
+	public void addNotas(ListaNotas notasNew){
+		this.notas.addAll(notasNew.getNotas());
+	}
+	
 }
